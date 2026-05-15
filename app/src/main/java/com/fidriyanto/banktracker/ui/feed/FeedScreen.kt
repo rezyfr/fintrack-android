@@ -34,7 +34,11 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
         } else {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(transactions, key = { it.id }) { entity ->
-                    TransactionCard(entity = entity, onRetry = { viewModel.retry(entity.id) })
+                    TransactionCard(
+                        entity = entity,
+                        onRetry = { viewModel.retry(entity.id) },
+                        onConfirm = { item, category -> viewModel.updateAndSync(entity.id, item, category) }
+                    )
                 }
             }
         }
