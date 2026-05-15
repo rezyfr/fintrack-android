@@ -17,4 +17,7 @@ class FeedViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun retry(id: Long) = viewModelScope.launch { repository.syncTransaction(id) }
+
+    fun updateAndSync(id: Long, item: String, category: String) =
+        viewModelScope.launch { repository.updateAndSync(id, item, category) }
 }
