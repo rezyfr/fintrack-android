@@ -8,12 +8,9 @@ import com.fidriyanto.banktracker.email.EmailParser
 import com.fidriyanto.banktracker.sheets.SheetsSyncer
 import com.fidriyanto.banktracker.data.prefs.SecurePrefs
 import io.mockk.*
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.time.LocalDate
 
 class TransactionRepositoryTest {
 
