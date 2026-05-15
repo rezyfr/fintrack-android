@@ -83,6 +83,12 @@ class TransactionRepository @Inject constructor(
         return syncTransaction(id)
     }
 
+    suspend fun updateAndSync(id: Long, item: String, category: String) {
+        val entity = transactionDao.getById(id) ?: return
+        transactionDao.update(entity.copy(item = item, category = category))
+        syncTransaction(id)
+    }
+
     suspend fun retryFailedSyncs() {
         transactionDao.getByStatus(TransactionStatus.SYNC_FAILED).forEach { syncTransaction(it.id) }
         transactionDao.getByStatus(TransactionStatus.PENDING_SYNC).forEach { syncTransaction(it.id) }
