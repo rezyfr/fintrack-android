@@ -47,7 +47,7 @@ fun TransactionCard(
     val dateStr = date?.format(DateTimeFormatter.ofPattern("d MMM")) ?: ""
     val amountStr = if (entity.amount % 1.0 == 0.0) entity.amount.toInt().toString() else entity.amount.toString()
 
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember(entity.id) { mutableStateOf(false) }
     var itemInput by remember(entity.id) { mutableStateOf(entity.item) }
     var categoryInput by remember(entity.id) { mutableStateOf(entity.category) }
 
@@ -78,7 +78,7 @@ fun TransactionCard(
         }
 
         AnimatedVisibility(visible = expanded) {
-            Column(Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp)) {
+            Column(Modifier.padding(start = 12.dp, top = 4.dp, end = 12.dp, bottom = 12.dp)) {
                 OutlinedTextField(
                     value = itemInput,
                     onValueChange = { itemInput = it },
