@@ -7,7 +7,9 @@ import com.fidriyanto.banktracker.auth.GoogleAuthManager
 import com.fidriyanto.banktracker.data.prefs.SecurePrefs
 import com.fidriyanto.banktracker.data.repository.TransactionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,7 +31,15 @@ class SettingsViewModel @Inject constructor(
     private val _state = MutableStateFlow(SettingsState())
     val state = _state.asStateFlow()
 
-    init { refresh() }
+    private val _consentIntent = MutableSharedFlow<Intent>(extraBufferCapacity = 1)
+    val consentIntent = _consentIntent.asSharedFlow()
+
+    init {
+        refresh()
+        viewModelScope.launch {
+            authManager.consentRequired.collect { _consentIntent.emit(it) }
+        }
+    }
 
     fun refresh() {
         _state.value = SettingsState(

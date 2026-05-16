@@ -1,6 +1,7 @@
 package com.fidriyanto.banktracker.email
 
 import android.net.Uri
+import android.util.Log
 import com.fidriyanto.banktracker.auth.GoogleAuthManager
 import com.fidriyanto.banktracker.data.prefs.SecurePrefs
 import kotlinx.coroutines.Dispatchers
@@ -22,17 +23,23 @@ class EmailFetcher @Inject constructor(
     }
 
     suspend fun fetchLatestBankEmail(): String? = withContext(Dispatchers.IO) {
-        val token = authManager.getValidAccessToken() ?: return@withContext null
+        val token = authManager.getValidAccessToken() ?: run {
+            Log.w("EmailFetcher", "no access token"); return@withContext null
+        }
         val query = prefs.gmailSenderFilter
+        Log.d("EmailFetcher", "querying: $query")
 
         val listUrl = "$GMAIL_API/messages?q=${Uri.encode(query)}&maxResults=1"
         val listReq = Request.Builder().url(listUrl)
             .addHeader("Authorization", "Bearer $token").build()
-        val listBody = httpClient.newCall(listReq).execute().body?.string() ?: return@withContext null
+        val listBody = httpClient.newCall(listReq).execute().also {
+            Log.d("EmailFetcher", "list status=${it.code}")
+        }.body?.string() ?: return@withContext null
         val messageId = JSONObject(listBody)
             .optJSONArray("messages")?.optJSONObject(0)?.optString("id")
-            ?: return@withContext null
+            ?: run { Log.w("EmailFetcher", "no messages found: $listBody"); return@withContext null }
 
+        Log.d("EmailFetcher", "fetching messageId=$messageId")
         val msgUrl = "$GMAIL_API/messages/$messageId?format=full"
         val msgReq = Request.Builder().url(msgUrl)
             .addHeader("Authorization", "Bearer $token").build()
