@@ -26,7 +26,7 @@ class DashboardViewModel @Inject constructor(
 
     private val _isRefreshing = MutableStateFlow(false)
     private val _refreshError = MutableStateFlow(false)
-    private var lastFetchedAt: Long? = null
+    @Volatile private var lastFetchedAt: Long? = null
 
     val state: StateFlow<DashboardUiState> = _period
         .flatMapLatest { p ->
@@ -62,6 +62,7 @@ class DashboardViewModel @Inject constructor(
     fun selectPeriod(p: Period) {
         _period.value = p
         _refreshError.value = false
+        refresh()
     }
 
     fun refresh() = viewModelScope.launch {
