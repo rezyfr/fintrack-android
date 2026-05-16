@@ -1,9 +1,13 @@
 package com.fidriyanto.banktracker.ui.settings
 
+import android.app.Activity
 import android.content.Intent
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.api.ApiException
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,6 +20,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fidriyanto.banktracker.ui.theme.Accent
@@ -28,9 +33,29 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
     var claudeKeyInput by remember(state.claudeApiKey) { mutableStateOf(state.claudeApiKey) }
     var showKey by remember { mutableStateOf(false) }
 
-    val signInLauncher = rememberLauncherForActivityResult(
+    val consentLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { viewModel.refresh() }
+
+    LaunchedEffect(Unit) {
+        viewModel.consentIntent.collect { consentLauncher.launch(it) }
+    }
+
+    val signInLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        Log.d("SettingsSignIn", "resultCode=${result.resultCode}")
+        if (result.resultCode == Activity.RESULT_OK) {
+            try {
+                val account = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                    .getResult(ApiException::class.java)
+                Log.d("SettingsSignIn", "signed in as ${account?.email}")
+            } catch (e: ApiException) {
+                Log.e("SettingsSignIn", "ApiException code=${e.statusCode}", e)
+            }
+        }
+        viewModel.refresh()
+    }
 
     Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text("Settings", fontWeight = FontWeight.Bold, fontSize = 20.sp, color = Color.White)

@@ -1,6 +1,7 @@
 package com.fidriyanto.banktracker.sheets
 
 import android.net.Uri
+import android.util.Log
 import com.fidriyanto.banktracker.auth.GoogleAuthManager
 import com.fidriyanto.banktracker.data.model.SheetsRow
 import com.fidriyanto.banktracker.data.model.SheetTab
@@ -41,11 +42,16 @@ class SheetsSyncer @Inject constructor(
             .post(bodyJson.toRequestBody("application/json".toMediaType()))
             .build()
 
+        Log.d("SheetsSyncer", "POST $url")
+        Log.d("SheetsSyncer", "body=$bodyJson")
         return@withContext try {
             val response = httpClient.newCall(request).execute()
+            val responseBody = response.body?.string()
+            Log.d("SheetsSyncer", "status=${response.code} body=$responseBody")
             if (response.isSuccessful) Result.success(Unit)
-            else Result.failure(Exception("Sheets API error: HTTP ${response.code}"))
+            else Result.failure(Exception("Sheets API error: HTTP ${response.code} — $responseBody"))
         } catch (e: Exception) {
+            Log.e("SheetsSyncer", "sync failed", e)
             Result.failure(e)
         }
     }
