@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(JAVA_HOME=\"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\" ./gradlew :app:testDebugUnitTest --tests \"com.fidriyanto.banktracker.email.EmailParserTest\")",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(adb devices *)",
+      "Bash(adb shell *)",
+      "Bash(adb logcat *)",
+      "Bash(grep -v \"^--$\")",
+      "Bash(C:\\\\Users\\\\User\\\\.claude\\\\plugins\\\\cache\\\\superpowers-marketplace\\\\superpowers\\\\5.0.7\\\\scripts\\\\start-server.sh *)",
+      "Bash(git *)",
+      "Bash(Select-String -Pattern \"mockk|coroutines-test\")",
+      "Bash(Get-ChildItem -Path 'C:\\\\Users\\\\User\\\\Documents\\\\GitHub\\\\bank-tracker-android\\\\app\\\\src\\\\main\\\\java\\\\com\\\\fidriyanto\\\\banktracker' -Directory)",
+      "Bash(Select-Object Name)"
+    ]
+  },
+  "enabledPlugins": {
+    "andrej-karpathy-skills@karpathy-skills": true
+  }
+}
