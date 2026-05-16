@@ -59,12 +59,15 @@ class MonthlyOverviewFetcherImpl @Inject constructor(
             .url(url)
             .addHeader("Authorization", "Bearer $token")
             .build()
-        val response = httpClient.newCall(request).execute()
-        if (!response.isSuccessful) {
-            throw Exception("Sheets API error: HTTP ${response.code} for $tabName")
+        return httpClient.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) {
+                val errorBody = response.body?.string()
+                Log.e("MonthlyOverviewFetcher", "Sheets API error: HTTP ${response.code} for $tabName — $errorBody")
+                throw Exception("Sheets API error: HTTP ${response.code} for $tabName")
+            }
+            val body = response.body?.string() ?: throw Exception("Empty response for $tabName")
+            parseTab(body, currency)
         }
-        val body = response.body?.string() ?: throw Exception("Empty response for $tabName")
-        return parseTab(body, currency)
     }
 
     private fun parseTab(
