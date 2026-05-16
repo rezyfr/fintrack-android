@@ -17,11 +17,14 @@ import javax.inject.Singleton
 object AppModule {
     @Provides @Singleton
     fun provideDatabase(@ApplicationContext ctx: Context): AppDatabase =
-        Room.databaseBuilder(ctx, AppDatabase::class.java, "banktracker.db").build()
+        Room.databaseBuilder(ctx, AppDatabase::class.java, "banktracker.db")
+            .fallbackToDestructiveMigration()
+            .build()
 
     @Provides fun provideTransactionDao(db: AppDatabase) = db.transactionDao()
     @Provides fun provideCategoryCacheDao(db: AppDatabase) = db.categoryCacheDao()
     @Provides fun provideProcessedRefDao(db: AppDatabase) = db.processedRefDao()
+    @Provides fun provideMonthlyOverviewDao(db: AppDatabase) = db.monthlyOverviewDao()
 
     @Provides @Singleton
     fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
