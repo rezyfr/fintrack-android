@@ -22,11 +22,15 @@ class DashboardRepository @Inject constructor(
         ) { thb, idr -> Pair(thb, idr) }
 
     suspend fun refresh(): Result<Unit> {
-        val result = fetcher.fetch()
-        result.onSuccess { data ->
-            dao.upsertAll(data.rows)
-            data.budgets.forEach { dao.upsertBudget(it) }
+        return try {
+            val result = fetcher.fetch()
+            result.onSuccess { data ->
+                dao.upsertAll(data.rows)
+                data.budgets.forEach { dao.upsertBudget(it) }
+            }
+            result.map { }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
-        return result.map { }
     }
 }
