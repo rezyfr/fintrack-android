@@ -8,6 +8,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,6 +25,7 @@ private val Period.label: String
         Period.LAST_3_MONTHS -> "Last 3 Months"
     }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -78,6 +82,7 @@ private fun LoadingContent() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LoadedContent(
     state: DashboardUiState.Loaded,
@@ -85,26 +90,47 @@ private fun LoadedContent(
     onSelectPeriod: (Period) -> Unit,
     onRefresh: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        PeriodSelector(period, onSelectPeriod)
+    val pullToRefreshState = rememberPullToRefreshState()
 
-        if (state.refreshError && state.lastUpdated != null) {
-            Text(
-                "Last updated ${state.lastUpdated}",
-                color = MutedText,
-                fontSize = 12.sp
-            )
+    LaunchedEffect(pullToRefreshState.isRefreshing) {
+        if (pullToRefreshState.isRefreshing) {
+            onRefresh()
+        }
+    }
+
+    LaunchedEffect(state.isRefreshing) {
+        if (!state.isRefreshing) {
+            pullToRefreshState.endRefresh()
+        }
+    }
+
+    Box(modifier = Modifier.nestedScroll(pullToRefreshState.nestedScrollConnection)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            PeriodSelector(period, onSelectPeriod)
+
+            if (state.refreshError && state.lastUpdated != null) {
+                Text(
+                    "Last updated ${state.lastUpdated}",
+                    color = MutedText,
+                    fontSize = 12.sp
+                )
+            }
+
+            CurrencySection("THB", "฿", state.thb)
+            CurrencySection("IDR", "Rp", state.idr)
+
+            Spacer(Modifier.height(16.dp))
         }
 
-        CurrencySection("THB", "฿", state.thb)
-        CurrencySection("IDR", "Rp", state.idr)
-
-        Spacer(Modifier.height(16.dp))
+        PullToRefreshContainer(
+            modifier = Modifier.align(Alignment.TopCenter),
+            state = pullToRefreshState
+        )
     }
 }
 
