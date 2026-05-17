@@ -4,6 +4,9 @@ import android.net.Uri
 import android.util.Log
 import com.fidriyanto.banktracker.BuildConfig
 import com.fidriyanto.banktracker.auth.GoogleAuthManager
+import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Locale
 import com.fidriyanto.banktracker.data.db.MonthlyBudgetEntity
 import com.fidriyanto.banktracker.data.db.MonthlyOverviewEntity
 import kotlinx.coroutines.Dispatchers
@@ -81,7 +84,7 @@ class MonthlyOverviewFetcherImpl @Inject constructor(
         for (i in 1..12) {
             if (i >= values.length()) break
             val row = values.getJSONArray(i)
-            val month = row.optString(0).trim()
+            val month = serialToMonthLabel(row.optString(0))
             if (month.isBlank()) continue
             rows += MonthlyOverviewEntity(
                 month = month,
@@ -124,6 +127,16 @@ class MonthlyOverviewFetcherImpl @Inject constructor(
         }
 
         return Pair(rows, budget)
+    }
+
+    // Sheets returns date cells as serial numbers (days since Dec 30 1899) when
+    // valueRenderOption=UNFORMATTED_VALUE. Convert to "MMMM yyyy" to match the
+    // format used by DashboardViewModel.monthLabel().
+    private fun serialToMonthLabel(raw: String): String {
+        val serial = raw.trim().toLongOrNull()
+            ?: return raw.trim()
+        val date = LocalDate.of(1899, 12, 30).plusDays(serial)
+        return "${date.month.getDisplayName(TextStyle.FULL, Locale.ENGLISH)} ${date.year}"
     }
 
     private fun JSONArray.cellDouble(index: Int): Double =
