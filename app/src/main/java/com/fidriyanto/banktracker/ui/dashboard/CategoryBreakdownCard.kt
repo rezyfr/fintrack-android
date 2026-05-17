@@ -6,6 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -13,6 +15,8 @@ import androidx.compose.ui.unit.sp
 import com.fidriyanto.banktracker.ui.theme.Accent
 import com.fidriyanto.banktracker.ui.theme.MutedText
 import com.fidriyanto.banktracker.ui.theme.Surface
+
+private val ProgressTrackColor = Color(0xFF2A2A2A)
 
 @Composable
 fun CategoryBreakdownCard(
@@ -89,9 +93,12 @@ private fun CategoryRowItem(row: CategoryRow, currencySymbol: String) {
                 progress = { row.percentage.coerceIn(0f, 1f) },
                 modifier = Modifier
                     .weight(1f)
-                    .height(6.dp),
+                    .height(6.dp)
+                    .semantics {
+                        contentDescription = "${row.category}: ${(row.percentage * 100).toInt()} percent of spending"
+                    },
                 color = Accent,
-                trackColor = Color(0xFF2A2A2A)
+                trackColor = ProgressTrackColor
             )
             Spacer(Modifier.width(8.dp))
             Text(
