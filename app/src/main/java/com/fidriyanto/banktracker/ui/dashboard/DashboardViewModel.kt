@@ -39,7 +39,7 @@ class DashboardViewModel @Inject constructor(
             ) { rows, refreshing, error ->
                 val thbRows = rows.first
                 val idrRows = rows.second
-                if (thbRows.isEmpty() && idrRows.isEmpty() && !refreshing) {
+                if (thbRows.isEmpty() && idrRows.isEmpty() && !refreshing && !error) {
                     DashboardUiState.LoadingNoCache
                 } else {
                     DashboardUiState.Loaded(

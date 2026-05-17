@@ -113,9 +113,10 @@ private fun LoadedContent(
         ) {
             PeriodSelector(period, onSelectPeriod)
 
-            if (state.refreshError && state.lastUpdated != null) {
+            if (state.refreshError) {
                 Text(
-                    "Last updated ${state.lastUpdated}",
+                    if (state.lastUpdated != null) "Last updated ${state.lastUpdated}"
+                    else "Couldn't load data — pull down to retry",
                     color = MutedText,
                     fontSize = 12.sp
                 )
