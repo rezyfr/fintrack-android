@@ -2,6 +2,7 @@ package com.fidriyanto.banktracker.sheets
 
 import android.net.Uri
 import android.util.Log
+import com.fidriyanto.banktracker.BuildConfig
 import com.fidriyanto.banktracker.auth.GoogleAuthManager
 import com.fidriyanto.banktracker.data.db.MonthlyBudgetEntity
 import com.fidriyanto.banktracker.data.db.MonthlyOverviewEntity
@@ -21,7 +22,6 @@ class MonthlyOverviewFetcherImpl @Inject constructor(
 ) : MonthlyOverviewFetcher {
 
     companion object {
-        private const val SPREADSHEET_ID = "SPREADSHEET_ID_REDACTED"
         private const val SHEETS_API = "https://sheets.googleapis.com/v4/spreadsheets"
     }
 
@@ -54,7 +54,7 @@ class MonthlyOverviewFetcherImpl @Inject constructor(
         token: String
     ): Pair<List<MonthlyOverviewEntity>, MonthlyBudgetEntity?> {
         val range = Uri.encode("$tabName!A1:Q17")
-        val url = "$SHEETS_API/$SPREADSHEET_ID/values/$range?valueRenderOption=UNFORMATTED_VALUE"
+        val url = "$SHEETS_API/${BuildConfig.SPREADSHEET_ID}/values/$range?valueRenderOption=UNFORMATTED_VALUE"
         val request = Request.Builder()
             .url(url)
             .addHeader("Authorization", "Bearer $token")

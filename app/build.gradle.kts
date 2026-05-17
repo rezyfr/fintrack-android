@@ -1,9 +1,15 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+}
+
+val localProps = Properties().apply {
+    rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
 }
 
 android {
@@ -16,13 +22,14 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "com.fidriyanto.banktracker.HiltTestRunner"
+        buildConfigField("String", "SPREADSHEET_ID", "\"${localProps.getProperty("SPREADSHEET_ID", "")}\"")
     }
     buildTypes {
         release {
             isMinifyEnabled = false
         }
     }
-    buildFeatures { compose = true }
+    buildFeatures { compose = true; buildConfig = true }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
