@@ -2,6 +2,7 @@ package com.fidriyanto.banktracker.ui.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Dashboard
 import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.*
@@ -11,16 +12,18 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.*
 import com.fidriyanto.banktracker.ui.add.AddScreen
+import com.fidriyanto.banktracker.ui.dashboard.DashboardScreen
 import com.fidriyanto.banktracker.ui.feed.FeedScreen
 import com.fidriyanto.banktracker.ui.settings.SettingsScreen
 
 sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
     object Feed : Screen("feed", "Feed", Icons.Outlined.List)
     object Add : Screen("add", "Add", Icons.Outlined.Add)
+    object Dashboard : Screen("dashboard", "Dashboard", Icons.Outlined.Dashboard)
     object Settings : Screen("settings", "Settings", Icons.Outlined.Settings)
 }
 
-private val screens = listOf(Screen.Feed, Screen.Add, Screen.Settings)
+private val screens = listOf(Screen.Feed, Screen.Add, Screen.Dashboard, Screen.Settings)
 
 @Composable
 fun AppNavigation() {
@@ -50,6 +53,7 @@ fun AppNavigation() {
         NavHost(navController, startDestination = Screen.Feed.route) {
             composable(Screen.Feed.route) { FeedScreen() }
             composable(Screen.Add.route) { AddScreen() }
+            composable(Screen.Dashboard.route) { DashboardScreen() }
             composable(Screen.Settings.route) { SettingsScreen() }
         }
     }
