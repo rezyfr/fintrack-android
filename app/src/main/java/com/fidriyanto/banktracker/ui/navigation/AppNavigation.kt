@@ -5,6 +5,8 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Dashboard
 import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -50,12 +52,14 @@ fun AppNavigation() {
                 }
             }
         }
-    ) { _ ->
-        NavHost(navController, startDestination = Screen.Feed.route) {
-            composable(Screen.Feed.route) { FeedScreen() }
-            composable(Screen.Add.route) { AddScreen() }
-            composable(Screen.Dashboard.route) { DashboardScreen() }
-            composable(Screen.Settings.route) { SettingsScreen() }
+    ) { padding ->
+        Box(Modifier.padding(padding)) {
+            NavHost(navController, startDestination = Screen.Feed.route) {
+                composable(Screen.Feed.route) { FeedScreen() }
+                composable(Screen.Add.route) { AddScreen() }
+                composable(Screen.Dashboard.route) { DashboardScreen() }
+                composable(Screen.Settings.route) { SettingsScreen() }
+            }
         }
     }
 }
