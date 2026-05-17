@@ -3,6 +3,7 @@ package com.fidriyanto.banktracker
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import com.fidriyanto.banktracker.ui.navigation.AppNavigation
 import com.fidriyanto.banktracker.ui.theme.BankTrackerTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -11,6 +12,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent { BankTrackerTheme { AppNavigation() } }
     }
 }
