@@ -99,7 +99,7 @@ private fun LoadedContent(
     }
 
     LaunchedEffect(state.isRefreshing) {
-        if (!state.isRefreshing) {
+        if (!state.isRefreshing && pullToRefreshState.isRefreshing) {
             pullToRefreshState.endRefresh()
         }
     }
