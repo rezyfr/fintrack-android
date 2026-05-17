@@ -66,7 +66,7 @@ class DashboardScreenTest {
     }
 
     @Test
-    fun whenSignedIn_noCache_showsLoading() {
+    fun whenSignedIn_noCache_doesNotShowCurrencySection() {
         fakeGoogleAuthManager.signedIn = true
         fakeFetcher.shouldSucceed = false
 
