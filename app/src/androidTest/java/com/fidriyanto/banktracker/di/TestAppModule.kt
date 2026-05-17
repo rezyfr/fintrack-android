@@ -5,7 +5,9 @@ import androidx.room.Room
 import com.fidriyanto.banktracker.auth.GoogleAuthManager
 import com.fidriyanto.banktracker.data.db.AppDatabase
 import com.fidriyanto.banktracker.fake.FakeGoogleAuthManager
+import com.fidriyanto.banktracker.fake.FakeMonthlyOverviewFetcher
 import com.fidriyanto.banktracker.fake.FakeSheetsSyncer
+import com.fidriyanto.banktracker.sheets.MonthlyOverviewFetcher
 import com.fidriyanto.banktracker.sheets.SheetsSyncer
 import dagger.Binds
 import dagger.Module
@@ -19,7 +21,7 @@ import javax.inject.Singleton
 @Module
 @TestInstallIn(
     components = [SingletonComponent::class],
-    replaces = [AppModule::class, AuthModule::class, SheetsModule::class]
+    replaces = [AppModule::class, AuthModule::class, SheetsModule::class, DashboardModule::class]
 )
 abstract class TestAppModule {
 
@@ -28,6 +30,9 @@ abstract class TestAppModule {
 
     @Binds @Singleton
     abstract fun bindGoogleAuthManager(fake: FakeGoogleAuthManager): GoogleAuthManager
+
+    @Binds @Singleton
+    abstract fun bindMonthlyOverviewFetcher(fake: FakeMonthlyOverviewFetcher): MonthlyOverviewFetcher
 
     companion object {
         @Provides @Singleton
