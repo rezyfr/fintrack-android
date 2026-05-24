@@ -12,7 +12,25 @@
       "Bash(git *)",
       "Bash(Select-String -Pattern \"mockk|coroutines-test\")",
       "Bash(Get-ChildItem -Path 'C:\\\\Users\\\\User\\\\Documents\\\\GitHub\\\\bank-tracker-android\\\\app\\\\src\\\\main\\\\java\\\\com\\\\fidriyanto\\\\banktracker' -Directory)",
-      "Bash(Select-Object Name)"
+      "Bash(Select-Object Name)",
+      "Bash(./gradlew installDebug)",
+      "Bash(chmod +x /Users/socialplus/Documents/Github/fintrack-android/gradlew)",
+      "Bash(/Users/socialplus/Documents/Github/fintrack-android/gradlew installDebug)",
+      "Bash(keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android)",
+      "Bash(xargs cat)",
+      "Bash(android screen *)",
+      "Bash(android info *)",
+      "Bash(~/Library/Android/sdk/platform-tools/adb devices *)",
+      "Bash(android layout *)",
+      "Bash(python3 -c ' *)",
+      "Bash(xargs ls)",
+      "Bash(adb *)",
+      "Read(//Users/socialplus/.claude/jobs/365fa724/**)",
+      "Bash(sqlite3 banktracker.db \"PRAGMA wal_checkpoint\\(FULL\\);\")",
+      "Bash(sqlite3 banktracker.db \"SELECT COUNT\\(*\\) FROM transactions;\")",
+      "Bash(sqlite3 banktracker.db \"SELECT id, merchant, amount, dateIso, channel, referenceNo, status, createdAt FROM transactions ORDER BY createdAt DESC LIMIT 30;\")",
+      "Bash(./gradlew :app:testDebugUnitTest --tests \"com.fidriyanto.banktracker.categorization.MerchantNormalizerTest\")",
+      "Bash(./gradlew :app:compileDebugKotlin)"
     ]
   },
   "enabledPlugins": {

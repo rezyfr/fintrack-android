@@ -1,4 +1,4 @@
-package com.fidriyanto.banktracker.email
+package com.fidriyanto.banktracker.categorization
 
 object MerchantNormalizer {
     private val legalSuffixes = listOf(

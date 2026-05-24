@@ -1,7 +1,7 @@
 package com.fidriyanto.banktracker.categorization
 
 import com.fidriyanto.banktracker.data.model.ParsedTransaction
-import com.fidriyanto.banktracker.email.MerchantNormalizer
+import com.fidriyanto.banktracker.categorization.MerchantNormalizer
 import javax.inject.Inject
 import javax.inject.Singleton
 

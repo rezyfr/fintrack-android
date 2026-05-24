@@ -2,7 +2,7 @@ package com.fidriyanto.banktracker.categorization
 
 import com.fidriyanto.banktracker.data.db.CategoryCacheDao
 import com.fidriyanto.banktracker.data.db.CategoryCacheEntity
-import com.fidriyanto.banktracker.email.MerchantNormalizer
+import com.fidriyanto.banktracker.categorization.MerchantNormalizer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
