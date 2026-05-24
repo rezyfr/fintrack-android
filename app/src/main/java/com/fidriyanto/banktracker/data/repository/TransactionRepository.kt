@@ -49,9 +49,11 @@ class TransactionRepository @Inject constructor(
         val row = SheetsRow(
             tab = entity.tab,
             date = LocalDate.parse(entity.dateIso),
+            merchant = entity.merchant,
             item = entity.item,
             amount = entity.amount,
-            category = entity.category
+            category = entity.category,
+            channel = entity.channel
         )
         return sheetsSyncer.sync(row).also { result ->
             val newStatus = if (result.isSuccess) TransactionStatus.SYNCED else TransactionStatus.SYNC_FAILED
@@ -61,12 +63,12 @@ class TransactionRepository @Inject constructor(
 
     suspend fun insertManual(row: SheetsRow): Result<Unit> {
         val entity = TransactionEntity(
-            merchant = row.item,
+            merchant = row.merchant,
             item = row.item,
             amount = row.amount,
             category = row.category,
             dateIso = row.date.toString(),
-            channel = "Manual",
+            channel = row.channel,
             referenceNo = "",
             tab = row.tab,
             status = TransactionStatus.PENDING_SYNC

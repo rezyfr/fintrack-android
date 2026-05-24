@@ -45,11 +45,19 @@ class AddViewModel @Inject constructor(
             s.account == "IDR" && s.type == "Expense" -> SheetTab.IDR_EXPENSES
             else                                       -> SheetTab.IDR_INCOME
         }
-        val row = SheetsRow(tab, s.date, s.description, amount, s.category)
+        val row = SheetsRow(
+            tab = tab,
+            date = s.date,
+            merchant = s.description,
+            item = s.description,
+            amount = amount,
+            category = s.category,
+            channel = "Manual"
+        )
         val result = repository.insertManual(row)
         _state.value = _state.value.copy(
             isLoading = false,
-            successMessage = if (result.isSuccess) "Synced to Sheets!" else null,
+            successMessage = if (result.isSuccess) "Saved and syncing!" else null,
             errorMessage = if (result.isFailure) "Sync failed — saved offline" else null
         )
     }

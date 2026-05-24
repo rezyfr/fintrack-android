@@ -109,4 +109,18 @@ class TransactionRepositoryTest {
         coVerify(exactly = 0) { transactionDao.update(any()) }
         coVerify(exactly = 0) { sheetsSyncer.sync(any()) }
     }
+
+    @Test
+    fun `syncTransaction passes merchant and channel from entity`() = runTest {
+        val capturedRow = slot<SheetsRow>()
+        coEvery { transactionDao.getById(1L) } returns existingEntity
+        coEvery { transactionDao.updateStatus(any(), any()) } just Runs
+        coEvery { sheetsSyncer.sync(capture(capturedRow)) } returns Result.success(Unit)
+
+        repository.syncTransaction(1L)
+
+        assertEquals("GRAB", capturedRow.captured.merchant)
+        assertEquals("PromptPay", capturedRow.captured.channel)
+        assertNull(capturedRow.captured.note)
+    }
 }
