@@ -5,6 +5,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "processed_refs")
 data class ProcessedRefEntity(
-    @PrimaryKey val referenceNo: String,
+    @PrimaryKey val compositeKey: String,
     val processedAt: Long = System.currentTimeMillis()
 )
