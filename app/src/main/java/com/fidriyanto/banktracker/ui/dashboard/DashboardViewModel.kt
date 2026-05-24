@@ -2,7 +2,6 @@ package com.fidriyanto.banktracker.ui.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fidriyanto.banktracker.auth.GoogleAuthManager
 import com.fidriyanto.banktracker.data.db.MonthlyOverviewEntity
 import com.fidriyanto.banktracker.data.repository.DashboardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,8 +16,7 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    private val repository: DashboardRepository,
-    private val authManager: GoogleAuthManager
+    private val repository: DashboardRepository
 ) : ViewModel() {
 
     private val _period = MutableStateFlow(Period.THIS_MONTH)
@@ -30,7 +28,6 @@ class DashboardViewModel @Inject constructor(
 
     val state: StateFlow<DashboardUiState> = _period
         .flatMapLatest { p ->
-            if (!authManager.isSignedIn()) return@flatMapLatest flowOf(DashboardUiState.NotSignedIn)
             val months = monthsFor(p)
             combine(
                 repository.observeForMonths(months),
@@ -56,7 +53,7 @@ class DashboardViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DashboardUiState.LoadingNoCache)
 
     init {
-        if (authManager.isSignedIn()) refresh()
+        refresh()
     }
 
     fun selectPeriod(p: Period) {
