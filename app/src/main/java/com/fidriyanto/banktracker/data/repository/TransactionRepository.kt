@@ -4,8 +4,6 @@ import com.fidriyanto.banktracker.categorization.CategoryResolver
 import com.fidriyanto.banktracker.data.db.*
 import com.fidriyanto.banktracker.data.model.*
 import com.fidriyanto.banktracker.data.prefs.SecurePrefs
-import com.fidriyanto.banktracker.email.EmailFetcher
-import com.fidriyanto.banktracker.email.EmailParser
 import com.fidriyanto.banktracker.sheets.SheetsSyncer
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
@@ -16,22 +14,16 @@ import javax.inject.Singleton
 class TransactionRepository @Inject constructor(
     private val transactionDao: TransactionDao,
     private val processedRefDao: ProcessedRefDao,
-    private val emailFetcher: EmailFetcher,
-    private val emailParser: EmailParser,
     private val categoryResolver: CategoryResolver,
     private val sheetsSyncer: SheetsSyncer,
     private val prefs: SecurePrefs
 ) {
     fun observeTransactions(): Flow<List<TransactionEntity>> = transactionDao.observeAll()
 
-    suspend fun processNewNotification(triggerAmount: Double): Long? {
-        val html = emailFetcher.fetchLatestBankEmail() ?: return null
-        val parsed = emailParser.parse(html) ?: return null
-
-        if (parsed.referenceNo.isNotEmpty() && processedRefDao.exists(parsed.referenceNo) > 0) return null
-        if (parsed.referenceNo.isNotEmpty()) {
-            processedRefDao.insert(ProcessedRefEntity(parsed.referenceNo))
-        }
+    suspend fun processNewNotification(parsed: ParsedTransaction): Long? {
+        val compositeKey = "${parsed.merchant}|${parsed.amount}|${parsed.date}"
+        if (processedRefDao.exists(compositeKey) > 0) return null
+        processedRefDao.insert(ProcessedRefEntity(compositeKey))
 
         val resolved = categoryResolver.resolve(parsed, prefs.promptPayThreshold, prefs.claudeApiKey)
 
@@ -42,7 +34,7 @@ class TransactionRepository @Inject constructor(
             category = resolved.category,
             dateIso = parsed.date.toString(),
             channel = parsed.channel,
-            referenceNo = parsed.referenceNo,
+            referenceNo = "",
             tab = SheetTab.EXPENSES,
             status = TransactionStatus.PENDING_EDIT
         )
