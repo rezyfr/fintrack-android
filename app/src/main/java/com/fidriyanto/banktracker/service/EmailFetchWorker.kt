@@ -5,8 +5,6 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.fidriyanto.banktracker.data.repository.TransactionRepository
-import com.fidriyanto.banktracker.email.EmailFetcher
-import com.fidriyanto.banktracker.email.EmailParser
 import com.fidriyanto.banktracker.notification.ReviewNotificationManager
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -15,17 +13,11 @@ import dagger.assisted.AssistedInject
 class EmailFetchWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
-    private val emailFetcher: EmailFetcher,
-    private val emailParser: EmailParser,
     private val repository: TransactionRepository,
     private val notificationManager: ReviewNotificationManager
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        val html = emailFetcher.fetchLatestBankEmail() ?: return Result.success()
-        val parsed = emailParser.parse(html) ?: return Result.success()
-        val transactionId = repository.processNewNotification(parsed) ?: return Result.success()
-        notificationManager.showReviewNotification(transactionId)
         return Result.success()
     }
 }
