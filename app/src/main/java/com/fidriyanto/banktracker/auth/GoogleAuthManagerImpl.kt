@@ -21,10 +21,7 @@ class GoogleAuthManagerImpl @Inject constructor(
     private val prefs: SecurePrefs
 ) : GoogleAuthManager {
     companion object {
-        val SCOPES = listOf(
-            "https://www.googleapis.com/auth/gmail.readonly",
-            "https://www.googleapis.com/auth/spreadsheets"
-        )
+        val SCOPES = listOf("https://www.googleapis.com/auth/spreadsheets")
     }
 
     private val _consentRequired = MutableSharedFlow<Intent>(extraBufferCapacity = 1)
@@ -33,10 +30,7 @@ class GoogleAuthManagerImpl @Inject constructor(
     override fun getSignInIntent(): Intent {
         val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
-            .requestScopes(
-                com.google.android.gms.common.api.Scope(SCOPES[0]),
-                com.google.android.gms.common.api.Scope(SCOPES[1])
-            )
+            .requestScopes(com.google.android.gms.common.api.Scope(SCOPES[0]))
             .build()
         return GoogleSignIn.getClient(context, options).signInIntent
     }
