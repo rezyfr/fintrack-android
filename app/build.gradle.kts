@@ -22,7 +22,6 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "com.fidriyanto.banktracker.HiltTestRunner"
-        buildConfigField("String", "SPREADSHEET_ID", "\"${localProps.getProperty("SPREADSHEET_ID", "")}\"")
         buildConfigField("String", "SUPABASE_URL", "\"${localProps.getProperty("SUPABASE_URL", "")}\"")
         buildConfigField("String", "SUPABASE_ANON_KEY", "\"${localProps.getProperty("SUPABASE_ANON_KEY", "")}\"")
     }
@@ -60,9 +59,6 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
     implementation(libs.okhttp)
-    implementation(libs.jsoup)
-    implementation(libs.google.signin)
-    implementation(libs.google.api.client.android)
     implementation(libs.security.crypto)
     implementation(libs.work.runtime.ktx)
     implementation(libs.hilt.work)
