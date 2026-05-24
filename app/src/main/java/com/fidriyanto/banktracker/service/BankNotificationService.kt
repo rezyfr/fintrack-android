@@ -3,39 +3,47 @@ package com.fidriyanto.banktracker.service
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
-import androidx.work.*
+import com.fidriyanto.banktracker.data.repository.TransactionRepository
+import com.fidriyanto.banktracker.notification.NotificationParser
+import com.fidriyanto.banktracker.notification.ReviewNotificationManager
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class BankNotificationService : NotificationListenerService() {
     companion object {
-        const val BANGKOK_BANK_PACKAGE = "th.co.bangkokbank.bangkokmobile"
         private const val TAG = "BankNLS"
     }
 
+    @Inject lateinit var repository: TransactionRepository
+    @Inject lateinit var notificationManager: ReviewNotificationManager
+
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     override fun onNotificationPosted(sbn: StatusBarNotification) {
-        Log.d(TAG, "onNotificationPosted: pkg=${sbn.packageName}")
-//        if (sbn.packageName != BANGKOK_BANK_PACKAGE) return
+        val title = sbn.notification.extras
+            .getCharSequence(android.app.Notification.EXTRA_TITLE)?.toString()
         val text = sbn.notification.extras
             .getCharSequence(android.app.Notification.EXTRA_TEXT)?.toString()
-        Log.d(TAG, "EXTRA_TEXT=$text")
-        text ?: return
-        val amount = extractAmount(text)
-        Log.d(TAG, "amount=$amount")
-        amount ?: return
+        Log.d(TAG, "pkg=${sbn.packageName} title=$title text=$text")
 
-        val work = OneTimeWorkRequestBuilder<EmailFetchWorker>()
-            .setInitialDelay(5, TimeUnit.SECONDS)
-            .setInputData(workDataOf("trigger_amount" to amount))
-            .setConstraints(Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED).build())
-            .build()
-        WorkManager.getInstance(applicationContext).enqueue(work)
+        val parsed = NotificationParser.parse(title, text, sbn.postTime)
+        Log.d(TAG, "parsed=$parsed")
+        parsed ?: return
+
+        scope.launch {
+            val id = repository.processNewNotification(parsed) ?: return@launch
+            notificationManager.showReviewNotification(id)
+        }
     }
 
-    private fun extractAmount(text: String): Double? {
-        val regex = Regex("""(\d[\d,]*(?:\.\d{1,2})?)THB""", RegexOption.IGNORE_CASE)
-        return regex.find(text)?.groupValues?.get(1)?.replace(",", "")?.toDoubleOrNull()
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.cancel()
     }
 }
