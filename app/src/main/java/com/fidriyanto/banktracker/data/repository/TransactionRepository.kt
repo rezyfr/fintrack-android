@@ -87,4 +87,6 @@ class TransactionRepository @Inject constructor(
         transactionDao.getByStatus(TransactionStatus.SYNC_FAILED).forEach { syncTransaction(it.id) }
         transactionDao.getByStatus(TransactionStatus.PENDING_SYNC).forEach { syncTransaction(it.id) }
     }
+
+    suspend fun markAllSynced() = transactionDao.markAllSynced()
 }

@@ -13,7 +13,8 @@ import javax.inject.Inject
 data class SettingsState(
     val claudeApiKey: String = "",
     val isListenerActive: Boolean = false,
-    val isSyncing: Boolean = false
+    val isSyncing: Boolean = false,
+    val isClearing: Boolean = false
 )
 
 @HiltViewModel
@@ -39,5 +40,11 @@ class SettingsViewModel @Inject constructor(
         _state.value = _state.value.copy(isSyncing = true)
         repository.retryFailedSyncs()
         _state.value = _state.value.copy(isSyncing = false)
+    }
+
+    fun markAllSynced() = viewModelScope.launch {
+        _state.value = _state.value.copy(isClearing = true)
+        repository.markAllSynced()
+        _state.value = _state.value.copy(isClearing = false)
     }
 }

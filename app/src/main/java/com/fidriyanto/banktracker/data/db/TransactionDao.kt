@@ -23,4 +23,7 @@ interface TransactionDao {
 
     @Query("UPDATE transactions SET status = :status WHERE id = :id")
     suspend fun updateStatus(id: Long, status: TransactionStatus)
+
+    @Query("UPDATE transactions SET status = 'SYNCED' WHERE status IN ('SYNC_FAILED', 'PENDING_SYNC')")
+    suspend fun markAllSynced()
 }

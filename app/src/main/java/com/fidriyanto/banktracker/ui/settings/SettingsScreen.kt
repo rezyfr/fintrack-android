@@ -67,10 +67,19 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
         Button(
             onClick = { viewModel.retryPendingSyncs() },
             modifier = Modifier.fillMaxWidth(),
-            enabled = !state.isSyncing
+            enabled = !state.isSyncing && !state.isClearing
         ) {
             if (state.isSyncing) CircularProgressIndicator(Modifier.size(18.dp), color = Color.White)
             else Text("Retry Pending Syncs")
+        }
+
+        OutlinedButton(
+            onClick = { viewModel.markAllSynced() },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !state.isSyncing && !state.isClearing
+        ) {
+            if (state.isClearing) CircularProgressIndicator(Modifier.size(18.dp), color = Color.White)
+            else Text("Mark All as Synced")
         }
     }
 }
