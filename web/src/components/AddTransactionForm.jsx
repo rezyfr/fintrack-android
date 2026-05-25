@@ -20,12 +20,12 @@ const EMPTY = {
   category: 'Food & Drink',
   channel: 'eWallet',
   tab: 'EXPENSES',
-  date: today(),
+  date: '',
   note: '',
 };
 
 export default function AddTransactionForm() {
-  const [form, setForm] = useState(EMPTY);
+  const [form, setForm] = useState(() => ({ ...EMPTY, date: today() }));
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState(null); // null | 'success' | 'error'
   const [errorMsg, setErrorMsg] = useState('');
@@ -39,6 +39,7 @@ export default function AddTransactionForm() {
     e.preventDefault();
     setSubmitting(true);
     setStatus(null);
+    setErrorMsg('');
     try {
       await addTransaction({ ...form, amount: Number(form.amount) });
       setStatus('success');
