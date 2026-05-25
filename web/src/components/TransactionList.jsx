@@ -16,12 +16,14 @@ export default function TransactionList() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let ignore = false;
     setLoading(true);
     setError(null);
     getTransactions({ tab: tab || null, month })
-      .then(setRows)
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
+      .then((data) => { if (!ignore) setRows(data); })
+      .catch((e) => { if (!ignore) setError(e.message); })
+      .finally(() => { if (!ignore) setLoading(false); });
+    return () => { ignore = true; };
   }, [tab, month]);
 
   return (
