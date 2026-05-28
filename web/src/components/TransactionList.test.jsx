@@ -16,6 +16,8 @@ const MOCK_ROWS = [
     category: 'Food & Drink',
     channel: 'eWallet',
     tab: 'EXPENSES',
+    wallet: 'BBL',
+    tx_type: 'expense',
     note: 'lunch',
   },
 ];
@@ -32,7 +34,13 @@ it('shows transaction rows after load', async () => {
   render(<TransactionList />);
   expect(await screen.findByText('Grab')).toBeInTheDocument();
   expect(screen.getByText('Food delivery')).toBeInTheDocument();
-  expect(screen.getByText('150')).toBeInTheDocument();
+  expect(screen.getAllByText('฿150.00').length).toBeGreaterThan(0);
+});
+
+it('shows wallet chip for each row', async () => {
+  render(<TransactionList />);
+  await screen.findByText('Grab');
+  expect(screen.getByText('BBL')).toBeInTheDocument();
 });
 
 it('shows error message on fetch failure', async () => {
@@ -41,11 +49,24 @@ it('shows error message on fetch failure', async () => {
   expect(await screen.findByRole('alert')).toHaveTextContent('Network error');
 });
 
-it('re-fetches when tab filter changes', async () => {
+it('re-fetches when tx_type filter changes', async () => {
   const user = userEvent.setup();
   render(<TransactionList />);
   await screen.findByText('Grab');
-  await user.selectOptions(screen.getByRole('combobox', { name: /tab/i }), 'EXPENSES');
+  await user.click(screen.getByRole('button', { name: 'Expenses' }));
   expect(api.getTransactions).toHaveBeenCalledTimes(2);
-  expect(api.getTransactions).toHaveBeenLastCalledWith(expect.objectContaining({ tab: 'EXPENSES' }));
+  expect(api.getTransactions).toHaveBeenLastCalledWith(
+    expect.objectContaining({ txType: 'expense' })
+  );
+});
+
+it('re-fetches when wallet filter changes', async () => {
+  const user = userEvent.setup();
+  render(<TransactionList />);
+  await screen.findByText('Grab');
+  await user.selectOptions(screen.getByRole('combobox', { name: 'Wallet' }), 'BBL');
+  expect(api.getTransactions).toHaveBeenCalledTimes(2);
+  expect(api.getTransactions).toHaveBeenLastCalledWith(
+    expect.objectContaining({ wallet: 'BBL' })
+  );
 });
