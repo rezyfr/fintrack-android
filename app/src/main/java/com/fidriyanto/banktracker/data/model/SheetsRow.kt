@@ -10,5 +10,8 @@ data class SheetsRow(
     val amount: Double,
     val category: String,
     val channel: String,
-    val note: String? = null
+    val note: String? = null,
+    val wallet: String? = null,
+    val txType: String = "expense",
+    val toWallet: String? = null
 )

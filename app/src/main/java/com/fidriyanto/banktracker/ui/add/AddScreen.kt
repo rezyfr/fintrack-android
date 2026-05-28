@@ -31,17 +31,47 @@ fun AddScreen(viewModel: AddViewModel = hiltViewModel()) {
     ) {
         Text("Add Transaction", fontWeight = FontWeight.Bold, fontSize = 20.sp, color = Color.White)
 
-        ToggleRow("Account", listOf("THB", "IDR"), state.account) {
-            viewModel.update { copy(account = it) }
+        // Wallet picker
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text("Wallet", fontSize = 12.sp, color = Color.Gray)
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                Wallet.entries.forEach { w ->
+                    FilterChip(
+                        selected = state.wallet == w,
+                        onClick  = { viewModel.update { copy(wallet = w, toWallet = null) } },
+                        label    = { Text(w.id, fontSize = 11.sp) }
+                    )
+                }
+            }
         }
 
-        ToggleRow("Type", listOf("Expense", "Income"), state.type) {
-            viewModel.update { copy(type = it) }
+        // Tx type picker
+        ToggleRow("Type", TxType.entries.map { it.displayName }, state.txType.displayName) { name ->
+            val picked = TxType.entries.first { it.displayName == name }
+            viewModel.update { copy(txType = picked, toWallet = null) }
+        }
+
+        // To-wallet picker (only for transfers)
+        if (state.txType == TxType.TRANSFER) {
+            val destinations = Wallet.entries.filter { it != state.wallet }
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text("To Wallet", fontSize = 12.sp, color = Color.Gray)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    destinations.forEach { w ->
+                        FilterChip(
+                            selected = state.toWallet == w,
+                            onClick  = { viewModel.update { copy(toWallet = w) } },
+                            label    = { Text(w.id, fontSize = 11.sp) }
+                        )
+                    }
+                }
+            }
         }
 
         OutlinedTextField(
             value = state.amount, onValueChange = { viewModel.update { copy(amount = it) } },
-            label = { Text("Amount") }, modifier = Modifier.fillMaxWidth(),
+            label = { Text("Amount (${state.wallet.currency})") },
+            modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
 

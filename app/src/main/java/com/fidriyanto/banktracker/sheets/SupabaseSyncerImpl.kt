@@ -18,14 +18,17 @@ class SupabaseSyncerImpl @Inject constructor(
 
     override suspend fun sync(row: SheetsRow): Result<Unit> = withContext(Dispatchers.IO) {
         val body = JSONObject().apply {
-            put("tab", row.tab.name)
-            put("date", row.date.toString())
+            put("tab",      row.tab.name)
+            put("date",     row.date.toString())
             put("merchant", row.merchant)
-            put("item", row.item)
-            put("amount", row.amount)
+            put("item",     row.item)
+            put("amount",   row.amount)
             put("category", row.category)
-            put("channel", row.channel)
-            if (row.note != null) put("note", row.note)
+            put("channel",  row.channel)
+            if (row.note     != null) put("note",      row.note)
+            if (row.wallet   != null) put("wallet",    row.wallet)
+            put("tx_type", row.txType)
+            if (row.toWallet != null) put("to_wallet", row.toWallet)
         }.toString()
 
         val request = Request.Builder()

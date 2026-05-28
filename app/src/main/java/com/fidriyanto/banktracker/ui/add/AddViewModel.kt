@@ -12,16 +12,32 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
+enum class Wallet(val id: String, val displayName: String, val currency: String) {
+    BBL        ("BBL",        "Bangkok Bank",        "THB"),
+    BCA        ("BCA",        "BCA Account",         "IDR"),
+    MANDIRI    ("MANDIRI",    "Mandiri Account",      "IDR"),
+    MANDIRI_CC ("MANDIRI_CC", "Mandiri Credit Card",  "IDR"),
+    INVESTMENT ("INVESTMENT", "Investments",          "IDR"),
+}
+
+enum class TxType(val id: String, val displayName: String) {
+    EXPENSE   ("expense",    "Expense"),
+    INCOME    ("income",     "Income"),
+    TRANSFER  ("transfer",   "Transfer"),
+    INVESTMENT("investment", "Investment"),
+}
+
 data class AddFormState(
-    val account: String = "THB",
-    val type: String = "Expense",
-    val amount: String = "",
+    val wallet: Wallet    = Wallet.BBL,
+    val txType: TxType    = TxType.EXPENSE,
+    val toWallet: Wallet? = null,
+    val amount: String    = "",
     val description: String = "",
-    val category: String = "Other",
-    val date: LocalDate = LocalDate.now(),
-    val isLoading: Boolean = false,
+    val category: String  = "Other",
+    val date: LocalDate   = LocalDate.now(),
+    val isLoading: Boolean  = false,
     val successMessage: String? = null,
-    val errorMessage: String? = null
+    val errorMessage: String?   = null
 )
 
 @HiltViewModel
@@ -39,26 +55,30 @@ class AddViewModel @Inject constructor(
             _state.value = s.copy(errorMessage = "Enter a valid amount"); return@launch
         }
         _state.value = s.copy(isLoading = true, errorMessage = null)
+
         val tab = when {
-            s.account == "THB" && s.type == "Expense" -> SheetTab.EXPENSES
-            s.account == "THB" && s.type == "Income"  -> SheetTab.INCOME
-            s.account == "IDR" && s.type == "Expense" -> SheetTab.IDR_EXPENSES
-            else                                       -> SheetTab.IDR_INCOME
+            s.wallet.currency == "THB" && s.txType == TxType.INCOME -> SheetTab.INCOME
+            s.wallet.currency == "THB"                               -> SheetTab.EXPENSES
+            s.txType == TxType.INCOME                                -> SheetTab.IDR_INCOME
+            else                                                     -> SheetTab.IDR_EXPENSES
         }
         val row = SheetsRow(
-            tab = tab,
-            date = s.date,
+            tab      = tab,
+            date     = s.date,
             merchant = s.description,
-            item = s.description,
-            amount = amount,
+            item     = s.description,
+            amount   = amount,
             category = s.category,
-            channel = "Manual"
+            channel  = "Manual",
+            wallet   = s.wallet.id,
+            txType   = s.txType.id,
+            toWallet = if (s.txType == TxType.TRANSFER) s.toWallet?.id else null
         )
         val result = repository.insertManual(row)
         _state.value = _state.value.copy(
-            isLoading = false,
+            isLoading      = false,
             successMessage = if (result.isSuccess) "Saved and syncing!" else null,
-            errorMessage = if (result.isFailure) "Sync failed — saved offline" else null
+            errorMessage   = if (result.isFailure) "Sync failed — saved offline" else null
         )
     }
 }
