@@ -7,12 +7,14 @@ function authHeaders() {
   };
 }
 
-export async function getTransactions({ tab = null, month = null } = {}) {
+export async function getTransactions({ tab = null, wallet = null, txType = null, month = null } = {}) {
   const url = import.meta.env.VITE_SUPABASE_URL;
   const params = new URLSearchParams();
   params.append('order', 'date.desc');
   params.append('limit', '200');
-  if (tab) params.append('tab', `eq.${tab}`);
+  if (tab)    params.append('tab',     `eq.${tab}`);
+  if (wallet) params.append('wallet',  `eq.${wallet}`);
+  if (txType) params.append('tx_type', `eq.${txType}`);
   if (month) {
     const [year, mon] = month.split('-').map(Number);
     const lastDay = new Date(year, mon, 0).getDate();
@@ -35,4 +37,13 @@ export async function addTransaction(row) {
     body: JSON.stringify(row),
   });
   if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+}
+
+export async function getWalletBalances() {
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const res = await fetch(`${url}/rest/v1/wallet_balances?order=id.asc`, {
+    headers: authHeaders(),
+  });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+  return res.json();
 }
