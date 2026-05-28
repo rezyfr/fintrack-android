@@ -45,7 +45,19 @@ fun TransactionCard(
     }
     val date = runCatching { LocalDate.parse(entity.dateIso) }.getOrNull()
     val dateStr = date?.format(DateTimeFormatter.ofPattern("d MMM")) ?: ""
-    val amountStr = if (entity.amount % 1.0 == 0.0) entity.amount.toInt().toString() else entity.amount.toString()
+    val isThb         = entity.wallet == null || entity.wallet == "BBL"
+    val symbol        = if (isThb) "฿" else "Rp "
+    val sign          = when (entity.txType) {
+        "income"                 -> "+"
+        "transfer", "investment" -> ""
+        else                     -> "-"
+    }
+    val amountStr     = if (isThb) {
+        if (entity.amount % 1.0 == 0.0) entity.amount.toInt().toString() else entity.amount.toString()
+    } else {
+        entity.amount.toLong().toString()
+    }
+    val amountDisplay = "$sign$symbol$amountStr"
 
     var expanded by remember(entity.id) { mutableStateOf(false) }
     var itemInput by remember(entity.id) { mutableStateOf(entity.item) }
@@ -72,8 +84,21 @@ fun TransactionCard(
                 Text("${entity.category} · $dateStr", fontSize = 12.sp, color = MutedText)
             }
             Column(horizontalAlignment = Alignment.End) {
-                Text("-฿$amountStr", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = AmountRed)
+                val amountColor = when (entity.txType) {
+                    "income"                 -> Accent
+                    "transfer", "investment" -> MutedText
+                    else                     -> AmountRed
+                }
+                Text(amountDisplay, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = amountColor)
                 Text(badgeText, fontSize = 11.sp, color = badgeColor)
+                entity.wallet?.let { w ->
+                    Text(
+                        if (w == "MANDIRI_CC") "CC" else w,
+                        fontSize = 10.sp,
+                        color = MutedText,
+                        modifier = Modifier.padding(top = 1.dp)
+                    )
+                }
             }
         }
 
