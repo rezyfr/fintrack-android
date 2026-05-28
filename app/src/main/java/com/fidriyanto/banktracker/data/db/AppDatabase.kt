@@ -14,7 +14,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
         MonthlyOverviewEntity::class,
         MonthlyBudgetEntity::class
     ],
-    version = 3
+    version = 4
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -32,6 +32,14 @@ abstract class AppDatabase : RoomDatabase() {
                     "(`compositeKey` TEXT NOT NULL, `processedAt` INTEGER NOT NULL, " +
                     "PRIMARY KEY(`compositeKey`))"
                 )
+            }
+        }
+
+        val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE transactions ADD COLUMN wallet TEXT")
+                db.execSQL("ALTER TABLE transactions ADD COLUMN txType TEXT NOT NULL DEFAULT 'expense'")
+                db.execSQL("ALTER TABLE transactions ADD COLUMN toWallet TEXT")
             }
         }
     }

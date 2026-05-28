@@ -17,5 +17,8 @@ data class TransactionEntity(
     val referenceNo: String,
     val tab: SheetTab = SheetTab.EXPENSES,
     val status: TransactionStatus = TransactionStatus.PENDING_EDIT,
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis(),
+    val wallet: String? = null,      // 'BBL' | 'BCA' | 'MANDIRI' | 'MANDIRI_CC' | 'INVESTMENT'
+    val txType: String = "expense",  // 'expense' | 'income' | 'transfer' | 'investment'
+    val toWallet: String? = null     // only populated for txType = 'transfer'
 )
