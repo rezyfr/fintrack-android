@@ -7,28 +7,47 @@ const CATEGORIES = [
   'Transport', 'Travel', 'Business', 'Gifts',
 ];
 const CHANNELS = ['BillPayment', 'eWallet', 'PromptPay', 'BankTransfer', 'Manual', 'Unknown'];
-const TABS = ['EXPENSES', 'IDR_EXPENSES', 'INCOME', 'IDR_INCOME'];
+
+const WALLETS = [
+  { id: 'BBL',        name: 'Bangkok Bank',        currency: 'THB' },
+  { id: 'BCA',        name: 'BCA Account',          currency: 'IDR' },
+  { id: 'MANDIRI',    name: 'Mandiri Account',       currency: 'IDR' },
+  { id: 'MANDIRI_CC', name: 'Mandiri Credit Card',   currency: 'IDR' },
+  { id: 'INVESTMENT', name: 'Investments',           currency: 'IDR' },
+];
+
+const TX_TYPES = [
+  { id: 'expense',    label: 'Expense'    },
+  { id: 'income',     label: 'Income'     },
+  { id: 'transfer',   label: 'Transfer'   },
+  { id: 'investment', label: 'Investment' },
+];
 
 function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
+function currencySymbol(walletId) {
+  return WALLETS.find(w => w.id === walletId)?.currency === 'THB' ? '฿' : 'Rp';
+}
+
+function deriveTab(walletId, txType) {
+  const isThb = WALLETS.find(w => w.id === walletId)?.currency === 'THB';
+  if (txType === 'income') return isThb ? 'INCOME'    : 'IDR_INCOME';
+  return isThb ? 'EXPENSES' : 'IDR_EXPENSES';
+}
+
 const EMPTY = {
-  merchant: '',
-  item: '',
-  amount: '',
-  category: 'Food & Drink',
-  channel: 'eWallet',
-  tab: 'EXPENSES',
-  date: '',
-  note: '',
+  merchant: '', item: '', amount: '',
+  category: 'Food & Drink', channel: 'eWallet',
+  wallet: 'BBL', txType: 'expense', toWallet: '', date: '', note: '',
 };
 
 export default function AddTransactionForm() {
-  const [form, setForm] = useState(() => ({ ...EMPTY, date: today() }));
+  const [form, setForm]             = useState(() => ({ ...EMPTY, date: today() }));
   const [submitting, setSubmitting] = useState(false);
-  const [status, setStatus] = useState(null); // null | 'success' | 'error'
-  const [errorMsg, setErrorMsg] = useState('');
+  const [status, setStatus]         = useState(null);
+  const [errorMsg, setErrorMsg]     = useState('');
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -41,7 +60,20 @@ export default function AddTransactionForm() {
     setStatus(null);
     setErrorMsg('');
     try {
-      await addTransaction({ ...form, amount: Number(form.amount) });
+      const payload = {
+        merchant:  form.merchant,
+        item:      form.item,
+        amount:    Number(form.amount),
+        category:  form.category,
+        channel:   form.channel,
+        date:      form.date,
+        note:      form.note || undefined,
+        wallet:    form.wallet,
+        tx_type:   form.txType,
+        to_wallet: form.txType === 'transfer' ? form.toWallet : undefined,
+        tab:       deriveTab(form.wallet, form.txType),
+      };
+      await addTransaction(payload);
       setStatus('success');
       setForm({ ...EMPTY, date: today() });
     } catch (err) {
@@ -53,43 +85,150 @@ export default function AddTransactionForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      {status === 'success' && <p role="status">Transaction added.</p>}
-      {status === 'error' && <p role="alert">{errorMsg}</p>}
+    <div className="form-page">
+      <div className="form-card">
+        <h1 className="form-title">New Transaction</h1>
 
-      <label htmlFor="merchant">Merchant</label>
-      <input id="merchant" name="merchant" value={form.merchant} onChange={handleChange} required />
+        {status === 'success' && (
+          <div className="toast toast-success" role="status">
+            ✓ Transaction added successfully.
+          </div>
+        )}
+        {status === 'error' && (
+          <div className="toast toast-error" role="alert">
+            ✕ {errorMsg}
+          </div>
+        )}
 
-      <label htmlFor="item">Item</label>
-      <input id="item" name="item" value={form.item} onChange={handleChange} required />
+        <form onSubmit={handleSubmit}>
+          <div className="form-grid">
 
-      <label htmlFor="amount">Amount</label>
-      <input id="amount" name="amount" type="number" step="0.01" value={form.amount} onChange={handleChange} required />
+            <div className="form-group">
+              <label className="form-label" htmlFor="merchant">Merchant</label>
+              <input
+                className="form-input"
+                id="merchant" name="merchant"
+                value={form.merchant} onChange={handleChange}
+                placeholder="e.g. LINE MAN"
+                required
+              />
+            </div>
 
-      <label htmlFor="category">Category</label>
-      <select id="category" name="category" value={form.category} onChange={handleChange}>
-        {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
-      </select>
+            <div className="form-group">
+              <label className="form-label" htmlFor="item">Item</label>
+              <input
+                className="form-input"
+                id="item" name="item"
+                value={form.item} onChange={handleChange}
+                placeholder="e.g. Pad Thai"
+                required
+              />
+            </div>
 
-      <label htmlFor="channel">Channel</label>
-      <select id="channel" name="channel" value={form.channel} onChange={handleChange}>
-        {CHANNELS.map((c) => <option key={c}>{c}</option>)}
-      </select>
+            <div className="form-group">
+              <label className="form-label" htmlFor="amount">Amount</label>
+              <div className="amount-wrap">
+                <span className="amount-symbol">{currencySymbol(form.wallet)}</span>
+                <input
+                  className="form-input amount-input"
+                  id="amount" name="amount" type="number" step="0.01" min="0"
+                  value={form.amount} onChange={handleChange}
+                  placeholder="0.00"
+                  required
+                />
+              </div>
+            </div>
 
-      <label htmlFor="tab">Tab</label>
-      <select id="tab" name="tab" value={form.tab} onChange={handleChange}>
-        {TABS.map((t) => <option key={t}>{t}</option>)}
-      </select>
+            <div className="form-group">
+              <label className="form-label" htmlFor="date">Date</label>
+              <input
+                className="form-input"
+                id="date" name="date" type="date"
+                value={form.date} onChange={handleChange}
+                required
+              />
+            </div>
 
-      <label htmlFor="date">Date</label>
-      <input id="date" name="date" type="date" value={form.date} onChange={handleChange} required />
+            <div className="form-group">
+              <label className="form-label" htmlFor="wallet">Wallet</label>
+              <select
+                className="form-select"
+                id="wallet" name="wallet"
+                value={form.wallet} onChange={handleChange}
+              >
+                {WALLETS.map((w) => <option key={w.id} value={w.id}>{w.name}</option>)}
+              </select>
+            </div>
 
-      <label htmlFor="note">Note</label>
-      <textarea id="note" name="note" value={form.note} onChange={handleChange} />
+            <div className="form-group">
+              <label className="form-label" htmlFor="txType">Type</label>
+              <select
+                className="form-select"
+                id="txType" name="txType"
+                value={form.txType} onChange={handleChange}
+              >
+                {TX_TYPES.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
+              </select>
+            </div>
 
-      <button type="submit" disabled={submitting}>
-        {submitting ? 'Saving...' : 'Add Transaction'}
-      </button>
-    </form>
+            {form.txType === 'transfer' && (
+              <div className="form-group">
+                <label className="form-label" htmlFor="toWallet">To Wallet</label>
+                <select
+                  className="form-select"
+                  id="toWallet" name="toWallet"
+                  value={form.toWallet} onChange={handleChange}
+                  required
+                >
+                  <option value="">Select destination…</option>
+                  {WALLETS.filter((w) => w.id !== form.wallet).map((w) => (
+                    <option key={w.id} value={w.id}>{w.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="category">Category</label>
+              <select
+                className="form-select"
+                id="category" name="category"
+                value={form.category} onChange={handleChange}
+              >
+                {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="channel">Channel</label>
+              <select
+                className="form-select"
+                id="channel" name="channel"
+                value={form.channel} onChange={handleChange}
+              >
+                {CHANNELS.map((c) => <option key={c}>{c}</option>)}
+              </select>
+            </div>
+
+            <div className="form-group full">
+              <label className="form-label" htmlFor="note">Note</label>
+              <textarea
+                className="form-textarea"
+                id="note" name="note"
+                value={form.note} onChange={handleChange}
+                placeholder="Optional note…"
+              />
+            </div>
+
+          </div>
+
+          <div className="form-footer">
+            <button className="btn-primary" type="submit" disabled={submitting}>
+              {submitting ? 'Saving…' : 'Add Transaction'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }

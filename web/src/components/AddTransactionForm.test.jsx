@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import AddTransactionForm from './AddTransactionForm';
@@ -6,57 +6,45 @@ import * as api from '../api/supabase';
 
 vi.mock('../api/supabase');
 
-afterEach(() => {
-  vi.resetAllMocks();
-});
+beforeEach(() => { api.addTransaction.mockResolvedValue(undefined); });
+afterEach(() => vi.resetAllMocks());
 
-async function fillRequiredFields(user) {
-  await user.type(screen.getByLabelText(/merchant/i), 'Grab');
-  await user.type(screen.getByLabelText(/item/i), 'Food delivery');
-  await user.clear(screen.getByLabelText(/amount/i));
-  await user.type(screen.getByLabelText(/amount/i), '150');
-}
-
-it('renders all 8 fields', () => {
+it('shows THB symbol for BBL wallet by default', () => {
   render(<AddTransactionForm />);
-  expect(screen.getByLabelText(/merchant/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/item/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/amount/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/category/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/channel/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/tab/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/date/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/note/i)).toBeInTheDocument();
+  expect(screen.getByText('฿')).toBeInTheDocument();
 });
 
-it('shows success message and resets form on successful submit', async () => {
-  api.addTransaction.mockResolvedValue(undefined);
+it('shows Rp symbol when switching to an IDR wallet', async () => {
   const user = userEvent.setup();
   render(<AddTransactionForm />);
-  await fillRequiredFields(user);
-  await user.click(screen.getByRole('button', { name: /add transaction/i }));
-  expect(await screen.findByRole('status')).toHaveTextContent('Transaction added');
-  expect(screen.getByLabelText(/merchant/i)).toHaveValue('');
+  await user.selectOptions(screen.getByLabelText('Wallet'), 'BCA');
+  expect(screen.getByText('Rp')).toBeInTheDocument();
 });
 
-it('shows error message and preserves form on submit failure', async () => {
-  api.addTransaction.mockRejectedValue(new Error('Supabase error: 500'));
+it('shows To Wallet field when tx_type is transfer', async () => {
   const user = userEvent.setup();
   render(<AddTransactionForm />);
-  await fillRequiredFields(user);
-  await user.click(screen.getByRole('button', { name: /add transaction/i }));
-  expect(await screen.findByRole('alert')).toHaveTextContent('Supabase error: 500');
-  expect(screen.getByLabelText(/merchant/i)).toHaveValue('Grab');
+  await user.selectOptions(screen.getByLabelText('Type'), 'transfer');
+  expect(screen.getByLabelText('To Wallet')).toBeInTheDocument();
 });
 
-it('submits with amount as a number', async () => {
-  api.addTransaction.mockResolvedValue(undefined);
+it('hides To Wallet field for non-transfer types', () => {
+  render(<AddTransactionForm />);
+  expect(screen.queryByLabelText('To Wallet')).not.toBeInTheDocument();
+});
+
+it('submits with wallet, tx_type, and derived tab', async () => {
   const user = userEvent.setup();
   render(<AddTransactionForm />);
-  await fillRequiredFields(user);
-  await user.click(screen.getByRole('button', { name: /add transaction/i }));
-  await screen.findByRole('status');
-  const submitted = api.addTransaction.mock.calls[0][0];
-  expect(typeof submitted.amount).toBe('number');
-  expect(submitted.amount).toBe(150);
+  await user.type(screen.getByLabelText('Merchant'), 'Grab');
+  await user.type(screen.getByLabelText('Item'), 'Food');
+  await user.type(screen.getByLabelText('Amount'), '150');
+  await user.click(screen.getByRole('button', { name: 'Add Transaction' }));
+  await waitFor(() => {
+    expect(api.addTransaction).toHaveBeenCalledWith(expect.objectContaining({
+      wallet: 'BBL',
+      tx_type: 'expense',
+      tab: 'EXPENSES',
+    }));
+  });
 });
