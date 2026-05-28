@@ -48,3 +48,25 @@ it('submits with wallet, tx_type, and derived tab', async () => {
     }));
   });
 });
+
+it('shows success message and resets form after submit', async () => {
+  const user = userEvent.setup();
+  render(<AddTransactionForm />);
+  await user.type(screen.getByLabelText('Merchant'), 'Grab');
+  await user.type(screen.getByLabelText('Item'), 'Food');
+  await user.type(screen.getByLabelText('Amount'), '150');
+  await user.click(screen.getByRole('button', { name: 'Add Transaction' }));
+  expect(await screen.findByRole('status')).toHaveTextContent('Transaction added successfully');
+  expect(screen.getByLabelText('Merchant')).toHaveValue('');
+});
+
+it('shows error message on submit failure', async () => {
+  api.addTransaction.mockRejectedValue(new Error('Network error'));
+  const user = userEvent.setup();
+  render(<AddTransactionForm />);
+  await user.type(screen.getByLabelText('Merchant'), 'Grab');
+  await user.type(screen.getByLabelText('Item'), 'Food');
+  await user.type(screen.getByLabelText('Amount'), '150');
+  await user.click(screen.getByRole('button', { name: 'Add Transaction' }));
+  expect(await screen.findByRole('alert')).toHaveTextContent('Network error');
+});
