@@ -15,6 +15,7 @@ import javax.inject.Inject
 enum class Wallet(val id: String, val displayName: String, val currency: String) {
     BBL        ("BBL",        "Bangkok Bank",        "THB"),
     BCA        ("BCA",        "BCA Account",         "IDR"),
+    BCA_CC     ("BCA_CC",     "BCA Credit Card",     "IDR"),
     MANDIRI    ("MANDIRI",    "Mandiri Account",      "IDR"),
     MANDIRI_CC ("MANDIRI_CC", "Mandiri Credit Card",  "IDR"),
     INVESTMENT ("INVESTMENT", "Investments",          "IDR"),

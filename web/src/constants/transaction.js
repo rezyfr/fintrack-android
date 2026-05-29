@@ -1,9 +1,10 @@
 export const WALLETS = [
-  { id: 'BBL',        name: 'Bangkok Bank',        currency: 'THB' },
-  { id: 'BCA',        name: 'BCA Account',          currency: 'IDR' },
-  { id: 'MANDIRI',    name: 'Mandiri Account',       currency: 'IDR' },
-  { id: 'MANDIRI_CC', name: 'Mandiri Credit Card',   currency: 'IDR' },
-  { id: 'INVESTMENT', name: 'Investments',           currency: 'IDR' },
+  { id: 'BBL',        name: 'Bangkok Bank',        currency: 'THB', type: 'checking'   },
+  { id: 'BCA',        name: 'BCA Account',          currency: 'IDR', type: 'checking'   },
+  { id: 'BCA_CC',     name: 'BCA Credit Card',      currency: 'IDR', type: 'credit'     },
+  { id: 'MANDIRI',    name: 'Mandiri Account',       currency: 'IDR', type: 'checking'   },
+  { id: 'MANDIRI_CC', name: 'Mandiri Credit Card',   currency: 'IDR', type: 'credit'     },
+  { id: 'INVESTMENT', name: 'Investments',           currency: 'IDR', type: 'investment' },
 ];
 
 export const TX_TYPES = [

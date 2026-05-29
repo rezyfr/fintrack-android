@@ -58,11 +58,32 @@ export async function updateTransaction(id, patch) {
   if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
 }
 
+export async function getMonthlyOverview(months) {
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const res = await fetch(`${url}/rest/v1/rpc/get_monthly_overview`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ p_months: months }),
+  });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+  return res.json();
+}
+
 export async function deleteTransaction(id) {
   const url = import.meta.env.VITE_SUPABASE_URL;
   const res = await fetch(`${url}/rest/v1/transactions?id=eq.${id}`, {
     method: 'DELETE',
     headers: authHeaders(),
+  });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+}
+
+export async function addTransactions(rows) {
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const res = await fetch(`${url}/rest/v1/transactions`, {
+    method: 'POST',
+    headers: { ...authHeaders(), Prefer: 'return=minimal' },
+    body: JSON.stringify(rows),
   });
   if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
 }
