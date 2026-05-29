@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getTransactions } from '../api/supabase';
+import EditTransactionModal from './EditTransactionModal';
 
 const TX_TYPE_OPTIONS = [
   { value: '',           label: 'All'        },
@@ -99,6 +100,7 @@ function SkeletonRows() {
       <td><span className="skeleton" style={{ width: 74 }} /></td>
       <td><span className="skeleton" style={{ width: 60 }} /></td>
       <td><span className="skeleton" style={{ width: 90 }} /></td>
+      <td />
     </tr>
   ));
 }
@@ -110,6 +112,7 @@ export default function TransactionList() {
   const [rows, setRows]     = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError]   = useState(null);
+  const [editingRow, setEditingRow] = useState(null);
 
   useEffect(() => {
     let ignore = false;
@@ -200,6 +203,7 @@ export default function TransactionList() {
               <th>Channel</th>
               <th>Wallet</th>
               <th>Note</th>
+              <th />
             </tr>
           </thead>
           <tbody>
@@ -259,11 +263,34 @@ export default function TransactionList() {
                   )}
                 </td>
                 <td><span className="tx-note">{row.note}</span></td>
+                <td>
+                  <button
+                    className="edit-btn"
+                    aria-label={`Edit ${row.merchant}`}
+                    onClick={() => setEditingRow(row)}
+                  >
+                    ✎
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {editingRow && (
+        <EditTransactionModal
+          row={editingRow}
+          onClose={() => setEditingRow(null)}
+          onSaved={(updated) => {
+            setRows((prev) => prev.map((r) => r.id === updated.id ? updated : r));
+            setEditingRow(null);
+          }}
+          onDeleted={(id) => {
+            setRows((prev) => prev.filter((r) => r.id !== id));
+            setEditingRow(null);
+          }}
+        />
+      )}
     </div>
   );
 }

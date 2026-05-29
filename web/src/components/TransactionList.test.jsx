@@ -70,3 +70,9 @@ it('re-fetches when wallet filter changes', async () => {
     expect.objectContaining({ wallet: 'BBL' })
   );
 });
+
+it('shows an edit button for each loaded row', async () => {
+  render(<TransactionList />);
+  await screen.findByText('Grab');
+  expect(screen.getByRole('button', { name: /edit grab/i })).toBeInTheDocument();
+});
