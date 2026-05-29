@@ -26,6 +26,30 @@
   --t:            150ms ease;
 }
 
+[data-theme="light"] {
+  --bg:           #f5f3ee;
+  --surface:      #ede9e2;
+  --card:         #ffffff;
+  --card-hover:   #f8f6f2;
+  --border:       #dcd8d0;
+  --border-hover: #c8c4bc;
+  --gold:         #9a7240;
+  --gold-dim:     rgba(154, 114, 64, 0.10);
+  --gold-glow:    rgba(154, 114, 64, 0.20);
+  --text:         #18150e;
+  --text-2:       #6a6458;
+  --text-3:       #9a9080;
+  --green:        #1a7a42;
+  --green-dim:    rgba(26, 122, 66, 0.10);
+  --red:          #c23636;
+  --red-dim:      rgba(194, 54, 54, 0.10);
+  --blue:         #2155c4;
+  --blue-dim:     rgba(33, 85, 196, 0.10);
+  --purple:       #6d4bc4;
+  --orange:       #c4640a;
+  --pink:         #c43062;
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { scroll-behavior: smooth; }
@@ -41,6 +65,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
+}
+
+[data-theme="light"] body {
+  background-image:
+    radial-gradient(ellipse 80% 40% at 50% -10%, rgba(154, 114, 64, 0.06) 0%, transparent 70%);
 }
 
 /* ── NAVBAR ─────────────────────────────────────────────── */
@@ -60,6 +89,10 @@ body {
   padding: 0 28px;
 }
 
+[data-theme="light"] .navbar {
+  background: rgba(245, 243, 238, 0.88);
+}
+
 .navbar-brand {
   font-family: 'DM Serif Display', serif;
   font-style: italic;
@@ -67,6 +100,12 @@ body {
   color: var(--gold);
   letter-spacing: -0.01em;
   user-select: none;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .navbar-nav {
@@ -93,10 +132,33 @@ body {
 
 .nav-btn:hover { color: var(--text); background: rgba(255,255,255,0.04); }
 
+[data-theme="light"] .nav-btn:hover { background: rgba(0,0,0,0.04); }
+
 .nav-btn[aria-current="page"] {
   background: var(--card);
   color: var(--gold);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-2);
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color var(--t), border-color var(--t), background var(--t);
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  color: var(--text);
+  border-color: var(--border-hover);
+  background: var(--card-hover);
 }
 
 /* ── PAGE LAYOUT ────────────────────────────────────────── */
@@ -208,14 +270,47 @@ body {
 
 .filter-tab:hover { color: var(--text); background: rgba(255,255,255,0.04); }
 
+[data-theme="light"] .filter-tab:hover { background: rgba(0,0,0,0.04); }
+
 .filter-tab.active {
   background: var(--card);
   color: var(--text);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
 }
 
 .filter-tab.active.expense { color: var(--red); }
 .filter-tab.active.income  { color: var(--green); }
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  padding: 8px 36px 8px 12px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color var(--t);
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%237a788c' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  color-scheme: dark;
+}
+
+[data-theme="light"] .filter-select { color-scheme: light; }
+
+.filter-select:focus { border-color: var(--gold); }
+
+.filter-select option { background: var(--card); }
 
 .month-input {
   background: var(--surface);
@@ -230,6 +325,8 @@ body {
   color-scheme: dark;
   cursor: pointer;
 }
+
+[data-theme="light"] .month-input { color-scheme: light; }
 
 .month-input:focus { border-color: var(--gold); }
 
@@ -275,6 +372,8 @@ body {
 
 .tx-table tbody tr:last-child { border-bottom: none; }
 .tx-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+[data-theme="light"] .tx-table tbody tr:hover { background: rgba(0,0,0,0.02); }
 
 .tx-table td {
   padding: 11px 14px;
@@ -532,10 +631,17 @@ body {
   cursor: pointer;
 }
 
+[data-theme="light"] .form-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%236a6458' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
 .form-select option { background: var(--card); }
 
 input[type="date"],
 input[type="month"] { color-scheme: dark; }
+
+[data-theme="light"] input[type="date"],
+[data-theme="light"] input[type="month"] { color-scheme: light; }
 
 /* ── SUBMIT BUTTON ──────────────────────────────────────── */
 
@@ -557,6 +663,8 @@ input[type="month"] { color-scheme: dark; }
   cursor: pointer;
   transition: opacity var(--t), transform var(--t), box-shadow var(--t);
 }
+
+[data-theme="light"] .btn-primary { color: #ffffff; }
 
 .btn-primary:hover:not(:disabled) {
   opacity: 0.9;
@@ -596,10 +704,47 @@ input[type="month"] { color-scheme: dark; }
   color: var(--green);
 }
 
+[data-theme="light"] .toast-success {
+  border-color: rgba(26, 122, 66, 0.25);
+}
+
 .toast-error {
   background: var(--red-dim);
   border: 1px solid rgba(232, 100, 100, 0.22);
   color: var(--red);
+}
+
+[data-theme="light"] .toast-error {
+  border-color: rgba(194, 54, 54, 0.25);
+}
+
+/* ── EDIT BUTTON & WALLET CHIPS ────────────────────────── */
+
+.edit-btn {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-3);
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: color var(--t), border-color var(--t), background var(--t);
+}
+
+.edit-btn:hover {
+  color: var(--gold);
+  border-color: var(--border);
+  background: var(--card-hover);
+}
+
+.chip-wallet {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-2);
 }
 
 /* ── MODAL ──────────────────────────────────────────────── */
@@ -607,38 +752,37 @@ input[type="month"] { color-scheme: dark; }
 .modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 300;
-  background: rgba(0, 0, 0, 0.72);
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 24px;
 }
 
-@keyframes modal-in {
-  from { opacity: 0; transform: translateY(12px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0)    scale(1); }
+[data-theme="light"] .modal-overlay {
+  background: rgba(0, 0, 0, 0.35);
 }
 
 .modal {
   background: var(--card);
-  border: 1px solid var(--border-hover);
+  border: 1px solid var(--border);
   border-radius: 14px;
   width: 100%;
-  max-width: 580px;
+  max-width: 680px;
   max-height: 90vh;
   overflow-y: auto;
-  animation: modal-in 0.22s ease both;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+  padding: 28px 32px 32px;
+  animation: fade-up 0.22s ease both;
 }
 
 .modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 22px 28px 0;
+  margin-bottom: 22px;
 }
 
 .modal-title {
@@ -650,30 +794,31 @@ input[type="month"] { color-scheme: dark; }
 
 .modal-close {
   background: none;
-  border: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
   color: var(--text-2);
-  font-size: 18px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: var(--radius-sm);
-  line-height: 1;
-  transition: color var(--t), background var(--t);
+  font-size: 14px;
+  transition: color var(--t), border-color var(--t), background var(--t);
 }
 
-.modal-close:hover { color: var(--text); background: rgba(255,255,255,0.06); }
-
-.modal .toast { margin: 16px 28px 0; }
-
-.modal .form-grid { padding: 24px 28px 0; }
+.modal-close:hover {
+  color: var(--text);
+  border-color: var(--border-hover);
+  background: var(--card-hover);
+}
 
 .modal-footer {
+  margin-top: 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 28px 24px;
-  margin-top: 24px;
-  border-top: 1px solid var(--border);
-  gap: 12px;
+  gap: 10px;
 }
 
 .modal-footer-right {
@@ -681,37 +826,33 @@ input[type="month"] { color-scheme: dark; }
   gap: 10px;
 }
 
-/* ── MODAL CONFIRM ──────────────────────────────────────── */
-
 .modal-confirm {
-  padding: 32px 28px 28px;
-  text-align: center;
+  padding: 20px 0 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .modal-confirm p {
-  font-size: 15px;
   color: var(--text);
-  margin-bottom: 24px;
-  line-height: 1.5;
+  font-size: 14px;
 }
 
 .modal-confirm-actions {
   display: flex;
-  justify-content: center;
   gap: 10px;
 }
 
-/* ── BUTTONS ────────────────────────────────────────────── */
-
+/* Buttons */
 .btn-secondary {
   padding: 9px 18px;
-  background: var(--surface);
+  background: none;
   border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   color: var(--text-2);
   font-family: 'DM Sans', sans-serif;
   font-size: 13px;
   font-weight: 500;
-  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: color var(--t), border-color var(--t), background var(--t);
 }
@@ -728,11 +869,11 @@ input[type="month"] { color-scheme: dark; }
   padding: 9px 18px;
   background: var(--red);
   border: none;
+  border-radius: var(--radius-sm);
   color: #fff;
   font-family: 'DM Sans', sans-serif;
   font-size: 13px;
   font-weight: 600;
-  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: opacity var(--t);
 }
@@ -742,192 +883,19 @@ input[type="month"] { color-scheme: dark; }
 
 .btn-danger-outline {
   padding: 9px 18px;
-  background: transparent;
-  border: 1px solid rgba(232, 100, 100, 0.35);
+  background: none;
+  border: 1px solid var(--red);
+  border-radius: var(--radius-sm);
   color: var(--red);
   font-family: 'DM Sans', sans-serif;
   font-size: 13px;
   font-weight: 500;
-  border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background var(--t), border-color var(--t);
+  transition: background var(--t), color var(--t);
 }
 
 .btn-danger-outline:hover:not(:disabled) {
   background: var(--red-dim);
-  border-color: var(--red);
 }
 
 .btn-danger-outline:disabled { opacity: 0.45; cursor: not-allowed; }
-
-/* ── EDIT BUTTON (table rows) ───────────────────────────── */
-
-.edit-btn {
-  background: none;
-  border: 1px solid transparent;
-  color: var(--text-3);
-  font-size: 14px;
-  padding: 4px 8px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: color var(--t), border-color var(--t), background var(--t);
-  line-height: 1;
-  opacity: 0;
-}
-
-.tx-table tbody tr:hover .edit-btn {
-  opacity: 1;
-}
-
-.edit-btn:hover {
-  color: var(--gold);
-  border-color: var(--border);
-  background: var(--surface);
-}
-
-/* ── WALLET BALANCE PAGE ────────────────────────────────── */
-
-.wallet-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 14px;
-  margin-bottom: 24px;
-}
-
-.wallet-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px 22px;
-  transition: border-color var(--t);
-}
-
-.wallet-card:hover { border-color: var(--border-hover); }
-
-.wallet-card--cc {
-  border-color: rgba(232, 100, 100, 0.25);
-}
-
-.wallet-card--cc:hover { border-color: rgba(232, 100, 100, 0.5); }
-
-.wallet-name {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-3);
-  margin-bottom: 10px;
-}
-
-.wallet-balance {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 20px;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  color: var(--text);
-  line-height: 1.1;
-}
-
-.wallet-balance.liability { color: var(--red); }
-
-.wallet-label {
-  font-size: 10px;
-  color: var(--text-3);
-  margin-top: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.net-worth-row {
-  display: flex;
-  gap: 14px;
-}
-
-.net-worth-card {
-  flex: 1;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 22px;
-}
-
-.net-worth-label {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-3);
-  margin-bottom: 8px;
-}
-
-.net-worth-value {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 24px;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  color: var(--text);
-}
-
-.wallet-loading,
-.wallet-error {
-  padding: 40px;
-  text-align: center;
-  color: var(--text-2);
-}
-
-.wallet-error { color: var(--red); }
-
-/* ── FILTER ROW ─────────────────────────────────────────── */
-
-.filter-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.filter-select {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  padding: 8px 36px 8px 12px;
-  outline: none;
-  cursor: pointer;
-  transition: border-color var(--t);
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%237a788c' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  color-scheme: dark;
-}
-
-.filter-select:focus { border-color: var(--gold); }
-
-/* ── CHIP WALLET ────────────────────────────────────────── */
-
-.chip-wallet {
-  background: rgba(107, 158, 238, 0.1);
-  color: var(--blue);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-}
-
-.chip-wallet--mandiri-cc { background: rgba(232,100,100,0.1); color: var(--red); }
-.chip-wallet--investment { background: rgba(167,139,250,0.1); color: var(--purple); }
-
-/* ── SCREEN READER ONLY ─────────────────────────────────── */
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0,0,0,0);
-  white-space: nowrap;
-  border: 0;
-}
