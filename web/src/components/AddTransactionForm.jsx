@@ -1,40 +1,9 @@
 import { useState } from 'react';
 import { addTransaction } from '../api/supabase';
-
-const CATEGORIES = [
-  'Bills', 'Subscriptions', 'Entertainment', 'Food & Drink',
-  'Groceries', 'Health & Wellbeing', 'Other', 'Shopping',
-  'Transport', 'Travel', 'Business', 'Gifts',
-];
-const CHANNELS = ['BillPayment', 'eWallet', 'PromptPay', 'BankTransfer', 'Manual', 'Unknown'];
-
-const WALLETS = [
-  { id: 'BBL',        name: 'Bangkok Bank',        currency: 'THB' },
-  { id: 'BCA',        name: 'BCA Account',          currency: 'IDR' },
-  { id: 'MANDIRI',    name: 'Mandiri Account',       currency: 'IDR' },
-  { id: 'MANDIRI_CC', name: 'Mandiri Credit Card',   currency: 'IDR' },
-  { id: 'INVESTMENT', name: 'Investments',           currency: 'IDR' },
-];
-
-const TX_TYPES = [
-  { id: 'expense',    label: 'Expense'    },
-  { id: 'income',     label: 'Income'     },
-  { id: 'transfer',   label: 'Transfer'   },
-  { id: 'investment', label: 'Investment' },
-];
+import { WALLETS, TX_TYPES, CATEGORIES, CHANNELS, deriveTab, currencySymbol } from '../constants/transaction';
 
 function today() {
   return new Date().toISOString().slice(0, 10);
-}
-
-function currencySymbol(walletId) {
-  return WALLETS.find(w => w.id === walletId)?.currency === 'THB' ? '฿' : 'Rp';
-}
-
-function deriveTab(walletId, txType) {
-  const isThb = WALLETS.find(w => w.id === walletId)?.currency === 'THB';
-  if (txType === 'income') return isThb ? 'INCOME'    : 'IDR_INCOME';
-  return isThb ? 'EXPENSES' : 'IDR_EXPENSES';
 }
 
 const EMPTY = {
