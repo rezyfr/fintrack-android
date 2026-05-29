@@ -47,3 +47,22 @@ export async function getWalletBalances() {
   if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
   return res.json();
 }
+
+export async function updateTransaction(id, patch) {
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const res = await fetch(`${url}/rest/v1/transactions?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { ...authHeaders(), Prefer: 'return=minimal' },
+    body: JSON.stringify(patch),
+  });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+}
+
+export async function deleteTransaction(id) {
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const res = await fetch(`${url}/rest/v1/transactions?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+}
