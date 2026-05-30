@@ -28,6 +28,7 @@
     <string name="add_to_wallet">To Wallet</string>
     <string name="add_amount_label">Amount (%1$s)</string>
     <string name="add_description_label">Description / Item</string>
+    <string name="add_tx_type_label">Type</string>
     <string name="add_category_label">Category</string>
     <string name="add_sync_button">Sync to Sheets</string>
 

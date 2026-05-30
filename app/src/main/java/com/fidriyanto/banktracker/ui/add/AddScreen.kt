@@ -63,7 +63,7 @@ fun AddScreen(viewModel: AddViewModel = hiltViewModel()) {
         }
 
         // Tx type picker
-        ToggleRow("Type", TxType.entries.map { it.displayName }, state.txType.displayName) { name ->
+        ToggleRow(stringResource(R.string.add_tx_type_label), TxType.entries.map { it.displayName }, state.txType.displayName) { name ->
             val picked = TxType.entries.first { it.displayName == name }
             viewModel.update { copy(txType = picked, toWallet = null, category = categoriesFor(picked).first()) }
         }
