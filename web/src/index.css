@@ -1211,4 +1211,25 @@ input[type="month"] { color-scheme: dark; }
 .recon-none    { color: var(--text-3); }
 .recon-pending { color: var(--text-3); font-style: italic; }
 .recon-ok      { color: var(--green); }
+
+.merchant-suggestions {
+  position: absolute;
+  z-index: 100;
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.merchant-suggestion-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.merchant-suggestion-item:hover {
+  background: var(--hover-bg, #f1f5f9);
+}
 .recon-error   { color: var(--red); cursor: help; }

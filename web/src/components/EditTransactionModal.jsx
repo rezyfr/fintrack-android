@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { updateTransaction, deleteTransaction } from '../api/supabase';
 import { WALLETS, TX_TYPES, categoriesFor, deriveTab, currencySymbol } from '../constants/transaction';
+import { useMerchantHistory } from '../hooks/useMerchantHistory';
+import MerchantInput from './MerchantInput';
 
 export default function EditTransactionModal({ row, onClose, onSaved, onDeleted }) {
   const [form, setForm] = useState({
@@ -17,6 +19,7 @@ export default function EditTransactionModal({ row, onClose, onSaved, onDeleted 
   const [submitting, setSubmitting] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const [errorMsg, setErrorMsg]     = useState('');
+  const [merchantHistory, addToHistory] = useMerchantHistory();
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -45,6 +48,7 @@ export default function EditTransactionModal({ row, onClose, onSaved, onDeleted 
         tab:       deriveTab(form.wallet, form.txType),
       };
       await updateTransaction(row.id, payload);
+      addToHistory(form.merchant);
       onSaved({ ...row, ...payload });
     } catch (err) {
       setErrorMsg(err.message);
@@ -97,10 +101,12 @@ export default function EditTransactionModal({ row, onClose, onSaved, onDeleted 
 
               <div className="form-group">
                 <label className="form-label" htmlFor="edit-merchant">Merchant</label>
-                <input
-                  className="form-input"
+                <MerchantInput
                   id="edit-merchant" name="merchant"
-                  value={form.merchant} onChange={handleChange}
+                  value={form.merchant}
+                  onChange={handleChange}
+                  history={merchantHistory}
+                  onSelect={(m) => setForm((f) => ({ ...f, merchant: m }))}
                   required
                 />
               </div>

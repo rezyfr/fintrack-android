@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { addTransaction } from '../api/supabase';
 import { WALLETS, TX_TYPES, categoriesFor, deriveTab, currencySymbol } from '../constants/transaction';
+import { useMerchantHistory } from '../hooks/useMerchantHistory';
+import MerchantInput from './MerchantInput';
 
 function today() {
   return new Date().toISOString().slice(0, 10);
@@ -17,6 +19,7 @@ export default function AddTransactionForm() {
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus]         = useState(null);
   const [errorMsg, setErrorMsg]     = useState('');
+  const [merchantHistory, addToHistory] = useMerchantHistory();
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -46,6 +49,7 @@ export default function AddTransactionForm() {
         tab:       deriveTab(form.wallet, form.txType),
       };
       await addTransaction(payload);
+      addToHistory(form.merchant);
       setStatus('success');
       setForm({ ...EMPTY, date: today() });
     } catch (err) {
@@ -77,10 +81,12 @@ export default function AddTransactionForm() {
 
             <div className="form-group">
               <label className="form-label" htmlFor="merchant">Merchant</label>
-              <input
-                className="form-input"
+              <MerchantInput
                 id="merchant" name="merchant"
-                value={form.merchant} onChange={handleChange}
+                value={form.merchant}
+                onChange={handleChange}
+                history={merchantHistory}
+                onSelect={(m) => setForm((f) => ({ ...f, merchant: m }))}
                 placeholder="e.g. LINE MAN"
                 required
               />

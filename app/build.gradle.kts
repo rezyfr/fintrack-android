@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.hilt.work)
     ksp(libs.hilt.work.compiler)
     implementation(libs.coroutines.android)
+    implementation(libs.datastore.preferences)
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.coroutines.test)
