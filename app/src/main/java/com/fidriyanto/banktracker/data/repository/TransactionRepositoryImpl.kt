@@ -44,7 +44,8 @@ class TransactionRepositoryImpl @Inject constructor(
             dateIso  = parsed.date.toString(),
             referenceNo = "",
             tab      = LedgerTab.EXPENSES,
-            status   = TransactionStatus.PENDING_SYNC
+            status   = TransactionStatus.PENDING_SYNC,
+            wallet   = "BBL"
         )
         val id = localDataSource.insert(entity)
         syncTransaction(id)
