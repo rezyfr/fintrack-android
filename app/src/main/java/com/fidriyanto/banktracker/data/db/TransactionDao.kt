@@ -2,9 +2,8 @@ package com.fidriyanto.banktracker.data.db
 
 import androidx.room.*
 import com.fidriyanto.banktracker.data.model.TransactionStatus
+import com.fidriyanto.banktracker.domain.model.MerchantTotal
 import kotlinx.coroutines.flow.Flow
-
-data class MerchantTotal(val merchant: String, val amount: Double)
 
 @Dao
 interface TransactionDao {

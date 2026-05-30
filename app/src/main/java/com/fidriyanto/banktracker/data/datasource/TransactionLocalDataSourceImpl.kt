@@ -1,11 +1,11 @@
 package com.fidriyanto.banktracker.data.datasource
 
-import com.fidriyanto.banktracker.data.db.MerchantTotal
 import com.fidriyanto.banktracker.data.db.ProcessedRefDao
 import com.fidriyanto.banktracker.data.db.ProcessedRefEntity
 import com.fidriyanto.banktracker.data.db.TransactionDao
 import com.fidriyanto.banktracker.data.db.TransactionEntity
 import com.fidriyanto.banktracker.data.model.TransactionStatus
+import com.fidriyanto.banktracker.domain.model.MerchantTotal
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -15,7 +15,7 @@ class TransactionLocalDataSourceImpl @Inject constructor(
     private val transactionDao: TransactionDao,
     private val processedRefDao: ProcessedRefDao
 ) : TransactionLocalDataSource {
-    override fun observeAll(): Flow<List<TransactionEntity>> = transactionDao.observeAll()
+    override fun observeAll() = transactionDao.observeAll()
     override fun observeFiltered(month: String?, wallet: String?, txType: String?) =
         transactionDao.observeFiltered(month, wallet, txType)
     override fun observeTransportTotalsTHB(category: String, fromDate: String, toDate: String): Flow<List<MerchantTotal>> =

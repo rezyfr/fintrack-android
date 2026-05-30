@@ -11,8 +11,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fidriyanto.banktracker.domain.model.MerchantRow
 import com.fidriyanto.banktracker.ui.theme.LocalAppColors
 
+// ac: transport-provider-breakdown: each row shows merchant name, amount, and percentage bar
+// ac: transport-provider-breakdown: card title is Transport by Provider
 @Composable
 fun TransportBreakdownCard(
     breakdown: List<MerchantRow>,

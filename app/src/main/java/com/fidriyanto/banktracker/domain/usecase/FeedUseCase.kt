@@ -1,19 +1,22 @@
 package com.fidriyanto.banktracker.domain.usecase
 
-import com.fidriyanto.banktracker.data.repository.TransactionFetchRepository
 import com.fidriyanto.banktracker.data.repository.TransactionRepository
+import com.fidriyanto.banktracker.domain.model.TransactionUiModel
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class FeedUseCase @Inject constructor(
-    private val transactionRepository: TransactionRepository,
-    private val fetchRepository: TransactionFetchRepository
+    private val repository: TransactionRepository
 ) {
-    fun observePending() = transactionRepository.observePending()
-    suspend fun syncTransaction(id: Long) = transactionRepository.syncTransaction(id)
+    fun observePending(): Flow<List<TransactionUiModel>> = repository.observePending()
+
+    suspend fun syncTransaction(id: Long) = repository.syncTransaction(id)
+
     suspend fun updateAndSync(id: Long, item: String, category: String) =
-        transactionRepository.updateAndSync(id, item, category)
+        repository.updateAndSync(id, item, category)
+
     suspend fun fetchRemote(month: String?, wallet: String?, txType: String?) =
-        fetchRepository.fetch(month, wallet, txType)
+        repository.fetch(month, wallet, txType)
 }

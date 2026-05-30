@@ -1,0 +1,8 @@
+{
+  "id": "transport-provider-insight",
+  "title": "Transport Provider Insight",
+  "status": "Approved",
+  "owners": ["frotylatz@gmail.com"],
+  "stories": ["transport-provider-breakdown"],
+  "flows": ["transport-provider-breakdown-flow"]
+}

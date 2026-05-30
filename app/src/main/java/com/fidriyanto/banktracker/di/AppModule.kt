@@ -7,8 +7,8 @@ import com.fidriyanto.banktracker.data.datasource.remote.SupabaseBudgetService
 import com.fidriyanto.banktracker.data.datasource.remote.SupabaseOverviewService
 import com.fidriyanto.banktracker.data.datasource.remote.SupabaseTransactionService
 import com.fidriyanto.banktracker.data.db.AppDatabase
-import com.squareup.retrofit2.Retrofit
-import com.squareup.retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -53,23 +53,30 @@ object AppModule {
         }
         .build()
 
-    @Provides @Singleton @Named("supabase")
-    fun provideSupabaseRetrofit(@Named("supabase") client: OkHttpClient): Retrofit =
+    @Provides @Singleton
+    fun provideTransactionService(@Named("supabase") client: OkHttpClient): SupabaseTransactionService =
         Retrofit.Builder()
             .baseUrl(BuildConfig.SUPABASE_URL + "/")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+            .create(SupabaseTransactionService::class.java)
 
     @Provides @Singleton
-    fun provideTransactionService(@Named("supabase") retrofit: Retrofit): SupabaseTransactionService =
-        retrofit.create(SupabaseTransactionService::class.java)
+    fun provideOverviewService(@Named("supabase") client: OkHttpClient): SupabaseOverviewService =
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.SUPABASE_URL + "/")
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(SupabaseOverviewService::class.java)
 
     @Provides @Singleton
-    fun provideOverviewService(@Named("supabase") retrofit: Retrofit): SupabaseOverviewService =
-        retrofit.create(SupabaseOverviewService::class.java)
-
-    @Provides @Singleton
-    fun provideBudgetService(@Named("supabase") retrofit: Retrofit): SupabaseBudgetService =
-        retrofit.create(SupabaseBudgetService::class.java)
+    fun provideBudgetService(@Named("supabase") client: OkHttpClient): SupabaseBudgetService =
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.SUPABASE_URL + "/")
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(SupabaseBudgetService::class.java)
 }

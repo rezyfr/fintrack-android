@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fidriyanto.banktracker.R
+import com.fidriyanto.banktracker.domain.model.CurrencySummary
+import com.fidriyanto.banktracker.domain.model.Period
 
 private val Period.label: String
     get() = when (this) {
@@ -248,6 +250,7 @@ private fun CurrencySection(label: String, symbol: String, summary: CurrencySumm
     )
     BalanceCard(summary = summary, currencySymbol = symbol)
     CategoryBreakdownCard(summary = summary, currencySymbol = symbol)
+    // ac: transport-provider-breakdown: card appears below category breakdown; hidden when no transport
     if (summary.transportBreakdown.isNotEmpty()) {
         TransportBreakdownCard(breakdown = summary.transportBreakdown, currencySymbol = symbol)
     }

@@ -13,6 +13,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fidriyanto.banktracker.R
+import com.fidriyanto.banktracker.domain.model.CategoryRow
+import com.fidriyanto.banktracker.domain.model.CurrencySummary
 import com.fidriyanto.banktracker.ui.theme.LocalAppColors
 
 @Composable

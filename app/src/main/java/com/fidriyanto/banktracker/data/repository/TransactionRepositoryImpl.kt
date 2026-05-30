@@ -1,5 +1,6 @@
 package com.fidriyanto.banktracker.data.repository
 
+import com.fidriyanto.banktracker.data.datasource.TransactionFetchDataSource
 import com.fidriyanto.banktracker.data.datasource.TransactionLocalDataSource
 import com.fidriyanto.banktracker.data.datasource.TransactionSyncDataSource
 import com.fidriyanto.banktracker.data.db.ProcessedRefEntity
@@ -8,6 +9,7 @@ import com.fidriyanto.banktracker.data.model.LedgerTab
 import com.fidriyanto.banktracker.data.model.ParsedTransaction
 import com.fidriyanto.banktracker.data.model.TransactionEntry
 import com.fidriyanto.banktracker.data.model.TransactionStatus
+import com.fidriyanto.banktracker.domain.model.TransactionUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
@@ -17,16 +19,17 @@ import javax.inject.Singleton
 @Singleton
 class TransactionRepositoryImpl @Inject constructor(
     private val localDataSource: TransactionLocalDataSource,
-    private val syncDataSource: TransactionSyncDataSource
+    private val syncDataSource: TransactionSyncDataSource,
+    private val fetchDataSource: TransactionFetchDataSource
 ) : TransactionRepository {
 
-    override fun observeTransactions(): Flow<List<TransactionEntity>> = localDataSource.observeAll()
+    override fun observePending(): Flow<List<TransactionUiModel>> =
+        localDataSource.observeAll().map { list ->
+            list.filter { it.status != TransactionStatus.SYNCED }.map { it.toUiModel() }
+        }
 
-    override fun observeFiltered(month: String?, wallet: String?, txType: String?) =
-        localDataSource.observeFiltered(month, wallet, txType)
-
-    override fun observePending(): Flow<List<TransactionEntity>> =
-        localDataSource.observeAll().map { list -> list.filter { it.status != TransactionStatus.SYNCED } }
+    override suspend fun fetch(month: String?, wallet: String?, txType: String?): Result<List<TransactionUiModel>> =
+        fetchDataSource.fetch(month, wallet, txType).map { list -> list.map { it.toUiModel() } }
 
     override suspend fun processNewNotification(parsed: ParsedTransaction): Long? {
         val compositeKey = "${parsed.merchant}|${parsed.amount}|${parsed.date}"
@@ -93,3 +96,9 @@ class TransactionRepositoryImpl @Inject constructor(
 
     override suspend fun markAllSynced() = localDataSource.markAllSynced()
 }
+
+private fun TransactionEntity.toUiModel() = TransactionUiModel(
+    id = id, merchant = merchant, item = item, category = category,
+    amount = amount, dateIso = dateIso, wallet = wallet,
+    txType = txType ?: "expense", status = status
+)

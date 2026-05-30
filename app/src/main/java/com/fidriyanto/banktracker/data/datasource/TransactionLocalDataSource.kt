@@ -1,9 +1,9 @@
 package com.fidriyanto.banktracker.data.datasource
 
-import com.fidriyanto.banktracker.data.db.MerchantTotal
 import com.fidriyanto.banktracker.data.db.ProcessedRefEntity
 import com.fidriyanto.banktracker.data.db.TransactionEntity
 import com.fidriyanto.banktracker.data.model.TransactionStatus
+import com.fidriyanto.banktracker.domain.model.MerchantTotal
 import kotlinx.coroutines.flow.Flow
 
 interface TransactionLocalDataSource {

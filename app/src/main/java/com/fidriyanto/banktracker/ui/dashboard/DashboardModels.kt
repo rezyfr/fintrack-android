@@ -1,6 +1,7 @@
 package com.fidriyanto.banktracker.ui.dashboard
 
-enum class Period { THIS_MONTH, LAST_MONTH, LAST_3_MONTHS }
+import com.fidriyanto.banktracker.domain.model.CurrencySummary
+import com.fidriyanto.banktracker.domain.model.Period
 
 sealed class DashboardUiState {
     object NotSignedIn : DashboardUiState()
@@ -14,23 +15,3 @@ sealed class DashboardUiState {
         val refreshError: Boolean
     ) : DashboardUiState()
 }
-
-data class CurrencySummary(
-    val totalIncome: Double,
-    val totalExpenses: Double,
-    val net: Double,
-    val categoryBreakdown: List<CategoryRow>,
-    val transportBreakdown: List<MerchantRow> = emptyList()
-)
-
-data class CategoryRow(
-    val category: String,
-    val amount: Double,
-    val percentage: Float
-)
-
-data class MerchantRow(
-    val merchant: String,
-    val amount: Double,
-    val percentage: Float
-)

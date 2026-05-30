@@ -1,0 +1,14 @@
+{
+  "feature": "transport_provider_insight",
+  "storyId": "transport-provider-breakdown",
+  "acceptanceCriteria": [
+    "a 'Transport by Provider' card appears on the dashboard below the category breakdown",
+    "the card shows the top 3 transport merchants ranked by spend amount",
+    "remaining transport merchants are grouped into a single 'Other' row",
+    "each row shows merchant name, amount, and a percentage bar relative to total transport spend",
+    "the card updates when the period filter changes",
+    "the card is hidden when there are no transport transactions in the selected period",
+    "THB and IDR transport breakdowns are shown independently under their respective currency sections"
+  ],
+  "notes": "Query TransactionEntity directly (not MonthlyOverviewEntity) for merchant-level data. THB = wallet IS NULL OR wallet = 'BBL'. IDR = wallet IS NOT NULL AND wallet != 'BBL'. Top N = 3."
+}

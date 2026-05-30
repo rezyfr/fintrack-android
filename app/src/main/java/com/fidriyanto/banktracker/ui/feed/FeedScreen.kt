@@ -153,12 +153,12 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        items(uiState.items, key = { it.id }) { entity ->
+                        items(uiState.items, key = { it.id }) { tx ->
                             TransactionCard(
-                                entity = entity,
-                                onRetry = { viewModel.retry(entity.id) },
+                                transaction = tx,
+                                onRetry = { viewModel.retry(tx.id) },
                                 onConfirm = { item, category ->
-                                    viewModel.updateAndSync(entity.id, item, category)
+                                    viewModel.updateAndSync(tx.id, item, category)
                                 }
                             )
                         }

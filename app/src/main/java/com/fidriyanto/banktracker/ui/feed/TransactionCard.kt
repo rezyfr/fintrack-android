@@ -15,63 +15,63 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fidriyanto.banktracker.R
-import com.fidriyanto.banktracker.data.db.TransactionEntity
 import com.fidriyanto.banktracker.data.model.TransactionStatus
+import com.fidriyanto.banktracker.domain.model.TransactionUiModel
 import com.fidriyanto.banktracker.ui.theme.LocalAppColors
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun TransactionCard(
-    entity: TransactionEntity,
+    transaction: TransactionUiModel,
     onRetry: () -> Unit,
     onConfirm: (item: String, category: String) -> Unit
 ) {
     val appColors = LocalAppColors.current
-    val borderColor = when (entity.status) {
+    val borderColor = when (transaction.status) {
         TransactionStatus.PENDING_EDIT -> appColors.blue
         TransactionStatus.PENDING_SYNC -> appColors.warning
         TransactionStatus.SYNC_FAILED  -> MaterialTheme.colorScheme.error
         TransactionStatus.SYNCED       -> Color.Transparent
     }
-    val badgeText = when (entity.status) {
+    val badgeText = when (transaction.status) {
         TransactionStatus.PENDING_EDIT -> "Pending"
         TransactionStatus.SYNCED       -> "Synced"
         TransactionStatus.PENDING_SYNC -> "Queued"
         TransactionStatus.SYNC_FAILED  -> "Failed"
     }
-    val badgeColor = when (entity.status) {
+    val badgeColor = when (transaction.status) {
         TransactionStatus.PENDING_EDIT -> appColors.blue
         TransactionStatus.SYNCED       -> appColors.green
         TransactionStatus.PENDING_SYNC -> appColors.warning
         TransactionStatus.SYNC_FAILED  -> MaterialTheme.colorScheme.error
     }
-    val date = runCatching { LocalDate.parse(entity.dateIso) }.getOrNull()
+    val date = runCatching { LocalDate.parse(transaction.dateIso) }.getOrNull()
     val dateStr = date?.format(DateTimeFormatter.ofPattern("d MMM")) ?: ""
-    val isThb         = entity.wallet == null || entity.wallet == "BBL"
+    val isThb         = transaction.wallet == null || transaction.wallet == "BBL"
     val symbol        = if (isThb) "฿" else "Rp "
-    val sign          = when (entity.txType) {
+    val sign          = when (transaction.txType) {
         "income"                 -> "+"
         "transfer", "investment" -> ""
         else                     -> "-"
     }
     val amountStr     = if (isThb) {
-        if (entity.amount % 1.0 == 0.0) entity.amount.toInt().toString() else entity.amount.toString()
+        if (transaction.amount % 1.0 == 0.0) transaction.amount.toInt().toString() else transaction.amount.toString()
     } else {
-        entity.amount.toLong().toString()
+        transaction.amount.toLong().toString()
     }
     val amountDisplay = "$sign$symbol$amountStr"
 
-    var expanded by remember(entity.id) { mutableStateOf(false) }
-    var itemInput by remember(entity.id) { mutableStateOf(entity.item) }
-    var categoryInput by remember(entity.id) { mutableStateOf(entity.category) }
+    var expanded by remember(transaction.id) { mutableStateOf(false) }
+    var itemInput by remember(transaction.id) { mutableStateOf(transaction.item) }
+    var categoryInput by remember(transaction.id) { mutableStateOf(transaction.category) }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .border(if (borderColor != Color.Transparent) 1.dp else 0.dp, borderColor, RoundedCornerShape(12.dp))
             .then(
-                if (entity.status == TransactionStatus.PENDING_EDIT)
+                if (transaction.status == TransactionStatus.PENDING_EDIT)
                     Modifier.clickable { expanded = !expanded }
                 else Modifier
             ),
@@ -83,18 +83,18 @@ fun TransactionCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(Modifier.weight(1f)) {
-                Text(entity.item, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface)
-                Text(stringResource(R.string.feed_category_date, entity.category, dateStr), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(transaction.item, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.feed_category_date, transaction.category, dateStr), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Column(horizontalAlignment = Alignment.End) {
-                val amountColor = when (entity.txType) {
+                val amountColor = when (transaction.txType) {
                     "income"                 -> appColors.green
                     "transfer", "investment" -> MaterialTheme.colorScheme.onSurfaceVariant
                     else                     -> appColors.red
                 }
                 Text(amountDisplay, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = amountColor)
                 Text(badgeText, fontSize = 11.sp, color = badgeColor)
-                entity.wallet?.let { w ->
+                transaction.wallet?.let { w ->
                     Text(
                         if (w == "MANDIRI_CC") "CC" else w,
                         fontSize = 10.sp,
@@ -140,7 +140,7 @@ fun TransactionCard(
             }
         }
 
-        if (entity.status == TransactionStatus.SYNC_FAILED) {
+        if (transaction.status == TransactionStatus.SYNC_FAILED) {
             TextButton(onClick = onRetry, modifier = Modifier.align(Alignment.End)) {
                 Text(stringResource(R.string.action_retry), color = appColors.blue, fontSize = 12.sp)
             }
