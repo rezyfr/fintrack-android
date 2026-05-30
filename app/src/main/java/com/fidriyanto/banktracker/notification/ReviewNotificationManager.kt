@@ -51,7 +51,7 @@ class ReviewNotificationManager @Inject constructor(
         )
 
         val amountStr = if (entity.amount % 1.0 == 0.0) entity.amount.toInt().toString() else entity.amount.toString()
-        val title = if (entity.category == "Transfer Out" && entity.channel == "PromptPay")
+        val title = if (entity.category == "Transfer Out")
             "⚠ ฿$amountStr · ${entity.category}" else "฿$amountStr · ${entity.category}"
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)

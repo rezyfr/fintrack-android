@@ -1,35 +1,39 @@
 package com.fidriyanto.banktracker.ui.dashboard
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.fidriyanto.banktracker.ui.theme.MutedText
+import com.fidriyanto.banktracker.R
 
 private val Period.label: String
     get() = when (this) {
-        Period.THIS_MONTH -> "This Month"
-        Period.LAST_MONTH -> "Last Month"
+        Period.THIS_MONTH    -> "This Month"
+        Period.LAST_MONTH    -> "Last Month"
         Period.LAST_3_MONTHS -> "Last 3 Months"
     }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-    val period by viewModel.period.collectAsStateWithLifecycle()
+    val state       by viewModel.state.collectAsStateWithLifecycle()
+    val period      by viewModel.period.collectAsStateWithLifecycle()
+    val isCustom    by viewModel.isCustom.collectAsStateWithLifecycle()
+    val customFrom  by viewModel.customFrom.collectAsStateWithLifecycle()
+    val customTo    by viewModel.customTo.collectAsStateWithLifecycle()
 
     Column(
         Modifier
@@ -40,18 +44,24 @@ fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
             "Dashboard",
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(vertical = 16.dp)
         )
 
         when (val s = state) {
-            DashboardUiState.NotSignedIn -> NotSignedInContent()
+            DashboardUiState.NotSignedIn    -> NotSignedInContent()
             DashboardUiState.LoadingNoCache -> LoadingContent()
-            is DashboardUiState.Loaded -> LoadedContent(
-                state = s,
-                period = period,
+            is DashboardUiState.Loaded      -> LoadedContent(
+                state          = s,
+                period         = period,
+                isCustom       = isCustom,
+                customFrom     = customFrom,
+                customTo       = customTo,
+                availableMonths = viewModel.availableMonths,
                 onSelectPeriod = viewModel::selectPeriod,
-                onRefresh = viewModel::refresh
+                onSetCustom    = viewModel::setCustomRange,
+                onRefresh      = viewModel::refresh,
+                monthLabel     = viewModel::monthDisplayLabel,
             )
         }
     }
@@ -61,13 +71,10 @@ fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
 private fun NotSignedInContent() {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Card(modifier = Modifier.padding(16.dp)) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            Column(Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    "Sign in with Google to load your dashboard",
-                    color = MutedText,
+                    "No data available",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 14.sp
                 )
             }
@@ -87,63 +94,147 @@ private fun LoadingContent() {
 private fun LoadedContent(
     state: DashboardUiState.Loaded,
     period: Period,
+    isCustom: Boolean,
+    customFrom: String?,
+    customTo: String?,
+    availableMonths: List<String>,
     onSelectPeriod: (Period) -> Unit,
-    onRefresh: () -> Unit
+    onSetCustom: (String, String) -> Unit,
+    onRefresh: () -> Unit,
+    monthLabel: (String) -> String,
 ) {
-    val pullToRefreshState = rememberPullToRefreshState()
-
-    LaunchedEffect(pullToRefreshState.isRefreshing) {
-        if (pullToRefreshState.isRefreshing) {
-            onRefresh()
-        }
-    }
-
+    val pullState = rememberPullToRefreshState()
+    LaunchedEffect(pullState.isRefreshing) { if (pullState.isRefreshing) onRefresh() }
     LaunchedEffect(state.isRefreshing) {
-        if (!state.isRefreshing && pullToRefreshState.isRefreshing) {
-            pullToRefreshState.endRefresh()
-        }
+        if (!state.isRefreshing && pullState.isRefreshing) pullState.endRefresh()
     }
 
-    Box(modifier = Modifier.nestedScroll(pullToRefreshState.nestedScrollConnection)) {
+    Box(Modifier.nestedScroll(pullState.nestedScrollConnection)) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+            Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            PeriodSelector(period, onSelectPeriod)
+            PeriodSelector(
+                selected        = period,
+                isCustom        = isCustom,
+                customFrom      = customFrom ?: availableMonths.first(),
+                customTo        = customTo   ?: availableMonths.first(),
+                availableMonths = availableMonths,
+                onSelect        = onSelectPeriod,
+                onSetCustom     = onSetCustom,
+                monthLabel      = monthLabel,
+            )
 
             if (state.refreshError) {
                 Text(
                     if (state.lastUpdated != null) "Last updated ${state.lastUpdated}"
-                    else "Couldn't load data — pull down to retry",
-                    color = MutedText,
+                    else "Couldn't load — pull down to retry",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp
                 )
             }
 
             CurrencySection("THB", "฿", state.thb)
             CurrencySection("IDR", "Rp", state.idr)
-
             Spacer(Modifier.height(16.dp))
         }
 
-        PullToRefreshContainer(
-            modifier = Modifier.align(Alignment.TopCenter),
-            state = pullToRefreshState
-        )
+        PullToRefreshContainer(pullState, Modifier.align(Alignment.TopCenter))
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun PeriodSelector(selected: Period, onSelect: (Period) -> Unit) {
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Period.entries.forEach { p ->
+private fun PeriodSelector(
+    selected: Period,
+    isCustom: Boolean,
+    customFrom: String,
+    customTo: String,
+    availableMonths: List<String>,
+    onSelect: (Period) -> Unit,
+    onSetCustom: (String, String) -> Unit,
+    monthLabel: (String) -> String,
+) {
+    var fromExpanded by remember { mutableStateOf(false) }
+    var toExpanded   by remember { mutableStateOf(false) }
+    var localFrom    by remember(customFrom) { mutableStateOf(customFrom) }
+    var localTo      by remember(customTo)   { mutableStateOf(customTo) }
+
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(
+            modifier = Modifier.horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Period.entries.forEach { p ->
+                FilterChip(
+                    selected = !isCustom && selected == p,
+                    onClick  = { onSelect(p) },
+                    label    = { Text(p.label, fontSize = 13.sp) }
+                )
+            }
             FilterChip(
-                selected = selected == p,
-                onClick = { onSelect(p) },
-                label = { Text(p.label, fontSize = 13.sp) }
+                selected = isCustom,
+                onClick  = { onSetCustom(localFrom, localTo) },
+                label    = { Text(stringResource(R.string.dashboard_custom_period), fontSize = 13.sp) }
             )
+        }
+
+        if (isCustom) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                MonthDropdown(
+                    label     = "From",
+                    selected  = localFrom,
+                    months    = availableMonths,
+                    expanded  = fromExpanded,
+                    monthLabel = monthLabel,
+                    onExpand  = { fromExpanded = it },
+                    onPick    = { localFrom = it; onSetCustom(it, localTo) },
+                    modifier  = Modifier.weight(1f)
+                )
+                MonthDropdown(
+                    label     = "To",
+                    selected  = localTo,
+                    months    = availableMonths.filter { it >= localFrom },
+                    expanded  = toExpanded,
+                    monthLabel = monthLabel,
+                    onExpand  = { toExpanded = it },
+                    onPick    = { localTo = it; onSetCustom(localFrom, it) },
+                    modifier  = Modifier.weight(1f)
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MonthDropdown(
+    label: String,
+    selected: String,
+    months: List<String>,
+    expanded: Boolean,
+    monthLabel: (String) -> String,
+    onExpand: (Boolean) -> Unit,
+    onPick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = onExpand, modifier = modifier) {
+        OutlinedTextField(
+            value = monthLabel(selected),
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(label, fontSize = 11.sp) },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+            modifier = Modifier.fillMaxWidth().menuAnchor(),
+            textStyle = LocalTextStyle.current.copy(fontSize = 13.sp),
+        )
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { onExpand(false) }) {
+            months.forEach { ym ->
+                DropdownMenuItem(
+                    text = { Text(monthLabel(ym), fontSize = 13.sp) },
+                    onClick = { onPick(ym); onExpand(false) }
+                )
+            }
         }
     }
 }
@@ -152,9 +243,12 @@ private fun PeriodSelector(selected: Period, onSelect: (Period) -> Unit) {
 private fun CurrencySection(label: String, symbol: String, summary: CurrencySummary) {
     Text(
         "── $label ──────────────────────────",
-        color = MutedText,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
         fontSize = 13.sp
     )
     BalanceCard(summary = summary, currencySymbol = symbol)
     CategoryBreakdownCard(summary = summary, currencySymbol = symbol)
+    if (summary.transportBreakdown.isNotEmpty()) {
+        TransportBreakdownCard(breakdown = summary.transportBreakdown, currencySymbol = symbol)
+    }
 }

@@ -9,17 +9,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fidriyanto.banktracker.ui.theme.Accent
-import com.fidriyanto.banktracker.ui.theme.Destructive
-import com.fidriyanto.banktracker.ui.theme.MutedText
-import com.fidriyanto.banktracker.ui.theme.Surface
+import com.fidriyanto.banktracker.ui.theme.LocalAppColors
 import java.text.NumberFormat
 import java.util.Locale
 
 @Composable
 fun BalanceCard(summary: CurrencySummary, currencySymbol: String, modifier: Modifier = Modifier) {
+    val appColors = LocalAppColors.current
     Card(
-        colors = CardDefaults.cardColors(containerColor = Surface),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         modifier = modifier.fillMaxWidth()
     ) {
         Row(
@@ -28,11 +26,10 @@ fun BalanceCard(summary: CurrencySummary, currencySymbol: String, modifier: Modi
                 .padding(vertical = 20.dp, horizontal = 16.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            BalanceColumn("Income", formatAmount(summary.totalIncome, currencySymbol), Color.White)
-            BalanceColumn("Expenses", formatAmount(summary.totalExpenses, currencySymbol), Color.White)
-            val netColor = if (summary.net >= 0) Accent else Destructive
-            val netText = formatAmount(summary.net, currencySymbol, showSign = true)
-            BalanceColumn("Net", netText, netColor)
+            BalanceColumn("Income", formatAmount(summary.totalIncome, currencySymbol), MaterialTheme.colorScheme.onSurface)
+            BalanceColumn("Expenses", formatAmount(summary.totalExpenses, currencySymbol), MaterialTheme.colorScheme.onSurface)
+            val netColor = if (summary.net >= 0) appColors.green else MaterialTheme.colorScheme.error
+            BalanceColumn("Net", formatAmount(summary.net, currencySymbol, showSign = true), netColor)
         }
     }
 }
@@ -40,7 +37,7 @@ fun BalanceCard(summary: CurrencySummary, currencySymbol: String, modifier: Modi
 @Composable
 private fun BalanceColumn(label: String, value: String, valueColor: Color) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(label, color = MutedText, fontSize = 12.sp)
+        Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
         Spacer(Modifier.height(4.dp))
         Text(value, color = valueColor, fontWeight = FontWeight.Bold, fontSize = 15.sp)
     }

@@ -5,7 +5,6 @@ import android.service.notification.StatusBarNotification
 import android.util.Log
 import com.fidriyanto.banktracker.data.repository.TransactionRepository
 import com.fidriyanto.banktracker.notification.NotificationParser
-import com.fidriyanto.banktracker.notification.ReviewNotificationManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +20,6 @@ class BankNotificationService : NotificationListenerService() {
     }
 
     @Inject lateinit var repository: TransactionRepository
-    @Inject lateinit var notificationManager: ReviewNotificationManager
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -37,8 +35,7 @@ class BankNotificationService : NotificationListenerService() {
         parsed ?: return
 
         scope.launch {
-            val id = repository.processNewNotification(parsed) ?: return@launch
-            notificationManager.showReviewNotification(id)
+            repository.processNewNotification(parsed)
         }
     }
 

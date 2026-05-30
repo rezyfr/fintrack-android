@@ -10,12 +10,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fidriyanto.banktracker.R
 import com.fidriyanto.banktracker.data.db.TransactionEntity
 import com.fidriyanto.banktracker.data.model.TransactionStatus
-import com.fidriyanto.banktracker.ui.theme.*
+import com.fidriyanto.banktracker.ui.theme.LocalAppColors
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -25,23 +27,24 @@ fun TransactionCard(
     onRetry: () -> Unit,
     onConfirm: (item: String, category: String) -> Unit
 ) {
+    val appColors = LocalAppColors.current
     val borderColor = when (entity.status) {
-        TransactionStatus.PENDING_EDIT -> Primary
-        TransactionStatus.PENDING_SYNC -> Warning
-        TransactionStatus.SYNC_FAILED -> Destructive
-        TransactionStatus.SYNCED -> Color.Transparent
+        TransactionStatus.PENDING_EDIT -> appColors.blue
+        TransactionStatus.PENDING_SYNC -> appColors.warning
+        TransactionStatus.SYNC_FAILED  -> MaterialTheme.colorScheme.error
+        TransactionStatus.SYNCED       -> Color.Transparent
     }
     val badgeText = when (entity.status) {
         TransactionStatus.PENDING_EDIT -> "Pending"
-        TransactionStatus.SYNCED -> "Synced"
+        TransactionStatus.SYNCED       -> "Synced"
         TransactionStatus.PENDING_SYNC -> "Queued"
-        TransactionStatus.SYNC_FAILED -> "Failed"
+        TransactionStatus.SYNC_FAILED  -> "Failed"
     }
     val badgeColor = when (entity.status) {
-        TransactionStatus.PENDING_EDIT -> Secondary
-        TransactionStatus.SYNCED -> Accent
-        TransactionStatus.PENDING_SYNC -> Warning
-        TransactionStatus.SYNC_FAILED -> Destructive
+        TransactionStatus.PENDING_EDIT -> appColors.blue
+        TransactionStatus.SYNCED       -> appColors.green
+        TransactionStatus.PENDING_SYNC -> appColors.warning
+        TransactionStatus.SYNC_FAILED  -> MaterialTheme.colorScheme.error
     }
     val date = runCatching { LocalDate.parse(entity.dateIso) }.getOrNull()
     val dateStr = date?.format(DateTimeFormatter.ofPattern("d MMM")) ?: ""
@@ -73,21 +76,21 @@ fun TransactionCard(
                 else Modifier
             ),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Surface)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Row(
             modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(Modifier.weight(1f)) {
-                Text(entity.item, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = Color.White)
-                Text("${entity.category} · $dateStr", fontSize = 12.sp, color = MutedText)
+                Text(entity.item, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.feed_category_date, entity.category, dateStr), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Column(horizontalAlignment = Alignment.End) {
                 val amountColor = when (entity.txType) {
-                    "income"                 -> Accent
-                    "transfer", "investment" -> MutedText
-                    else                     -> AmountRed
+                    "income"                 -> appColors.green
+                    "transfer", "investment" -> MaterialTheme.colorScheme.onSurfaceVariant
+                    else                     -> appColors.red
                 }
                 Text(amountDisplay, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = amountColor)
                 Text(badgeText, fontSize = 11.sp, color = badgeColor)
@@ -95,7 +98,7 @@ fun TransactionCard(
                     Text(
                         if (w == "MANDIRI_CC") "CC" else w,
                         fontSize = 10.sp,
-                        color = MutedText,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 1.dp)
                     )
                 }
@@ -107,7 +110,7 @@ fun TransactionCard(
                 OutlinedTextField(
                     value = itemInput,
                     onValueChange = { itemInput = it },
-                    label = { Text("Description") },
+                    label = { Text(stringResource(R.string.feed_card_description_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
@@ -115,14 +118,14 @@ fun TransactionCard(
                 OutlinedTextField(
                     value = categoryInput,
                     onValueChange = { categoryInput = it },
-                    label = { Text("Category") },
+                    label = { Text(stringResource(R.string.feed_card_category_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
                 Spacer(Modifier.height(8.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TextButton(onClick = { expanded = false }) {
-                        Text("Dismiss", color = MutedText)
+                        Text(stringResource(R.string.action_dismiss), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     Button(
                         onClick = {
@@ -131,7 +134,7 @@ fun TransactionCard(
                         },
                         enabled = itemInput.isNotBlank() && categoryInput.isNotBlank()
                     ) {
-                        Text("Confirm & Sync")
+                        Text(stringResource(R.string.feed_card_confirm_sync))
                     }
                 }
             }
@@ -139,7 +142,7 @@ fun TransactionCard(
 
         if (entity.status == TransactionStatus.SYNC_FAILED) {
             TextButton(onClick = onRetry, modifier = Modifier.align(Alignment.End)) {
-                Text("Retry", color = Secondary, fontSize = 12.sp)
+                Text(stringResource(R.string.action_retry), color = appColors.blue, fontSize = 12.sp)
             }
         }
     }

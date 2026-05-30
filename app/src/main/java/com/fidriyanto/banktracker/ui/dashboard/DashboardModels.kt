@@ -19,11 +19,18 @@ data class CurrencySummary(
     val totalIncome: Double,
     val totalExpenses: Double,
     val net: Double,
-    val categoryBreakdown: List<CategoryRow>
+    val categoryBreakdown: List<CategoryRow>,
+    val transportBreakdown: List<MerchantRow> = emptyList()
 )
 
 data class CategoryRow(
     val category: String,
+    val amount: Double,
+    val percentage: Float
+)
+
+data class MerchantRow(
+    val merchant: String,
     val amount: Double,
     val percentage: Float
 )

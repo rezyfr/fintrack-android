@@ -1,4 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">FinTrack</string>
+
+    <!-- Common actions -->
+    <string name="action_save">Save</string>
+    <string name="action_dismiss">Dismiss</string>
+    <string name="action_retry">Retry</string>
+
+    <!-- Settings screen -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_dark_theme">Dark theme</string>
+    <string name="settings_claude_api_key">Claude API Key</string>
+    <string name="settings_api_key_label">API Key</string>
+    <string name="settings_notification_listener">Notification Listener</string>
+    <string name="settings_enable_access">Enable Access</string>
+    <string name="settings_retry_pending_syncs">Retry Pending Syncs</string>
+    <string name="settings_mark_all_synced">Mark All as Synced</string>
+
+    <!-- Dashboard screen -->
+    <string name="dashboard_no_spending">No spending recorded</string>
+    <string name="dashboard_custom_period">Custom</string>
+
+    <!-- Add screen -->
+    <string name="add_title">Add Transaction</string>
+    <string name="add_wallet">Wallet</string>
+    <string name="add_to_wallet">To Wallet</string>
+    <string name="add_amount_label">Amount (%1$s)</string>
+    <string name="add_description_label">Description / Item</string>
+    <string name="add_category_label">Category</string>
+    <string name="add_sync_button">Sync to Sheets</string>
+
+    <!-- Feed screen / TransactionCard -->
+    <string name="feed_filter_all">All</string>
+    <string name="feed_category_date">%1$s · %2$s</string>
+    <string name="feed_card_description_label">Description</string>
+    <string name="feed_card_category_label">Category</string>
+    <string name="feed_card_confirm_sync">Confirm &amp; Sync</string>
 </resources>

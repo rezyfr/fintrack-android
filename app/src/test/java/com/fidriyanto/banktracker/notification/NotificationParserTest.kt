@@ -62,10 +62,44 @@ class NotificationParserTest {
     @Test
     fun `returns null when title has no recognized channel`() {
         assertNull(NotificationParser.parse(
-            title = "Bangkok Bank",
+            title = "Unknown App",
             text = "Something 100.00THB",
             timestampMs = may24EpochMs
         ))
+    }
+
+    @Test
+    fun `parses BBL mobile transfer notification`() {
+        val result = NotificationParser.parse(
+            title = "Bangkok Bank",
+            text = "Transfer/Withdrawal from your account 12345 533.93THB via Mobile 28/5/26 14:23 The available balance is 15,234.56THB",
+            timestampMs = may24EpochMs
+        )!!
+        assertEquals(533.93, result.amount, 0.01)
+        assertEquals("BankTransfer", result.channel)
+        assertEquals("Transfer/Withdrawal from your account 12345", result.merchant)
+    }
+
+    @Test
+    fun `parses BBL card alert with baht symbol`() {
+        val result = NotificationParser.parse(
+            title = "Bangkok Bank",
+            text = "A transaction of 90.00฿ was made on 28/05/2026 at 08:27 hrs. If you did not make the transaction, please call back.",
+            timestampMs = may24EpochMs
+        )!!
+        assertEquals(90.0, result.amount, 0.01)
+        assertEquals("BankTransfer", result.channel)
+    }
+
+    @Test
+    fun `parses baht symbol amount`() {
+        val result = NotificationParser.parse(
+            title = "Bill Payment",
+            text = "Some Merchant 1,250.50฿",
+            timestampMs = may24EpochMs
+        )!!
+        assertEquals(1250.5, result.amount, 0.01)
+        assertEquals("Some Merchant", result.merchant)
     }
 
     @Test

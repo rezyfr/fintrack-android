@@ -5,19 +5,17 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fidriyanto.banktracker.R
 import com.fidriyanto.banktracker.ui.theme.LocalAppColors
 
 @Composable
-fun CategoryBreakdownCard(
-    summary: CurrencySummary,
+fun TransportBreakdownCard(
+    breakdown: List<MerchantRow>,
     currencySymbol: String,
     modifier: Modifier = Modifier
 ) {
@@ -27,35 +25,17 @@ fun CategoryBreakdownCard(
         modifier = modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    "Spending Breakdown",
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 14.sp
-                )
-                Text(
-                    formatAmount(summary.totalExpenses, currencySymbol),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
-                )
-            }
-
-            if (summary.categoryBreakdown.isEmpty()) {
-                Spacer(Modifier.height(12.dp))
-                Text(stringResource(R.string.dashboard_no_spending), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
-            } else {
-                Spacer(Modifier.height(12.dp))
-                summary.categoryBreakdown.forEachIndexed { index, row ->
-                    CategoryRowItem(row, currencySymbol, appColors.green, appColors.progressTrack)
-                    if (index < summary.categoryBreakdown.lastIndex) {
-                        Spacer(Modifier.height(12.dp))
-                    }
+            Text(
+                "Transport by Provider",
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp
+            )
+            Spacer(Modifier.height(12.dp))
+            breakdown.forEachIndexed { index, row ->
+                MerchantRowItem(row, currencySymbol, appColors.green, appColors.progressTrack)
+                if (index < breakdown.lastIndex) {
+                    Spacer(Modifier.height(12.dp))
                 }
             }
         }
@@ -63,8 +43,8 @@ fun CategoryBreakdownCard(
 }
 
 @Composable
-private fun CategoryRowItem(
-    row: CategoryRow,
+private fun MerchantRowItem(
+    row: MerchantRow,
     currencySymbol: String,
     progressColor: androidx.compose.ui.graphics.Color,
     progressTrack: androidx.compose.ui.graphics.Color,
@@ -76,7 +56,7 @@ private fun CategoryRowItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                row.category,
+                row.merchant,
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 14.sp,
                 modifier = Modifier.weight(1f)
@@ -98,7 +78,7 @@ private fun CategoryRowItem(
                     .weight(1f)
                     .height(6.dp)
                     .semantics {
-                        contentDescription = "${row.category}: ${(row.percentage * 100).toInt()} percent of spending"
+                        contentDescription = "${row.merchant}: ${(row.percentage * 100).toInt()} percent of transport"
                     },
                 color = progressColor,
                 trackColor = progressTrack
