@@ -30,7 +30,12 @@
       "Bash(sqlite3 banktracker.db \"SELECT COUNT\\(*\\) FROM transactions;\")",
       "Bash(sqlite3 banktracker.db \"SELECT id, merchant, amount, dateIso, channel, referenceNo, status, createdAt FROM transactions ORDER BY createdAt DESC LIMIT 30;\")",
       "Bash(./gradlew :app:testDebugUnitTest --tests \"com.fidriyanto.banktracker.categorization.MerchantNormalizerTest\")",
-      "Bash(./gradlew :app:compileDebugKotlin)"
+      "Bash(./gradlew :app:compileDebugKotlin)",
+      "Bash(./gradlew build *)",
+      "Bash(./gradlew test *)",
+      "Bash(./gradlew :app:testDebugUnitTest)",
+      "Bash(./gradlew :app:testDebugUnitTest -i)",
+      "Bash(./gradlew cleanTest :app:testDebugUnitTest)"
     ]
   },
   "enabledPlugins": {

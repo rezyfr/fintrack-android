@@ -76,7 +76,7 @@ Out of scope: server-side merchant directory, fuzzy matching, cross-device sync.
   "id": "merchant-suggestion",
   "title": "Merchant Suggestion",
   "status": "Approved",
-  "owners": ["fidriyantoriz@social.plus"],
+  "owners": ["frotylatz@gmail.com"],
   "stories": ["merchant-autocomplete"],
   "flows": ["merchant-autocomplete-flow"]
 }
