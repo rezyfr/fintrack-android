@@ -44,10 +44,11 @@ private val TYPE_OPTIONS = listOf(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
-    val uiState     by viewModel.uiState.collectAsStateWithLifecycle()
-    val monthFilter  by viewModel.monthFilter.collectAsStateWithLifecycle()
-    val walletFilter by viewModel.walletFilter.collectAsStateWithLifecycle()
-    val typeFilter   by viewModel.typeFilter.collectAsStateWithLifecycle()
+    val uiState        by viewModel.uiState.collectAsStateWithLifecycle()
+    val monthFilter    by viewModel.monthFilter.collectAsStateWithLifecycle()
+    val walletFilter   by viewModel.walletFilter.collectAsStateWithLifecycle()
+    val typeFilter     by viewModel.typeFilter.collectAsStateWithLifecycle()
+    val merchantHistory by viewModel.merchantHistory.collectAsStateWithLifecycle()
 
     val pullState = rememberPullToRefreshState()
     LaunchedEffect(pullState.isRefreshing) {
@@ -253,6 +254,7 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
                 viewModel.edit(tx.id, edit)
                 pendingEdit = null
             },
+            merchantHistory = merchantHistory,
         )
     }
 }

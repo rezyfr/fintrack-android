@@ -6,6 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -18,7 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fidriyanto.banktracker.R
 import com.fidriyanto.banktracker.ui.theme.LocalAppColors
 
-private fun categoriesFor(txType: TxType): List<String> = when (txType) {
+internal fun categoriesFor(txType: TxType): List<String> = when (txType) {
     TxType.EXPENSE    -> listOf(
         "Bills", "Subscriptions", "Entertainment", "Food & Drink", "Groceries",
         "Health & Wellbeing", "Other", "Shopping", "Transport", "Travel", "Business", "Gifts"
@@ -32,6 +33,7 @@ private fun categoriesFor(txType: TxType): List<String> = when (txType) {
 @Composable
 fun AddScreen(viewModel: AddViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val merchantSuggestions by viewModel.merchantSuggestions.collectAsStateWithLifecycle()
     val appColors = LocalAppColors.current
 
     Column(
@@ -93,10 +95,16 @@ fun AddScreen(viewModel: AddViewModel = hiltViewModel()) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
 
-        OutlinedTextField(
-            value = state.description, onValueChange = { viewModel.update { copy(description = it) } },
-            label = { Text(stringResource(R.string.add_description_label)) }, modifier = Modifier.fillMaxWidth()
-        )
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopStart) {
+            OutlinedTextField(
+                value = state.description, onValueChange = { viewModel.update { copy(description = it) } },
+                label = { Text(stringResource(R.string.add_description_label)) }, modifier = Modifier.fillMaxWidth()
+            )
+            MerchantSuggestionDropdown(
+                suggestions = merchantSuggestions,
+                onSelect = { viewModel.update { copy(description = it) } },
+            )
+        }
 
         var expanded by remember { mutableStateOf(false) }
         ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {

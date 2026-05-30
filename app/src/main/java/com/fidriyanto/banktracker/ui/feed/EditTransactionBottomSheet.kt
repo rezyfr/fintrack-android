@@ -28,14 +28,10 @@ import androidx.compose.ui.unit.sp
 import com.fidriyanto.banktracker.R
 import com.fidriyanto.banktracker.data.model.TransactionEdit
 import com.fidriyanto.banktracker.domain.model.TransactionUiModel
+import com.fidriyanto.banktracker.ui.add.MerchantSuggestionDropdown
 import com.fidriyanto.banktracker.ui.add.TxType
 import com.fidriyanto.banktracker.ui.add.Wallet
-
-private val EDIT_CATEGORIES = listOf(
-    "Bills", "Subscriptions", "Entertainment", "Food & Drink", "Groceries",
-    "Health & Wellbeing", "Other", "Shopping", "Transport", "Travel",
-    "Business", "Gifts", "Transfer Out",
-)
+import com.fidriyanto.banktracker.ui.add.categoriesFor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,6 +39,7 @@ fun EditTransactionBottomSheet(
     transaction: TransactionUiModel,
     onDismiss: () -> Unit,
     onSave: (TransactionEdit) -> Unit,
+    merchantHistory: List<String> = emptyList(),
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -59,6 +56,11 @@ fun EditTransactionBottomSheet(
     var walletExpanded by remember { mutableStateOf(false) }
     var typeExpanded by remember { mutableStateOf(false) }
     var toWalletExpanded by remember { mutableStateOf(false) }
+
+    val merchantSuggestions = remember(item, merchantHistory) {
+        if (item.isBlank()) merchantHistory
+        else merchantHistory.filter { it.contains(item, ignoreCase = true) }
+    }
 
     ModalBottomSheet(
         // ac: edit-transaction-from-feed — dismissing the sheet without Save discards changes
@@ -87,12 +89,18 @@ fun EditTransactionBottomSheet(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             )
 
-            OutlinedTextField(
-                value = item,
-                onValueChange = { item = it },
-                label = { Text(stringResource(R.string.edit_item_label)) },
-                modifier = Modifier.fillMaxWidth(),
-            )
+            Box(modifier = Modifier.fillMaxWidth()) {
+                OutlinedTextField(
+                    value = item,
+                    onValueChange = { item = it },
+                    label = { Text(stringResource(R.string.edit_item_label)) },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                MerchantSuggestionDropdown(
+                    suggestions = merchantSuggestions,
+                    onSelect = { item = it },
+                )
+            }
 
             ExposedDropdownMenuBox(
                 expanded = categoryExpanded,
@@ -110,7 +118,7 @@ fun EditTransactionBottomSheet(
                     expanded = categoryExpanded,
                     onDismissRequest = { categoryExpanded = false },
                 ) {
-                    EDIT_CATEGORIES.forEach { cat ->
+                    categoriesFor(txType).forEach { cat ->
                         DropdownMenuItem(
                             text = { Text(cat) },
                             onClick = { category = cat; categoryExpanded = false },

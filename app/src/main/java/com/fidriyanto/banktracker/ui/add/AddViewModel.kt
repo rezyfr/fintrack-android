@@ -4,10 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fidriyanto.banktracker.data.model.LedgerTab
 import com.fidriyanto.banktracker.data.model.TransactionEntry
+import com.fidriyanto.banktracker.domain.usecase.GetRecentMerchantsUseCase
 import com.fidriyanto.banktracker.domain.usecase.InsertManualTransactionUseCase
+import com.fidriyanto.banktracker.domain.usecase.SaveMerchantUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -43,10 +49,21 @@ data class AddFormState(
 
 @HiltViewModel
 class AddViewModel @Inject constructor(
-    private val useCase: InsertManualTransactionUseCase
+    private val useCase: InsertManualTransactionUseCase,
+    private val getRecentMerchants: GetRecentMerchantsUseCase,
+    private val saveMerchant: SaveMerchantUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(AddFormState())
     val state = _state.asStateFlow()
+
+    val merchantSuggestions: StateFlow<List<String>> = combine(
+        getRecentMerchants(),
+        _state,
+    ) { history, s ->
+        val query = s.description.trim()
+        if (query.isEmpty()) history
+        else history.filter { it.contains(query, ignoreCase = true) }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun update(block: AddFormState.() -> AddFormState) { _state.value = _state.value.block() }
 
@@ -75,6 +92,7 @@ class AddViewModel @Inject constructor(
             toWallet = if (s.txType == TxType.TRANSFER) s.toWallet?.id else null
         )
         val result = useCase.execute(entry)
+        if (result.isSuccess) saveMerchant(s.description)
         _state.value = _state.value.copy(
             isLoading      = false,
             successMessage = if (result.isSuccess) "Saved and syncing!" else null,

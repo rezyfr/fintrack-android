@@ -7,6 +7,8 @@ import com.fidriyanto.banktracker.domain.model.TransactionUiModel
 import com.fidriyanto.banktracker.domain.usecase.DeleteTransactionUseCase
 import com.fidriyanto.banktracker.domain.usecase.EditTransactionUseCase
 import com.fidriyanto.banktracker.domain.usecase.FeedUseCase
+import com.fidriyanto.banktracker.domain.usecase.GetRecentMerchantsUseCase
+import com.fidriyanto.banktracker.domain.usecase.SaveMerchantUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
@@ -32,6 +34,8 @@ class FeedViewModel @Inject constructor(
     private val useCase: FeedUseCase,
     private val deleteUseCase: DeleteTransactionUseCase,
     private val editUseCase: EditTransactionUseCase,
+    private val getRecentMerchants: GetRecentMerchantsUseCase,
+    private val saveMerchant: SaveMerchantUseCase,
 ) : ViewModel() {
 
     private val _monthFilter  = MutableStateFlow<String?>(currentMonthPrefix())
@@ -59,6 +63,9 @@ class FeedViewModel @Inject constructor(
         val deduped = remote.filter { r -> "${r.merchant}|${r.amount}|${r.dateIso}" !in pendingKeys }
         FeedUiState(items = pending + deduped, isLoading = loading, error = error)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FeedUiState(isLoading = true))
+
+    val merchantHistory: StateFlow<List<String>> = getRecentMerchants()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     init {
         combine(_monthFilter, _walletFilter, _typeFilter) { m, w, t -> Triple(m, w, t) }
@@ -108,7 +115,9 @@ class FeedViewModel @Inject constructor(
 
     fun edit(id: Long, edit: TransactionEdit) = viewModelScope.launch {
         // ac: edit-transaction-from-feed — failure path emits an event so the snackbar can offer Retry that re-attempts the PATCH
-        editUseCase(id, edit).onFailure { _editFailures.emit(EditFailureEvent(id, edit)) }
+        val result = editUseCase(id, edit)
+        result.onSuccess { saveMerchant(edit.item) }
+        result.onFailure { _editFailures.emit(EditFailureEvent(id, edit)) }
     }
 
     companion object {
