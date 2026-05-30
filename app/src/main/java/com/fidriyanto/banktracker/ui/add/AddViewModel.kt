@@ -2,9 +2,9 @@ package com.fidriyanto.banktracker.ui.add
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fidriyanto.banktracker.data.model.SheetTab
-import com.fidriyanto.banktracker.data.model.SheetsRow
-import com.fidriyanto.banktracker.data.repository.TransactionRepository
+import com.fidriyanto.banktracker.data.model.LedgerTab
+import com.fidriyanto.banktracker.data.model.TransactionEntry
+import com.fidriyanto.banktracker.domain.usecase.InsertManualTransactionUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,7 +43,7 @@ data class AddFormState(
 
 @HiltViewModel
 class AddViewModel @Inject constructor(
-    private val repository: TransactionRepository
+    private val useCase: InsertManualTransactionUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(AddFormState())
     val state = _state.asStateFlow()
@@ -58,24 +58,23 @@ class AddViewModel @Inject constructor(
         _state.value = s.copy(isLoading = true, errorMessage = null)
 
         val tab = when {
-            s.wallet.currency == "THB" && s.txType == TxType.INCOME -> SheetTab.INCOME
-            s.wallet.currency == "THB"                               -> SheetTab.EXPENSES
-            s.txType == TxType.INCOME                                -> SheetTab.IDR_INCOME
-            else                                                     -> SheetTab.IDR_EXPENSES
+            s.wallet.currency == "THB" && s.txType == TxType.INCOME -> LedgerTab.INCOME
+            s.wallet.currency == "THB"                               -> LedgerTab.EXPENSES
+            s.txType == TxType.INCOME                                -> LedgerTab.IDR_INCOME
+            else                                                     -> LedgerTab.IDR_EXPENSES
         }
-        val row = SheetsRow(
+        val entry = TransactionEntry(
             tab      = tab,
             date     = s.date,
             merchant = s.description,
             item     = s.description,
             amount   = amount,
             category = s.category,
-            channel  = "Manual",
             wallet   = s.wallet.id,
             txType   = s.txType.id,
             toWallet = if (s.txType == TxType.TRANSFER) s.toWallet?.id else null
         )
-        val result = repository.insertManual(row)
+        val result = useCase.execute(entry)
         _state.value = _state.value.copy(
             isLoading      = false,
             successMessage = if (result.isSuccess) "Saved and syncing!" else null,

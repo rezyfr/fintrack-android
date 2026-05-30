@@ -7,59 +7,52 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.fidriyanto.banktracker.ui.theme.Accent
-import com.fidriyanto.banktracker.ui.theme.Destructive
+import com.fidriyanto.banktracker.R
+import com.fidriyanto.banktracker.ui.theme.LocalAppColors
+import com.fidriyanto.banktracker.ui.theme.LocalIsDarkTheme
+import com.fidriyanto.banktracker.ui.theme.LocalThemeToggle
 
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    var claudeKeyInput by remember(state.claudeApiKey) { mutableStateOf(state.claudeApiKey) }
-    var showKey by remember { mutableStateOf(false) }
+    val isDark = LocalIsDarkTheme.current
+    val toggleTheme = LocalThemeToggle.current
+    val appColors = LocalAppColors.current
 
     Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        Text("Settings", fontWeight = FontWeight.Bold, fontSize = 20.sp, color = Color.White)
+        Text(stringResource(R.string.settings_title), fontWeight = FontWeight.Bold, fontSize = 20.sp, color = MaterialTheme.colorScheme.onBackground)
 
         Card(modifier = Modifier.fillMaxWidth()) {
-            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Claude API Key", fontWeight = FontWeight.SemiBold, color = Color.White)
-                OutlinedTextField(
-                    value = claudeKeyInput,
-                    onValueChange = { claudeKeyInput = it },
-                    label = { Text("API Key") },
-                    modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = if (showKey) VisualTransformation.None else PasswordVisualTransformation(),
-                    trailingIcon = {
-                        TextButton(onClick = { showKey = !showKey }) {
-                            Text(if (showKey) "Hide" else "Show", fontSize = 12.sp)
-                        }
-                    }
-                )
-                Button(onClick = { viewModel.saveClaudeKey(claudeKeyInput) }) { Text("Save") }
+            Row(
+                Modifier.padding(16.dp).fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(stringResource(R.string.settings_dark_theme), fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
+                Switch(checked = isDark, onCheckedChange = { toggleTheme() })
             }
         }
 
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Notification Listener", fontWeight = FontWeight.SemiBold, color = Color.White)
+                Text(stringResource(R.string.settings_notification_listener), fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    val dotColor = if (state.isListenerActive) Accent else Destructive
+                    val dotColor = if (state.isListenerActive) appColors.green else MaterialTheme.colorScheme.error
                     Text("●", color = dotColor, fontSize = 18.sp)
-                    Text(if (state.isListenerActive) "Listening" else "Inactive", color = Color.White)
+                    Text(if (state.isListenerActive) "Listening" else "Inactive", color = MaterialTheme.colorScheme.onSurface)
                 }
                 if (!state.isListenerActive) {
                     OutlinedButton(onClick = {
                         context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
-                    }) { Text("Enable Access") }
+                    }) { Text(stringResource(R.string.settings_enable_access)) }
                 }
             }
         }
@@ -69,8 +62,8 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
             modifier = Modifier.fillMaxWidth(),
             enabled = !state.isSyncing && !state.isClearing
         ) {
-            if (state.isSyncing) CircularProgressIndicator(Modifier.size(18.dp), color = Color.White)
-            else Text("Retry Pending Syncs")
+            if (state.isSyncing) CircularProgressIndicator(Modifier.size(18.dp), color = MaterialTheme.colorScheme.onPrimary)
+            else Text(stringResource(R.string.settings_retry_pending_syncs))
         }
 
         OutlinedButton(
@@ -78,8 +71,8 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
             modifier = Modifier.fillMaxWidth(),
             enabled = !state.isSyncing && !state.isClearing
         ) {
-            if (state.isClearing) CircularProgressIndicator(Modifier.size(18.dp), color = Color.White)
-            else Text("Mark All as Synced")
+            if (state.isClearing) CircularProgressIndicator(Modifier.size(18.dp), color = MaterialTheme.colorScheme.primary)
+            else Text(stringResource(R.string.settings_mark_all_synced))
         }
     }
 }

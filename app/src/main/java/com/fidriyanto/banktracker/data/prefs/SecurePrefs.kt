@@ -18,10 +18,6 @@ class SecurePrefs @Inject constructor(@ApplicationContext context: Context) {
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
 
-    var claudeApiKey: String
-        get() = prefs.getString("claude_api_key", "") ?: ""
-        set(v) = prefs.edit().putString("claude_api_key", v).apply()
-
     var googleAccessToken: String
         get() = prefs.getString("google_access_token", "") ?: ""
         set(v) = prefs.edit().putString("google_access_token", v).apply()
@@ -29,10 +25,6 @@ class SecurePrefs @Inject constructor(@ApplicationContext context: Context) {
     var googleAccountEmail: String
         get() = prefs.getString("google_account_email", "") ?: ""
         set(v) = prefs.edit().putString("google_account_email", v).apply()
-
-    var promptPayThreshold: Double
-        get() = prefs.getString("promptpay_threshold", "25000")?.toDoubleOrNull() ?: 25000.0
-        set(v) = prefs.edit().putString("promptpay_threshold", v.toString()).apply()
 
     var gmailSenderFilter: String
         get() = prefs.getString("gmail_sender_filter", "from:bangkokbank.com") ?: "from:bangkokbank.com"

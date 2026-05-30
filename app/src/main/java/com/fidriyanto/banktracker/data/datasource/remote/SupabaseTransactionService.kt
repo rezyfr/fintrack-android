@@ -1,0 +1,26 @@
+package com.fidriyanto.banktracker.data.datasource.remote
+
+import com.fidriyanto.banktracker.data.datasource.remote.dto.TransactionDto
+import com.fidriyanto.banktracker.data.datasource.remote.dto.TransactionInsertDto
+import okhttp3.ResponseBody
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Headers
+import retrofit2.http.POST
+import retrofit2.http.Query
+
+interface SupabaseTransactionService {
+    @GET("rest/v1/transactions")
+    suspend fun fetchTransactions(
+        @Query("order") order: String,
+        @Query("limit") limit: Int,
+        @Query("date") dateFilters: List<String>?,
+        @Query("wallet") wallet: String?,
+        @Query("tx_type") txType: String?
+    ): List<TransactionDto>
+
+    @POST("rest/v1/transactions")
+    @Headers("Prefer: return=minimal")
+    suspend fun insertTransaction(@Body body: TransactionInsertDto): Response<ResponseBody>
+}

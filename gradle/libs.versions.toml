@@ -6,6 +6,7 @@ hilt = "2.51.1"
 room = "2.6.1"
 compose-bom = "2024.06.00"
 okhttp = "4.12.0"
+retrofit = "2.11.0"
 coroutines = "1.8.1"
 jsoup = "1.17.2"
 google-signin = "21.2.0"
@@ -31,6 +32,8 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
 google-signin = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "google-signin" }
 google-api-client-android = { group = "com.google.api-client", name = "google-api-client-android", version = "2.2.0" }

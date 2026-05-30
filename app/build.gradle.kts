@@ -59,6 +59,8 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
     implementation(libs.okhttp)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
     implementation(libs.security.crypto)
     implementation(libs.work.runtime.ktx)
     implementation(libs.hilt.work)

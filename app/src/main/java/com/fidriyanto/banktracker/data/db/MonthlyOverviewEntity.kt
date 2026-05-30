@@ -12,6 +12,7 @@ data class MonthlyOverviewEntity(
     val foodDrink: Double,
     val groceries: Double,
     val healthWellbeing: Double,
+    val family: Double,
     val other: Double,
     val shopping: Double,
     val transport: Double,
