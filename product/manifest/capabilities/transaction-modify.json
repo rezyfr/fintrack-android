@@ -1,0 +1,14 @@
+{
+  "id": "transaction-modify",
+  "title": "Modify Transactions",
+  "status": "Approved",
+  "owners": ["fidriyantoriz@social.plus"],
+  "stories": [
+    "delete-transaction-from-feed",
+    "edit-transaction-from-feed"
+  ],
+  "flows": [
+    "delete-transaction-from-feed-flow",
+    "edit-transaction-from-feed-flow"
+  ]
+}

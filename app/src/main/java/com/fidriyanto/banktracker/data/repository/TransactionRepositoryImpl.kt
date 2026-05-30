@@ -7,6 +7,7 @@ import com.fidriyanto.banktracker.data.db.ProcessedRefEntity
 import com.fidriyanto.banktracker.data.db.TransactionEntity
 import com.fidriyanto.banktracker.data.model.LedgerTab
 import com.fidriyanto.banktracker.data.model.ParsedTransaction
+import com.fidriyanto.banktracker.data.model.TransactionEdit
 import com.fidriyanto.banktracker.data.model.TransactionEntry
 import com.fidriyanto.banktracker.data.model.TransactionStatus
 import com.fidriyanto.banktracker.domain.model.TransactionUiModel
@@ -87,6 +88,39 @@ class TransactionRepositoryImpl @Inject constructor(
         val entity = localDataSource.getById(id) ?: return
         localDataSource.update(entity.copy(item = item, category = category))
         syncTransaction(id)
+    }
+
+    override suspend fun editTransaction(id: Long, edit: TransactionEdit): Result<Unit> {
+        // ac: edit-transaction-from-feed — snapshot for restore if the PATCH fails
+        val snapshot = localDataSource.getById(id)
+            ?: return Result.failure(Exception("Transaction $id not found"))
+        // ac: edit-transaction-from-feed — optimistic local update before the remote PATCH resolves
+        val updated = snapshot.copy(
+            amount   = edit.amount,
+            item     = edit.item,
+            category = edit.category,
+            dateIso  = edit.dateIso,
+            wallet   = edit.wallet,
+            txType   = edit.txType,
+            toWallet = edit.toWallet,
+        )
+        localDataSource.update(updated)
+        return syncDataSource.update(id, edit).onFailure {
+            // ac: edit-transaction-from-feed — restore the previous row on remote failure so the snackbar retry can re-attempt
+            localDataSource.update(snapshot)
+        }
+    }
+
+    override suspend fun deleteTransaction(id: Long): Result<Unit> {
+        // ac: delete-transaction-from-feed — snapshot for restore on remote failure
+        val snapshot = localDataSource.getById(id)
+            ?: return Result.failure(Exception("Transaction $id not found"))
+        // ac: delete-transaction-from-feed — optimistic local removal before the remote call
+        localDataSource.deleteById(id)
+        return syncDataSource.delete(id).onFailure {
+            // ac: delete-transaction-from-feed — restore on remote failure so the snackbar retry can re-attempt
+            localDataSource.insert(snapshot)
+        }
     }
 
     override suspend fun retryFailedSyncs() {

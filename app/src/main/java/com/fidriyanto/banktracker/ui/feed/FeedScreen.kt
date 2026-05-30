@@ -1,10 +1,12 @@
 package com.fidriyanto.banktracker.ui.feed
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -19,6 +21,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fidriyanto.banktracker.R
+import com.fidriyanto.banktracker.domain.model.TransactionUiModel
+import com.fidriyanto.banktracker.ui.theme.LocalAppColors
 
 private val WALLET_OPTIONS = listOf(
     null         to "All wallets",
@@ -51,6 +55,40 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
     }
     LaunchedEffect(uiState.isLoading) {
         if (!uiState.isLoading && pullState.isRefreshing) pullState.endRefresh()
+    }
+
+    var pendingDelete by remember { mutableStateOf<TransactionUiModel?>(null) }
+    var pendingEdit by remember { mutableStateOf<TransactionUiModel?>(null) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val deleteFailedMessage = stringResource(R.string.snackbar_delete_failed)
+    val editFailedMessage = stringResource(R.string.snackbar_edit_failed)
+    val retryLabel = stringResource(R.string.action_retry)
+
+    LaunchedEffect(viewModel) {
+        viewModel.deleteFailures.collect { event ->
+            val result = snackbarHostState.showSnackbar(
+                message = deleteFailedMessage,
+                actionLabel = retryLabel,
+                duration = SnackbarDuration.Long,
+            )
+            if (result == SnackbarResult.ActionPerformed) {
+                // ac: delete-transaction-from-feed — snackbar Retry re-attempts the DELETE
+                viewModel.delete(event.id)
+            }
+        }
+    }
+    LaunchedEffect(viewModel) {
+        viewModel.editFailures.collect { event ->
+            val result = snackbarHostState.showSnackbar(
+                message = editFailedMessage,
+                actionLabel = retryLabel,
+                duration = SnackbarDuration.Long,
+            )
+            if (result == SnackbarResult.ActionPerformed) {
+                // ac: edit-transaction-from-feed — snackbar Retry re-PATCHes with the same edit payload
+                viewModel.edit(event.id, event.edit)
+            }
+        }
     }
 
     Box(Modifier.nestedScroll(pullState.nestedScrollConnection)) {
@@ -154,13 +192,30 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(uiState.items, key = { it.id }) { tx ->
-                            TransactionCard(
-                                transaction = tx,
-                                onRetry = { viewModel.retry(tx.id) },
-                                onConfirm = { item, category ->
-                                    viewModel.updateAndSync(tx.id, item, category)
-                                }
+                            // ac: delete-transaction-from-feed — wrap each row in SwipeToDismissBox; left-swipe (EndToStart) reveals the delete background
+                            val dismissState = rememberSwipeToDismissBoxState(
+                                confirmValueChange = { value ->
+                                    if (value == SwipeToDismissBoxValue.EndToStart) {
+                                        pendingDelete = tx
+                                    }
+                                    false
+                                },
                             )
+                            SwipeToDismissBox(
+                                state = dismissState,
+                                backgroundContent = { DeleteSwipeBackground() },
+                                enableDismissFromStartToEnd = false,
+                                enableDismissFromEndToStart = true,
+                            ) {
+                                TransactionCard(
+                                    transaction = tx,
+                                    onRetry = { viewModel.retry(tx.id) },
+                                    onConfirm = { item, category ->
+                                        viewModel.updateAndSync(tx.id, item, category)
+                                    },
+                                    onLongClick = { pendingEdit = tx },
+                                )
+                            }
                         }
                     }
                 }
@@ -170,6 +225,52 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
         PullToRefreshContainer(
             modifier = Modifier.align(Alignment.TopCenter),
             state = pullState
+        )
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter).padding(8.dp),
+        )
+    }
+
+    pendingDelete?.let { tx ->
+        DeleteTransactionDialog(
+            transaction = tx,
+            // ac: delete-transaction-from-feed — Cancel clears the pending state; swipe was already vetoed so the card has reset itself
+            onCancel = { pendingDelete = null },
+            onConfirm = {
+                viewModel.delete(tx.id)
+                pendingDelete = null
+            },
+        )
+    }
+
+    pendingEdit?.let { tx ->
+        EditTransactionBottomSheet(
+            transaction = tx,
+            onDismiss = { pendingEdit = null },
+            onSave = { edit ->
+                viewModel.edit(tx.id, edit)
+                pendingEdit = null
+            },
+        )
+    }
+}
+
+@Composable
+private fun DeleteSwipeBackground() {
+    val appColors = LocalAppColors.current
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(appColors.red, RoundedCornerShape(12.dp)),
+        contentAlignment = Alignment.CenterEnd,
+    ) {
+        Text(
+            stringResource(R.string.delete_background_label),
+            color = MaterialTheme.colorScheme.onError,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(end = 16.dp),
         )
     }
 }

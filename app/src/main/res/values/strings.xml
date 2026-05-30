@@ -6,6 +6,7 @@
     <string name="action_save">Save</string>
     <string name="action_dismiss">Dismiss</string>
     <string name="action_retry">Retry</string>
+    <string name="action_cancel">Cancel</string>
 
     <!-- Settings screen -->
     <string name="settings_title">Settings</string>
@@ -36,4 +37,22 @@
     <string name="feed_card_description_label">Description</string>
     <string name="feed_card_category_label">Category</string>
     <string name="feed_card_confirm_sync">Confirm &amp; Sync</string>
+
+    <!-- Delete transaction -->
+    <string name="delete_dialog_title">Delete transaction?</string>
+    <string name="delete_dialog_message">Delete %1$s for %2$s? This cannot be undone.</string>
+    <string name="delete_dialog_confirm">Delete</string>
+    <string name="delete_background_label">Delete</string>
+    <string name="snackbar_delete_failed">Failed to delete transaction. Please try again.</string>
+
+    <!-- Edit transaction -->
+    <string name="edit_sheet_title">Edit Transaction</string>
+    <string name="edit_amount_label">Amount</string>
+    <string name="edit_item_label">Description / Item</string>
+    <string name="edit_category_label">Category</string>
+    <string name="edit_date_label">Date (YYYY-MM-DD)</string>
+    <string name="edit_wallet_label">Wallet</string>
+    <string name="edit_type_label">Type</string>
+    <string name="edit_to_wallet_label">To Wallet</string>
+    <string name="snackbar_edit_failed">Failed to update transaction. Please try again.</string>
 </resources>

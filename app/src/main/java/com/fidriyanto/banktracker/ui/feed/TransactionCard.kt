@@ -1,8 +1,9 @@
 package com.fidriyanto.banktracker.ui.feed
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -21,11 +22,13 @@ import com.fidriyanto.banktracker.ui.theme.LocalAppColors
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TransactionCard(
     transaction: TransactionUiModel,
     onRetry: () -> Unit,
-    onConfirm: (item: String, category: String) -> Unit
+    onConfirm: (item: String, category: String) -> Unit,
+    onLongClick: () -> Unit = {},
 ) {
     val appColors = LocalAppColors.current
     val borderColor = when (transaction.status) {
@@ -70,10 +73,12 @@ fun TransactionCard(
         modifier = Modifier
             .fillMaxWidth()
             .border(if (borderColor != Color.Transparent) 1.dp else 0.dp, borderColor, RoundedCornerShape(12.dp))
-            .then(
-                if (transaction.status == TransactionStatus.PENDING_EDIT)
-                    Modifier.clickable { expanded = !expanded }
-                else Modifier
+            // ac: edit-transaction-from-feed — long-press anywhere on the card opens the edit bottom sheet
+            .combinedClickable(
+                onClick = {
+                    if (transaction.status == TransactionStatus.PENDING_EDIT) expanded = !expanded
+                },
+                onLongClick = onLongClick,
             ),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)

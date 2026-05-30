@@ -13,3 +13,8 @@
 .cxx
 local.properties
 governance/sheet-rules.md
+governance/.session-checkpoint.json
+governance/gate-log.jsonl
+governance/.gate-loop-state
+node_modules/
+web/node_modules/

@@ -1,7 +1,10 @@
 {
-  "feature": "transaction_modify",
-  "storyId": "edit-transaction-from-feed",
-  "acceptanceCriteria": [
+  "id": "edit-transaction-from-feed",
+  "capability": "transaction-modify",
+  "role": "user",
+  "want": "to edit any transaction from the feed by long-pressing it",
+  "soThat": "I can correct mistakes or update categorisation after the fact without re-creating the row",
+  "acceptance": [
     "long-pressing a transaction card on the feed opens a modal bottom sheet pre-populated with the transaction's current values",
     "the bottom sheet exposes editable fields for amount, item description, category, date, wallet, and transaction type",
     "the to-wallet field is shown only when transaction type is transfer",
@@ -9,6 +12,5 @@
     "dismissing the bottom sheet without tapping Save discards changes and leaves the row untouched",
     "if the remote PATCH fails the row's status shows a snackbar appears with 'Failed to update transaction. Please try again.' and a Retry button that re-attempts the PATCH",
     "the card on the feed reflects the new values once the local update completes, before the remote sync resolves"
-  ],
-  "notes": "Edit feature is the second cycle of the transaction_modify capability. Delete shipped in the previous cycle (storyId delete-transaction-from-feed). PATCH endpoint added to SupabaseTransactionService; TransactionPatchDto in dto/; EditTransactionUseCase; EditTransactionBottomSheet composable triggered by long-press on the card."
+  ]
 }

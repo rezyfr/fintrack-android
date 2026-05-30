@@ -1,0 +1,15 @@
+{
+  "id": "delete-transaction-from-feed",
+  "capability": "transaction-modify",
+  "role": "user",
+  "want": "to delete a transaction from the feed by swiping it to the left",
+  "soThat": "I can remove duplicates or transactions that were recorded by mistake",
+  "acceptance": [
+    "swiping a transaction card to the left on the feed reveals a delete affordance",
+    "completing the swipe shows a confirmation dialog with the transaction merchant and amount, plus Cancel and Delete buttons",
+    "tapping Cancel dismisses the dialog and restores the card to its resting position without changing any data",
+    "tapping Delete removes the row from the local cache immediately and issues a DELETE to Supabase against /rest/v1/transactions?id=eq.{id}",
+    "if the remote delete fails the row is restored in the local cache and show snackbar with 'Failed to delete transaction. Please try again.' and a Retry button that re-attempts the delete",
+    "a successful delete is final (hard delete, not soft)"
+  ]
+}

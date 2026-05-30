@@ -2,10 +2,14 @@ package com.fidriyanto.banktracker.ui.feed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fidriyanto.banktracker.data.model.TransactionEdit
 import com.fidriyanto.banktracker.domain.model.TransactionUiModel
+import com.fidriyanto.banktracker.domain.usecase.DeleteTransactionUseCase
+import com.fidriyanto.banktracker.domain.usecase.EditTransactionUseCase
 import com.fidriyanto.banktracker.domain.usecase.FeedUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -19,10 +23,15 @@ data class FeedUiState(
     val error: String? = null,
 )
 
+data class DeleteFailureEvent(val id: Long)
+data class EditFailureEvent(val id: Long, val edit: TransactionEdit)
+
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class FeedViewModel @Inject constructor(
     private val useCase: FeedUseCase,
+    private val deleteUseCase: DeleteTransactionUseCase,
+    private val editUseCase: EditTransactionUseCase,
 ) : ViewModel() {
 
     private val _monthFilter  = MutableStateFlow<String?>(currentMonthPrefix())
@@ -79,6 +88,28 @@ class FeedViewModel @Inject constructor(
 
     fun updateAndSync(id: Long, item: String, category: String) =
         viewModelScope.launch { useCase.updateAndSync(id, item, category) }
+
+    private val _deleteFailures = MutableSharedFlow<DeleteFailureEvent>(
+        extraBufferCapacity = 4,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
+    val deleteFailures: SharedFlow<DeleteFailureEvent> = _deleteFailures.asSharedFlow()
+
+    fun delete(id: Long) = viewModelScope.launch {
+        // ac: delete-transaction-from-feed — failure path emits an event for the snackbar with retry
+        deleteUseCase(id).onFailure { _deleteFailures.emit(DeleteFailureEvent(id)) }
+    }
+
+    private val _editFailures = MutableSharedFlow<EditFailureEvent>(
+        extraBufferCapacity = 4,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
+    val editFailures: SharedFlow<EditFailureEvent> = _editFailures.asSharedFlow()
+
+    fun edit(id: Long, edit: TransactionEdit) = viewModelScope.launch {
+        // ac: edit-transaction-from-feed — failure path emits an event so the snackbar can offer Retry that re-attempts the PATCH
+        editUseCase(id, edit).onFailure { _editFailures.emit(EditFailureEvent(id, edit)) }
+    }
 
     companion object {
         fun currentMonthPrefix(): String {

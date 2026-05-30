@@ -28,6 +28,7 @@ class TransactionLocalDataSourceImpl @Inject constructor(
     override suspend fun update(entity: TransactionEntity) = transactionDao.update(entity)
     override suspend fun updateStatus(id: Long, status: TransactionStatus) =
         transactionDao.updateStatus(id, status)
+    override suspend fun deleteById(id: Long) = transactionDao.deleteById(id)
     override suspend fun markAllSynced() = transactionDao.markAllSynced()
     override suspend fun refExists(key: String) = processedRefDao.exists(key)
     override suspend fun insertRef(entity: ProcessedRefEntity) = processedRefDao.insert(entity)

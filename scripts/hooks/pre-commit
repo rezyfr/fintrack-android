@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Block any commit that doesn't pass the full gate suite.
+# Install with: bash scripts/install-hooks.sh
+set -e
+cd "$(git rev-parse --show-toplevel)"
+exec bash governance/check_all.sh

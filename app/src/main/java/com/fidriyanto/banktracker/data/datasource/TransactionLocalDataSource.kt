@@ -16,6 +16,7 @@ interface TransactionLocalDataSource {
     suspend fun insert(entity: TransactionEntity): Long
     suspend fun update(entity: TransactionEntity)
     suspend fun updateStatus(id: Long, status: TransactionStatus)
+    suspend fun deleteById(id: Long)
     suspend fun markAllSynced()
     suspend fun refExists(key: String): Int
     suspend fun insertRef(entity: ProcessedRefEntity)

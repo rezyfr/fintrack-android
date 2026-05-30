@@ -27,3 +27,13 @@ data class TransactionInsertDto(
     @SerializedName("tx_type")   val txType: String,
     @SerializedName("to_wallet") val toWallet: String?
 )
+
+data class TransactionPatchDto(
+    @SerializedName("amount")    val amount: Double,
+    @SerializedName("item")      val item: String,
+    @SerializedName("category")  val category: String,
+    @SerializedName("date")      val date: String,
+    @SerializedName("wallet")    val wallet: String?,
+    @SerializedName("tx_type")   val txType: String,
+    @SerializedName("to_wallet") val toWallet: String?
+)
