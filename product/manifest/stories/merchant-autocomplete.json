@@ -1,7 +1,10 @@
 {
-  "feature": "merchant_suggestion",
-  "storyId": "merchant-autocomplete",
-  "acceptanceCriteria": [
+  "id": "merchant-autocomplete",
+  "capability": "merchant-suggestion",
+  "role": "user",
+  "want": "to see suggestions of previously used merchants when filling the merchant field",
+  "soThat": "I can quickly reuse common merchants without retyping them",
+  "acceptance": [
     "focusing the merchant field shows a dropdown of up to 10 previously saved merchants",
     "typing filters the list to merchants containing the typed string (case-insensitive)",
     "selecting a suggestion fills the merchant field and closes the dropdown",

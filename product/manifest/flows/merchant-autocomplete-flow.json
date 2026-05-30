@@ -1,0 +1,19 @@
+{
+  "id": "merchant-autocomplete-flow",
+  "steps": [
+    { "actor": "user", "action": "focuses the merchant field on the Add or Edit form" },
+    {
+      "actor": "app",
+      "action": "renders the suggestion dropdown populated from local history",
+      "story": "merchant-autocomplete",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "types characters or taps a suggestion" },
+    {
+      "actor": "app",
+      "action": "filters list to substring matches, or fills the field and dismisses the dropdown",
+      "story": "merchant-autocomplete",
+      "noNavigation": true
+    }
+  ]
+}
