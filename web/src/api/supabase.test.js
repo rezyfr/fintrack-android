@@ -48,7 +48,6 @@ describe('addTransaction', () => {
       item: 'Food delivery',
       amount: 150,
       category: 'Food & Drink',
-      channel: 'eWallet',
       tab: 'EXPENSES',
       date: '2026-05-01',
       note: null,

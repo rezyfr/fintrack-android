@@ -538,6 +538,10 @@ body {
   animation: fade-up 0.28s ease both;
 }
 
+.form-card.form-card-wide {
+  max-width: 1400px;
+}
+
 .form-title {
   font-family: 'DM Serif Display', serif;
   font-size: 28px;
@@ -716,6 +720,137 @@ input[type="month"] { color-scheme: dark; }
 
 [data-theme="light"] .toast-error {
   border-color: rgba(194, 54, 54, 0.25);
+}
+
+/* ── INSIGHTS ───────────────────────────────────────────── */
+
+.insight-filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.insight-custom-range {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.insight-custom-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.insight-section {
+  margin-bottom: 36px;
+}
+
+.insight-currency-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-3);
+  margin-bottom: 12px;
+}
+
+.breakdown-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-top: 12px;
+}
+
+.breakdown-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.breakdown-row {
+  margin-bottom: 12px;
+}
+
+.breakdown-row:last-child { margin-bottom: 0; }
+
+.breakdown-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.breakdown-amount {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.breakdown-track {
+  height: 6px;
+  background: var(--surface);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.breakdown-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+  max-width: 100%;
+}
+
+.breakdown-pct {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-2);
+  margin-left: 6px;
+}
+
+/* ── BATCH SELECT ───────────────────────────────────────── */
+
+.tx-checkbox {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  accent-color: var(--gold);
+}
+
+.row-selected {
+  background: var(--gold-dim) !important;
+}
+
+.batch-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.batch-count {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-right: 4px;
+}
+
+.batch-confirm-text {
+  font-size: 13px;
+  color: var(--text);
 }
 
 /* ── EDIT BUTTON & WALLET CHIPS ────────────────────────── */
@@ -899,3 +1034,181 @@ input[type="month"] { color-scheme: dark; }
 }
 
 .btn-danger-outline:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ── WALLET BALANCES ────────────────────────────────────── */
+
+.wallet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.wallet-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: border-color var(--t);
+}
+
+.wallet-card:hover { border-color: var(--border-hover); }
+
+.wallet-card--cc {
+  border-color: rgba(232, 100, 100, 0.25);
+}
+
+.wallet-name {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+  margin-bottom: 10px;
+}
+
+.wallet-balance {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.wallet-balance.liability { color: var(--red); }
+
+.wallet-label {
+  font-size: 10px;
+  color: var(--red);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.wallet-loading, .wallet-error {
+  padding: 64px 20px;
+  text-align: center;
+  color: var(--text-2);
+}
+
+.wallet-error { color: var(--red); }
+
+.net-worth-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.net-worth-card {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.net-worth-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+}
+
+.net-worth-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* ── RECONCILIATION ─────────────────────────────────────── */
+
+.recon-hint {
+  font-size: 12px;
+  color: var(--text-2);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.recon-table th,
+.recon-table .recon-cell {
+  padding: 10px 14px;
+  vertical-align: middle;
+}
+
+.recon-wallet {
+  padding: 10px 14px;
+  vertical-align: middle;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.recon-currency-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  color: var(--text-3);
+}
+
+.recon-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.recon-input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  padding: 6px 10px;
+  outline: none;
+  width: 150px;
+  transition: border-color var(--t), box-shadow var(--t);
+}
+
+.recon-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-dim);
+}
+
+.recon-input::placeholder { color: var(--text-3); }
+
+.recon-saving {
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.recon-net { font-family: 'JetBrains Mono', monospace; font-size: 13px; text-align: right; }
+.recon-net.pos { color: var(--green); }
+.recon-net.neg { color: var(--red); }
+
+.recon-closing {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: right;
+  color: var(--text);
+}
+
+.recon-status {
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.recon-none    { color: var(--text-3); }
+.recon-pending { color: var(--text-3); font-style: italic; }
+.recon-ok      { color: var(--green); }
+.recon-error   { color: var(--red); cursor: help; }

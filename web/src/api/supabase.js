@@ -78,6 +78,37 @@ export async function deleteTransaction(id) {
   if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
 }
 
+export async function deleteTransactions(ids) {
+  if (!ids.length) return;
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const res = await fetch(`${url}/rest/v1/transactions?id=in.(${ids.join(',')})`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+}
+
+export async function getWalletReconciliation(month) {
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const res = await fetch(`${url}/rest/v1/rpc/get_wallet_reconciliation`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ p_month: month }),
+  });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+  return res.json();
+}
+
+export async function upsertStatementBalance(walletId, month, openingBalance) {
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const res = await fetch(`${url}/rest/v1/statement_balances`, {
+    method: 'POST',
+    headers: { ...authHeaders(), Prefer: 'resolution=merge-duplicates' },
+    body: JSON.stringify({ wallet_id: walletId, month, opening_balance: openingBalance }),
+  });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+}
+
 export async function addTransactions(rows) {
   const url = import.meta.env.VITE_SUPABASE_URL;
   const res = await fetch(`${url}/rest/v1/transactions`, {

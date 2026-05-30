@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { updateTransaction, deleteTransaction } from '../api/supabase';
-import { WALLETS, TX_TYPES, CATEGORIES, CHANNELS, deriveTab, currencySymbol } from '../constants/transaction';
+import { WALLETS, TX_TYPES, categoriesFor, deriveTab, currencySymbol } from '../constants/transaction';
 
 export default function EditTransactionModal({ row, onClose, onSaved, onDeleted }) {
   const [form, setForm] = useState({
@@ -8,7 +8,6 @@ export default function EditTransactionModal({ row, onClose, onSaved, onDeleted 
     item:     row.item      ?? '',
     amount:   String(row.amount ?? ''),
     category: row.category  ?? 'Other',
-    channel:  row.channel   ?? 'Manual',
     date:     row.date      ?? '',
     note:     row.note      ?? '',
     wallet:   row.wallet    ?? 'BBL',
@@ -21,7 +20,11 @@ export default function EditTransactionModal({ row, onClose, onSaved, onDeleted 
 
   function handleChange(e) {
     const { name, value } = e.target;
-    setForm((f) => ({ ...f, [name]: value }));
+    if (name === 'txType') {
+      setForm((f) => ({ ...f, txType: value, category: categoriesFor(value)[0] }));
+    } else {
+      setForm((f) => ({ ...f, [name]: value }));
+    }
   }
 
   async function handleSave(e) {
@@ -34,7 +37,6 @@ export default function EditTransactionModal({ row, onClose, onSaved, onDeleted 
         item:      form.item,
         amount:    Number(form.amount),
         category:  form.category,
-        channel:   form.channel,
         date:      form.date,
         note:      form.note || null,
         wallet:    form.wallet,
@@ -182,18 +184,7 @@ export default function EditTransactionModal({ row, onClose, onSaved, onDeleted 
                   id="edit-category" name="category"
                   value={form.category} onChange={handleChange}
                 >
-                  {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label" htmlFor="edit-channel">Channel</label>
-                <select
-                  className="form-select"
-                  id="edit-channel" name="channel"
-                  value={form.channel} onChange={handleChange}
-                >
-                  {CHANNELS.map((c) => <option key={c}>{c}</option>)}
+                  {categoriesFor(form.txType).map((c) => <option key={c}>{c}</option>)}
                 </select>
               </div>
 

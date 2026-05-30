@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { getTransactions } from '../api/supabase';
+import { useState, useEffect, useRef } from 'react';
+import { getTransactions, deleteTransactions } from '../api/supabase';
 import EditTransactionModal from './EditTransactionModal';
 
 const TX_TYPE_OPTIONS = [
@@ -92,12 +92,12 @@ function computeStats(rows) {
 function SkeletonRows() {
   return Array.from({ length: 6 }).map((_, i) => (
     <tr key={i}>
+      <td><span className="skeleton" style={{ width: 16, height: 16, borderRadius: 3 }} /></td>
       <td><span className="skeleton" style={{ width: 72 }} /></td>
       <td><span className="skeleton" style={{ width: 130 }} /></td>
       <td><span className="skeleton" style={{ width: 100 }} /></td>
       <td style={{ textAlign: 'right' }}><span className="skeleton" style={{ width: 70 }} /></td>
       <td><span className="skeleton" style={{ width: 80 }} /></td>
-      <td><span className="skeleton" style={{ width: 74 }} /></td>
       <td><span className="skeleton" style={{ width: 60 }} /></td>
       <td><span className="skeleton" style={{ width: 90 }} /></td>
       <td />
@@ -106,18 +106,27 @@ function SkeletonRows() {
 }
 
 export default function TransactionList() {
-  const [txType, setTxType] = useState('');
-  const [wallet, setWallet] = useState('');
-  const [month, setMonth]   = useState(currentMonth());
-  const [rows, setRows]     = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError]   = useState(null);
+  const [txType, setTxType]       = useState('');
+  const [wallet, setWallet]       = useState('');
+  const [month, setMonth]         = useState(currentMonth());
+  const [rows, setRows]           = useState([]);
+  const [loading, setLoading]     = useState(false);
+  const [error, setError]         = useState(null);
   const [editingRow, setEditingRow] = useState(null);
+
+  // Batch selection state
+  const [selected, setSelected]       = useState(new Set());
+  const [confirming, setConfirming]   = useState(false);
+  const [deleting, setDeleting]       = useState(false);
+
+  const selectAllRef = useRef(null);
 
   useEffect(() => {
     let ignore = false;
     setLoading(true);
     setError(null);
+    setSelected(new Set());
+    setConfirming(false);
     getTransactions({ txType: txType || null, wallet: wallet || null, month })
       .then((data) => { if (!ignore) setRows(data); })
       .catch((e)   => { if (!ignore) setError(e.message); })
@@ -125,15 +134,55 @@ export default function TransactionList() {
     return () => { ignore = true; };
   }, [txType, wallet, month]);
 
+  // Keep select-all checkbox in sync (checked / indeterminate / unchecked)
+  useEffect(() => {
+    if (!selectAllRef.current) return;
+    const n = rows.length;
+    const s = selected.size;
+    selectAllRef.current.checked       = n > 0 && s === n;
+    selectAllRef.current.indeterminate = s > 0 && s < n;
+  }, [selected, rows]);
+
+  function toggleAll() {
+    if (selected.size === rows.length) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(rows.map(r => r.id)));
+    }
+    setConfirming(false);
+  }
+
+  function toggleRow(id) {
+    setSelected(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+    setConfirming(false);
+  }
+
+  async function handleBatchDelete() {
+    setDeleting(true);
+    try {
+      await deleteTransactions([...selected]);
+      setRows(prev => prev.filter(r => !selected.has(r.id)));
+      setSelected(new Set());
+      setConfirming(false);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   const stats = computeStats(rows);
+  const anySelected = selected.size > 0;
 
   return (
     <div className="page">
       <div className="section-header">
         <h1 className="section-title">Transactions</h1>
-        {!loading && !error && (
-          <span className="section-count">{stats.count}</span>
-        )}
+        {!loading && !error && <span className="section-count">{stats.count}</span>}
       </div>
 
       {!loading && !error && rows.length > 0 && (
@@ -191,16 +240,49 @@ export default function TransactionList() {
         </div>
       </div>
 
+      {/* Batch action bar */}
+      {anySelected && (
+        <div className="batch-bar">
+          <span className="batch-count">{selected.size} selected</span>
+          {!confirming ? (
+            <button className="btn-danger-outline" onClick={() => setConfirming(true)}>
+              Delete selected
+            </button>
+          ) : (
+            <>
+              <span className="batch-confirm-text">
+                Delete {selected.size} transaction{selected.size > 1 ? 's' : ''}? This cannot be undone.
+              </span>
+              <button className="btn-danger" onClick={handleBatchDelete} disabled={deleting}>
+                {deleting ? 'Deleting…' : 'Yes, delete'}
+              </button>
+              <button className="btn-secondary" onClick={() => setConfirming(false)} disabled={deleting}>
+                Cancel
+              </button>
+            </>
+          )}
+        </div>
+      )}
+
       <div className="table-wrap">
         <table className="tx-table">
           <thead>
             <tr>
+              <th style={{ width: 36 }}>
+                <input
+                  ref={selectAllRef}
+                  type="checkbox"
+                  className="tx-checkbox"
+                  aria-label="Select all"
+                  onChange={toggleAll}
+                  disabled={loading || rows.length === 0}
+                />
+              </th>
               <th>Date</th>
               <th>Merchant</th>
               <th>Item</th>
               <th className="align-right">Amount</th>
               <th>Category</th>
-              <th>Channel</th>
               <th>Wallet</th>
               <th>Note</th>
               <th />
@@ -211,7 +293,7 @@ export default function TransactionList() {
 
             {!loading && error && (
               <tr>
-                <td colSpan={8}>
+                <td colSpan={9}>
                   <div className="table-state">
                     <div className="table-state-icon">⚠</div>
                     <div className="table-state-title">Failed to load</div>
@@ -223,7 +305,7 @@ export default function TransactionList() {
 
             {!loading && !error && rows.length === 0 && (
               <tr>
-                <td colSpan={8}>
+                <td colSpan={9}>
                   <div className="table-state">
                     <div className="table-state-icon">◎</div>
                     <div className="table-state-title">No transactions</div>
@@ -234,7 +316,16 @@ export default function TransactionList() {
             )}
 
             {!loading && !error && rows.map((row) => (
-              <tr key={row.id}>
+              <tr key={row.id} className={selected.has(row.id) ? 'row-selected' : ''}>
+                <td>
+                  <input
+                    type="checkbox"
+                    className="tx-checkbox"
+                    aria-label={`Select ${row.merchant}`}
+                    checked={selected.has(row.id)}
+                    onChange={() => toggleRow(row.id)}
+                  />
+                </td>
                 <td><span className="tx-date">{formatDate(row.date)}</span></td>
                 <td><span className="tx-merchant">{row.merchant}</span></td>
                 <td><span className="tx-item">{row.item}</span></td>
@@ -248,11 +339,6 @@ export default function TransactionList() {
                     <span className={`chip ${CATEGORY_CLASS[row.category] ?? 'chip-other'}`}>
                       {row.category}
                     </span>
-                  )}
-                </td>
-                <td>
-                  {row.channel && (
-                    <span className="chip chip-channel">{row.channel}</span>
                   )}
                 </td>
                 <td>
@@ -277,6 +363,7 @@ export default function TransactionList() {
           </tbody>
         </table>
       </div>
+
       {editingRow && (
         <EditTransactionModal
           row={editingRow}
@@ -287,6 +374,7 @@ export default function TransactionList() {
           }}
           onDeleted={(id) => {
             setRows((prev) => prev.filter((r) => r.id !== id));
+            setSelected((prev) => { const n = new Set(prev); n.delete(id); return n; });
             setEditingRow(null);
           }}
         />

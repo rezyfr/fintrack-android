@@ -40,15 +40,17 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
 
 
 def parse_date(raw: str) -> str:
-    """Parse D/M/YYYY or DD/MM/YYYY into ISO 8601 YYYY-MM-DD."""
+    """Parse M/D/YYYY or D/M/YYYY into ISO 8601 YYYY-MM-DD."""
     raw = raw.strip()
     parts = raw.split("/")
     if len(parts) == 3:
-        try:
-            d, m, y = int(parts[0]), int(parts[1]), int(parts[2])
-            return datetime.date(y, m, d).isoformat()
-        except ValueError:
-            pass
+        a, b, y = int(parts[0]), int(parts[1]), int(parts[2])
+        # Try M/D/YYYY first (sheet format observed), fall back to D/M/YYYY
+        for m, d in [(a, b), (b, a)]:
+            try:
+                return datetime.date(y, m, d).isoformat()
+            except ValueError:
+                continue
     raise ValueError(f"Cannot parse date: {raw!r}")
 
 

@@ -18,11 +18,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fidriyanto.banktracker.R
 import com.fidriyanto.banktracker.ui.theme.LocalAppColors
 
-private val TRANSACTION_CATEGORIES = listOf(
-    "Bills", "Subscriptions", "Entertainment", "Food & Drink", "Groceries",
-    "Health & Wellbeing", "Other", "Shopping", "Transport", "Travel",
-    "Business", "Gifts", "Transfer Out"
-)
+private fun categoriesFor(txType: TxType): List<String> = when (txType) {
+    TxType.EXPENSE    -> listOf(
+        "Bills", "Subscriptions", "Entertainment", "Food & Drink", "Groceries",
+        "Health & Wellbeing", "Other", "Shopping", "Transport", "Travel", "Business", "Gifts"
+    )
+    TxType.INCOME     -> listOf("Salary", "Freelance", "Business", "Dividends", "Rental", "Bonus", "Gift", "Other")
+    TxType.TRANSFER   -> listOf("Transfer Out")
+    TxType.INVESTMENT -> listOf("Investment", "Dividends", "Other")
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,7 +63,7 @@ fun AddScreen(viewModel: AddViewModel = hiltViewModel()) {
         // Tx type picker
         ToggleRow("Type", TxType.entries.map { it.displayName }, state.txType.displayName) { name ->
             val picked = TxType.entries.first { it.displayName == name }
-            viewModel.update { copy(txType = picked, toWallet = null) }
+            viewModel.update { copy(txType = picked, toWallet = null, category = categoriesFor(picked).first()) }
         }
 
         // To-wallet picker (only for transfers)
@@ -103,7 +107,7 @@ fun AddScreen(viewModel: AddViewModel = hiltViewModel()) {
                 modifier = Modifier.fillMaxWidth().menuAnchor()
             )
             ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                TRANSACTION_CATEGORIES.forEach { cat ->
+                categoriesFor(state.txType).forEach { cat ->
                     DropdownMenuItem(
                         text = { Text(cat) },
                         onClick = { viewModel.update { copy(category = cat) }; expanded = false }

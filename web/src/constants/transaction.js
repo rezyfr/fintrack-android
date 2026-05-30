@@ -14,13 +14,26 @@ export const TX_TYPES = [
   { id: 'investment', label: 'Investment' },
 ];
 
-export const CATEGORIES = [
+export const EXPENSE_CATEGORIES = [
   'Bills', 'Subscriptions', 'Entertainment', 'Food & Drink',
-  'Groceries', 'Health & Wellbeing', 'Other', 'Shopping',
+  'Groceries', 'Health & Wellbeing', 'Family', 'Other', 'Shopping',
   'Transport', 'Travel', 'Business', 'Gifts',
 ];
 
-export const CHANNELS = ['BillPayment', 'eWallet', 'PromptPay', 'BankTransfer', 'Manual', 'Unknown'];
+export const INCOME_CATEGORIES = [
+  'Salary', 'Freelance', 'Business', 'Dividends', 'Rental', 'Bonus', 'Gift', 'Other',
+];
+
+// Kept for backward compatibility (ImportPdf + tests)
+export const CATEGORIES = EXPENSE_CATEGORIES;
+
+export function categoriesFor(txType) {
+  if (txType === 'income') return INCOME_CATEGORIES;
+  if (txType === 'transfer') return ['Transfer'];
+  if (txType === 'investment') return ['Investment', 'Dividends', 'Other'];
+  return EXPENSE_CATEGORIES;
+}
+
 
 export function currencySymbol(walletId) {
   return WALLETS.find(w => w.id === walletId)?.currency === 'THB' ? '฿' : 'Rp';

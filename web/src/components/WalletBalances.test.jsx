@@ -13,7 +13,10 @@ const MOCK_BALANCES = [
   { id: 'INVESTMENT', name: 'Investments',           currency: 'IDR', type: 'investment', balance: 10000000},
 ];
 
-beforeEach(() => { api.getWalletBalances.mockResolvedValue(MOCK_BALANCES); });
+beforeEach(() => {
+  api.getWalletBalances.mockResolvedValue(MOCK_BALANCES);
+  api.getWalletReconciliation.mockResolvedValue([]);
+});
 afterEach(() => vi.resetAllMocks());
 
 it('shows all wallet names', async () => {

@@ -14,7 +14,6 @@ const MOCK_ROWS = [
     item: 'Food delivery',
     amount: 150,
     category: 'Food & Drink',
-    channel: 'eWallet',
     tab: 'EXPENSES',
     wallet: 'BBL',
     tx_type: 'expense',
