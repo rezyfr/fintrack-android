@@ -36,16 +36,18 @@ class TransactionRepositoryImpl @Inject constructor(
         val compositeKey = "${parsed.merchant}|${parsed.amount}|${parsed.date}"
         if (localDataSource.refExists(compositeKey) > 0) return null
         localDataSource.insertRef(ProcessedRefEntity(compositeKey))
+        // ac: bca-expense-notification — wallet and tab derived from parsed notification
+        val tab = if (parsed.wallet == "BBL") LedgerTab.EXPENSES else LedgerTab.IDR_EXPENSES
         val entity = TransactionEntity(
             merchant = parsed.merchant,
             item     = parsed.merchant,
             amount   = parsed.amount,
-            category = "Other",
+            category = parsed.category,
             dateIso  = parsed.date.toString(),
             referenceNo = "",
-            tab      = LedgerTab.EXPENSES,
+            tab      = tab,
             status   = TransactionStatus.PENDING_SYNC,
-            wallet   = "BBL"
+            wallet   = parsed.wallet
         )
         val id = localDataSource.insert(entity)
         syncTransaction(id)

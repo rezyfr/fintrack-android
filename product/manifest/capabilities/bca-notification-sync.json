@@ -1,0 +1,8 @@
+{
+  "id": "bca-notification-sync",
+  "title": "BCA Notification Sync",
+  "status": "Approved",
+  "owners": ["frotylatz@gmail.com"],
+  "stories": ["bca-expense-notification"],
+  "flows": ["bca-expense-notification-flow"]
+}

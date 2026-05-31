@@ -1,0 +1,19 @@
+{
+  "id": "bca-expense-notification-flow",
+  "steps": [
+    { "actor": "user", "action": "makes a purchase and receives a myBCA spending notification on the device" },
+    {
+      "actor": "app",
+      "action": "parses the notification body for the IDR amount and category, maps the category, and saves the transaction with wallet=BCA",
+      "story": "bca-expense-notification",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "opens the transaction feed" },
+    {
+      "actor": "app",
+      "action": "displays the captured BCA expense in the feed with the mapped category and IDR amount",
+      "story": "bca-expense-notification",
+      "noNavigation": true
+    }
+  ]
+}
