@@ -5,10 +5,12 @@
   "owners": ["fidriyantoriz@social.plus"],
   "stories": [
     "delete-transaction-from-feed",
-    "edit-transaction-from-feed"
+    "edit-transaction-from-feed",
+    "inline-cell-edit"
   ],
   "flows": [
     "delete-transaction-from-feed-flow",
-    "edit-transaction-from-feed-flow"
+    "edit-transaction-from-feed-flow",
+    "inline-cell-edit-flow"
   ]
 }

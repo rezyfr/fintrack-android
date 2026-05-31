@@ -90,6 +90,7 @@ function computeStats(rows) {
   };
 }
 
+// ac: inline-cell-edit — double-clicking a free-text cell activates an inline input pre-filled with the current value
 function TextCell({ initialValue, type = 'text', onCommit, onCancel }) {
   const [val, setVal] = useState(String(initialValue ?? ''));
   const ref = useRef(null);
@@ -104,14 +105,15 @@ function TextCell({ initialValue, type = 'text', onCommit, onCancel }) {
       value={val}
       onChange={e => setVal(e.target.value)}
       onKeyDown={e => {
-        if (e.key === 'Enter')  { e.preventDefault(); onCommit(val); }
-        if (e.key === 'Escape') { e.preventDefault(); onCancel(); }
+        if (e.key === 'Enter')  { e.preventDefault(); onCommit(val); } // ac: inline-cell-edit — Enter commits the change
+        if (e.key === 'Escape') { e.preventDefault(); onCancel(); }    // ac: inline-cell-edit — Escape cancels and restores original
       }}
-      onBlur={() => onCommit(val)}
+      onBlur={() => onCommit(val)} // ac: inline-cell-edit — clicking away commits the change
     />
   );
 }
 
+// ac: inline-cell-edit — double-clicking a predefined cell shows a select dropdown; choosing an option commits immediately
 function SelectCell({ initialValue, options, onCommit, onCancel }) {
   const ref = useRef(null);
   useEffect(() => { ref.current?.focus(); }, []);
@@ -179,6 +181,7 @@ export default function TransactionList() {
     const coerced = field === 'amount' ? Number(value) : value;
     if (String(original[field] ?? '') === String(coerced)) return;
     const snapshot = rows.slice();
+    // ac: inline-cell-edit — changes applied optimistically; row reverts if API call fails
     setRows(prev => prev.map(r => r.id === rowId ? { ...r, [field]: coerced } : r));
     try {
       await updateTransaction(rowId, { [field]: coerced });
@@ -454,6 +457,7 @@ export default function TransactionList() {
                   }
                 </td>
                 <td>
+                  {/* ac: inline-cell-edit — edit icon opens the full modal for fields not editable inline */}
                   <button
                     className="edit-btn"
                     aria-label={`Edit ${row.merchant}`}

@@ -1,0 +1,19 @@
+{
+  "id": "inline-cell-edit-flow",
+  "steps": [
+    { "actor": "user", "action": "double-clicks a cell in the transaction list row" },
+    {
+      "actor": "app",
+      "action": "replaces the cell content with an inline input (text/number/date) or select dropdown pre-filled with the current value",
+      "story": "inline-cell-edit",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "types a new value and presses Enter, selects a dropdown option, or presses Escape" },
+    {
+      "actor": "app",
+      "action": "commits the change optimistically and PATCHes Supabase, or cancels and restores the original value",
+      "story": "inline-cell-edit",
+      "noNavigation": true
+    }
+  ]
+}
