@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { getTransactions, deleteTransactions } from '../api/supabase';
+import { getTransactions, deleteTransactions, updateTransaction } from '../api/supabase';
+import { WALLETS, categoriesFor } from '../constants/transaction';
 import EditTransactionModal from './EditTransactionModal';
 
 const TX_TYPE_OPTIONS = [
@@ -89,6 +90,45 @@ function computeStats(rows) {
   };
 }
 
+function TextCell({ initialValue, type = 'text', onCommit, onCancel }) {
+  const [val, setVal] = useState(String(initialValue ?? ''));
+  const ref = useRef(null);
+  useEffect(() => { ref.current?.focus(); ref.current?.select(); }, []);
+  return (
+    <input
+      ref={ref}
+      className="inline-input"
+      type={type}
+      step={type === 'number' ? '0.01' : undefined}
+      min={type === 'number' ? '0' : undefined}
+      value={val}
+      onChange={e => setVal(e.target.value)}
+      onKeyDown={e => {
+        if (e.key === 'Enter')  { e.preventDefault(); onCommit(val); }
+        if (e.key === 'Escape') { e.preventDefault(); onCancel(); }
+      }}
+      onBlur={() => onCommit(val)}
+    />
+  );
+}
+
+function SelectCell({ initialValue, options, onCommit, onCancel }) {
+  const ref = useRef(null);
+  useEffect(() => { ref.current?.focus(); }, []);
+  return (
+    <select
+      ref={ref}
+      className="inline-select"
+      defaultValue={initialValue}
+      onChange={e => onCommit(e.target.value)}
+      onKeyDown={e => { if (e.key === 'Escape') { e.preventDefault(); onCancel(); } }}
+      onBlur={onCancel}
+    >
+      {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+    </select>
+  );
+}
+
 function SkeletonRows() {
   return Array.from({ length: 6 }).map((_, i) => (
     <tr key={i}>
@@ -119,7 +159,34 @@ export default function TransactionList() {
   const [confirming, setConfirming]   = useState(false);
   const [deleting, setDeleting]       = useState(false);
 
+  const [editing, setEditing] = useState(null); // { rowId, field }
+
   const selectAllRef = useRef(null);
+
+  function startEdit(row, field) {
+    setEditing({ rowId: row.id, field });
+  }
+  function cancelEdit() { setEditing(null); }
+  function isEditing(rowId, field) {
+    return editing?.rowId === rowId && editing?.field === field;
+  }
+  async function commitEdit(value) {
+    if (!editing) return;
+    const { rowId, field } = editing;
+    const original = rows.find(r => r.id === rowId);
+    if (!original) { setEditing(null); return; }
+    setEditing(null);
+    const coerced = field === 'amount' ? Number(value) : value;
+    if (String(original[field] ?? '') === String(coerced)) return;
+    const snapshot = rows.slice();
+    setRows(prev => prev.map(r => r.id === rowId ? { ...r, [field]: coerced } : r));
+    try {
+      await updateTransaction(rowId, { [field]: coerced });
+    } catch (e) {
+      setRows(snapshot);
+      setError(`Save failed: ${e.message}`);
+    }
+  }
 
   useEffect(() => {
     let ignore = false;
@@ -326,29 +393,66 @@ export default function TransactionList() {
                     onChange={() => toggleRow(row.id)}
                   />
                 </td>
-                <td><span className="tx-date">{formatDate(row.date)}</span></td>
-                <td><span className="tx-merchant">{row.merchant}</span></td>
-                <td><span className="tx-item">{row.item}</span></td>
                 <td>
-                  <span className={`tx-amount ${amountClass(row)}`}>
-                    {formatAmount(row)}
-                  </span>
+                  {isEditing(row.id, 'date')
+                    ? <TextCell initialValue={row.date} type="date" onCommit={commitEdit} onCancel={cancelEdit} />
+                    : <span className="tx-date editable" onDoubleClick={() => startEdit(row, 'date')}>{formatDate(row.date)}</span>
+                  }
                 </td>
                 <td>
-                  {row.category && (
-                    <span className={`chip ${CATEGORY_CLASS[row.category] ?? 'chip-other'}`}>
-                      {row.category}
-                    </span>
-                  )}
+                  {isEditing(row.id, 'merchant')
+                    ? <TextCell initialValue={row.merchant} onCommit={commitEdit} onCancel={cancelEdit} />
+                    : <span className="tx-merchant editable" onDoubleClick={() => startEdit(row, 'merchant')}>{row.merchant}</span>
+                  }
                 </td>
                 <td>
-                  {row.wallet && (
-                    <span className={`chip chip-wallet chip-wallet--${row.wallet.toLowerCase().replace('_', '-')}`}>
-                      {row.wallet === 'MANDIRI_CC' ? 'CC' : row.wallet}
-                    </span>
-                  )}
+                  {isEditing(row.id, 'item')
+                    ? <TextCell initialValue={row.item} onCommit={commitEdit} onCancel={cancelEdit} />
+                    : <span className="tx-item editable" onDoubleClick={() => startEdit(row, 'item')}>{row.item}</span>
+                  }
                 </td>
-                <td><span className="tx-note">{row.note}</span></td>
+                <td>
+                  {isEditing(row.id, 'amount')
+                    ? <TextCell initialValue={row.amount} type="number" onCommit={commitEdit} onCancel={cancelEdit} />
+                    : <span className={`tx-amount ${amountClass(row)} editable`} onDoubleClick={() => startEdit(row, 'amount')}>{formatAmount(row)}</span>
+                  }
+                </td>
+                <td>
+                  {isEditing(row.id, 'category')
+                    ? <SelectCell
+                        initialValue={row.category}
+                        options={categoriesFor(row.tx_type).map(c => ({ value: c, label: c }))}
+                        onCommit={commitEdit}
+                        onCancel={cancelEdit}
+                      />
+                    : row.category && (
+                        <span className={`chip ${CATEGORY_CLASS[row.category] ?? 'chip-other'} editable`} onDoubleClick={() => startEdit(row, 'category')}>
+                          {row.category}
+                        </span>
+                      )
+                  }
+                </td>
+                <td>
+                  {isEditing(row.id, 'wallet')
+                    ? <SelectCell
+                        initialValue={row.wallet}
+                        options={WALLETS.map(w => ({ value: w.id, label: w.name }))}
+                        onCommit={commitEdit}
+                        onCancel={cancelEdit}
+                      />
+                    : row.wallet && (
+                        <span className={`chip chip-wallet chip-wallet--${row.wallet.toLowerCase().replace('_', '-')} editable`} onDoubleClick={() => startEdit(row, 'wallet')}>
+                          {row.wallet === 'MANDIRI_CC' ? 'CC' : row.wallet}
+                        </span>
+                      )
+                  }
+                </td>
+                <td>
+                  {isEditing(row.id, 'note')
+                    ? <TextCell initialValue={row.note} onCommit={commitEdit} onCancel={cancelEdit} />
+                    : <span className="tx-note editable" onDoubleClick={() => startEdit(row, 'note')}>{row.note}</span>
+                  }
+                </td>
                 <td>
                   <button
                     className="edit-btn"
