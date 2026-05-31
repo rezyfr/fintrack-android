@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getWalletBalances, getWalletReconciliation, upsertStatementBalance } from '../api/supabase';
+import MonthNav from './MonthNav';
 
 const FMT = {
   THB: (n) => `฿${Number(n).toLocaleString('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
@@ -153,13 +154,7 @@ export default function WalletBalances() {
       {/* ── Reconciliation ──────────────────────────────────── */}
       <div className="section-header" style={{ marginTop: 48 }}>
         <h2 className="section-title" style={{ fontSize: 22 }}>Reconciliation</h2>
-        <input
-          className="month-input"
-          type="month"
-          value={reconMonth}
-          onChange={e => setReconMonth(e.target.value)}
-          style={{ marginLeft: 'auto' }}
-        />
+        <MonthNav value={reconMonth} onChange={setReconMonth} />
       </div>
 
       <p className="recon-hint">

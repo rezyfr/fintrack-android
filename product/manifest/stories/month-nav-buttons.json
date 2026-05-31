@@ -1,7 +1,10 @@
 {
-  "feature": "month_navigation",
-  "storyId": "month-nav-buttons",
-  "acceptanceCriteria": [
+  "id": "month-nav-buttons",
+  "capability": "month-navigation",
+  "role": "user",
+  "want": "to step the month selector backward and forward with ‹ and › buttons",
+  "soThat": "I can switch months without manually editing the date input",
+  "acceptance": [
     "clicking ‹ moves the selected month one month backward",
     "clicking › moves the selected month one month forward",
     "the › button is disabled when the displayed month equals the current calendar month",

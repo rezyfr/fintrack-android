@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { getTransactions, deleteTransactions, updateTransaction } from '../api/supabase';
 import { WALLETS, categoriesFor } from '../constants/transaction';
 import EditTransactionModal from './EditTransactionModal';
+import MonthNav from './MonthNav';
 
 const TX_TYPE_OPTIONS = [
   { value: '',           label: 'All'        },
@@ -301,12 +302,7 @@ export default function TransactionList() {
               <option key={value} value={value}>{label}</option>
             ))}
           </select>
-          <input
-            className="month-input"
-            type="month"
-            value={month}
-            onChange={(e) => setMonth(e.target.value)}
-          />
+          <MonthNav value={month} onChange={setMonth} />
         </div>
       </div>
 
