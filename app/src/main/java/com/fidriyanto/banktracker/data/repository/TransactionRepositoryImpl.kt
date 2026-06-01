@@ -3,6 +3,7 @@ package com.fidriyanto.banktracker.data.repository
 import com.fidriyanto.banktracker.data.datasource.TransactionFetchDataSource
 import com.fidriyanto.banktracker.data.datasource.TransactionLocalDataSource
 import com.fidriyanto.banktracker.data.datasource.TransactionSyncDataSource
+import com.fidriyanto.banktracker.data.datasource.remote.mapper.REMOTE_ID_OFFSET
 import com.fidriyanto.banktracker.data.db.ProcessedRefEntity
 import com.fidriyanto.banktracker.data.db.TransactionEntity
 import com.fidriyanto.banktracker.data.model.LedgerTab
@@ -94,33 +95,36 @@ class TransactionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun editTransaction(id: Long, edit: TransactionEdit): Result<Unit> {
+        val remoteId = if (id >= REMOTE_ID_OFFSET) id - REMOTE_ID_OFFSET else id
         // ac: edit-transaction-from-feed — snapshot for restore if the PATCH fails
         val snapshot = localDataSource.getById(id)
-            ?: return Result.failure(Exception("Transaction $id not found"))
+        if (snapshot == null) return syncDataSource.update(remoteId, edit)
         // ac: edit-transaction-from-feed — optimistic local update before the remote PATCH resolves
-        val updated = snapshot.copy(
-            amount   = edit.amount,
-            item     = edit.item,
-            category = edit.category,
-            dateIso  = edit.dateIso,
-            wallet   = edit.wallet,
-            txType   = edit.txType,
-            toWallet = edit.toWallet,
+        localDataSource.update(
+            snapshot.copy(
+                amount   = edit.amount,
+                item     = edit.item,
+                category = edit.category,
+                dateIso  = edit.dateIso,
+                wallet   = edit.wallet,
+                txType   = edit.txType,
+                toWallet = edit.toWallet,
+            )
         )
-        localDataSource.update(updated)
-        return syncDataSource.update(id, edit).onFailure {
+        return syncDataSource.update(remoteId, edit).onFailure {
             // ac: edit-transaction-from-feed — restore the previous row on remote failure so the snackbar retry can re-attempt
             localDataSource.update(snapshot)
         }
     }
 
     override suspend fun deleteTransaction(id: Long): Result<Unit> {
+        val remoteId = if (id >= REMOTE_ID_OFFSET) id - REMOTE_ID_OFFSET else id
         // ac: delete-transaction-from-feed — snapshot for restore on remote failure
         val snapshot = localDataSource.getById(id)
-            ?: return Result.failure(Exception("Transaction $id not found"))
+        if (snapshot == null) return syncDataSource.delete(remoteId)
         // ac: delete-transaction-from-feed — optimistic local removal before the remote call
         localDataSource.deleteById(id)
-        return syncDataSource.delete(id).onFailure {
+        return syncDataSource.delete(remoteId).onFailure {
             // ac: delete-transaction-from-feed — restore on remote failure so the snackbar retry can re-attempt
             localDataSource.insert(snapshot)
         }

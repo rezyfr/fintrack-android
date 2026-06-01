@@ -7,7 +7,7 @@ import com.fidriyanto.banktracker.data.model.LedgerTab
 import com.fidriyanto.banktracker.data.model.TransactionEntry
 import com.fidriyanto.banktracker.data.model.TransactionStatus
 
-private const val REMOTE_ID_OFFSET = 10_000_000L
+internal const val REMOTE_ID_OFFSET = 10_000_000L
 
 fun TransactionDto.toEntity(): TransactionEntity? = runCatching {
     TransactionEntity(
