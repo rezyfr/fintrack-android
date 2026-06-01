@@ -1,7 +1,10 @@
 {
-  "feature": "insights_wallet_filter",
-  "storyId": "insights-filter-by-wallet",
-  "acceptanceCriteria": [
+  "id": "insights-filter-by-wallet",
+  "capability": "insights-wallet-filter",
+  "role": "user",
+  "want": "to filter Insights by a specific wallet",
+  "soThat": "I can see spending breakdowns for each wallet independently",
+  "acceptance": [
     "a wallet selector is shown in the Insights filter bar alongside the period tabs",
     "selecting a specific wallet refetches and shows only data for that wallet",
     "selecting All wallets shows aggregated data across all wallets",

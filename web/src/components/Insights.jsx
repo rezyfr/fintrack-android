@@ -1,11 +1,17 @@
 import { useState, useEffect } from 'react';
-import { getMonthlyOverview } from '../api/supabase';
+import { getMonthlyOverview, getTransactions } from '../api/supabase';
+import { WALLETS } from '../constants/transaction';
 
 const PRESETS = [
-  { id: 'this',  label: 'This Month'    },
-  { id: 'last',  label: 'Last Month'    },
-  { id: 'last3', label: 'Last 3 Months' },
-  { id: 'custom', label: 'Custom'       },
+  { id: 'this',   label: 'This Month'    },
+  { id: 'last',   label: 'Last Month'    },
+  { id: 'last3',  label: 'Last 3 Months' },
+  { id: 'custom', label: 'Custom'        },
+];
+
+const WALLET_OPTIONS = [
+  { value: '', label: 'All wallets' },
+  ...WALLETS.map(w => ({ value: w.id, label: w.name })),
 ];
 
 const CATEGORIES = [
@@ -22,6 +28,23 @@ const CATEGORY_LABELS = {
   business: 'Business', gifts: 'Gifts', other: 'Other',
 };
 
+// ac: insights-filter-by-wallet — selecting a specific wallet refetches and shows only data for that wallet
+const CATEGORY_TO_KEY = {
+  'Food & Drink':       'food_drink',
+  'Transport':          'transport',
+  'Bills':              'bills',
+  'Subscriptions':      'subscriptions',
+  'Entertainment':      'entertainment',
+  'Groceries':          'groceries',
+  'Health & Wellbeing': 'health_wellbeing',
+  'Family':             'family',
+  'Shopping':           'shopping',
+  'Travel':             'travel',
+  'Business':           'business',
+  'Gifts':              'gifts',
+  'Other':              'other',
+};
+
 const CATEGORY_CLASS = {
   food_drink: 'chip-food', transport: 'chip-transport', bills: 'chip-bills',
   subscriptions: 'chip-subscriptions', entertainment: 'chip-entertainment',
@@ -30,8 +53,12 @@ const CATEGORY_CLASS = {
   business: 'chip-business', gifts: 'chip-gifts', other: 'chip-other',
 };
 
-function currentMonth() {
+function currentMonthYM() {
   const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+}
+
+function fmtYM(d) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
 }
 
@@ -42,25 +69,16 @@ function monthLabel(ym) {
   return `${names[m - 1]} ${y}`;
 }
 
-function monthsBetween(fromYM, toYM) {
+function monthsBetweenYM(fromYM, toYM) {
   const [fy, fm] = fromYM.split('-').map(Number);
   const [ty, tm] = toYM.split('-').map(Number);
   const result = [];
   let y = fy, m = fm;
   while (y < ty || (y === ty && m <= tm)) {
-    result.push(monthLabel(`${y}-${String(m).padStart(2, '0')}`));
+    result.push(`${y}-${String(m).padStart(2, '0')}`);
     m++; if (m > 12) { m = 1; y++; }
   }
-  return result.length ? result : [monthLabel(currentMonth())];
-}
-
-function monthsForPreset(preset) {
-  const now = new Date();
-  const fmt = (d) => monthLabel(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
-  if (preset === 'this') return [fmt(now)];
-  if (preset === 'last') return [fmt(new Date(now.getFullYear(), now.getMonth() - 1, 1))];
-  if (preset === 'last3') return [1, 2, 3].map(i => fmt(new Date(now.getFullYear(), now.getMonth() - i, 1)));
-  return [];
+  return result.length ? result : [currentMonthYM()];
 }
 
 function aggregate(rows) {
@@ -69,6 +87,27 @@ function aggregate(rows) {
   const expenses = sum('total_expenditure');
   const cats = CATEGORIES
     .map(k => ({ key: k, label: CATEGORY_LABELS[k], amount: sum(k) }))
+    .filter(c => c.amount > 0)
+    .sort((a, b) => b.amount - a.amount);
+  return { income, expenses, net: income - expenses, cats };
+}
+
+// ac: insights-filter-by-wallet — selecting a specific wallet refetches and shows only data for that wallet
+function aggregateTransactions(rows) {
+  let income = 0, expenses = 0;
+  const catTotals = {};
+  for (const row of rows) {
+    const amount = Number(row.amount) || 0;
+    if (row.tx_type === 'income') {
+      income += amount;
+    } else if (row.tx_type === 'expense') {
+      expenses += amount;
+      const key = CATEGORY_TO_KEY[row.category] || 'other';
+      catTotals[key] = (catTotals[key] || 0) + amount;
+    }
+  }
+  const cats = CATEGORIES
+    .map(k => ({ key: k, label: CATEGORY_LABELS[k], amount: catTotals[k] || 0 }))
     .filter(c => c.amount > 0)
     .sort((a, b) => b.amount - a.amount);
   return { income, expenses, net: income - expenses, cats };
@@ -133,37 +172,67 @@ function CurrencySection({ currency, summary }) {
   );
 }
 
-export default function Insights() {
-  const cm = currentMonth();
-  const [preset, setPreset]   = useState('this');
-  const [fromYM, setFromYM]   = useState(cm);
-  const [toYM, setToYM]       = useState(cm);
-  const [thb, setThb]         = useState(null);
-  const [idr, setIdr]         = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState(null);
+const EMPTY = { income: 0, expenses: 0, net: 0, cats: [] };
 
-  function resolvedMonths() {
-    return preset === 'custom' ? monthsBetween(fromYM, toYM) : monthsForPreset(preset);
+export default function Insights() {
+  const cm = currentMonthYM();
+  const [preset,  setPreset]  = useState('this');
+  const [fromYM,  setFromYM]  = useState(cm);
+  const [toYM,    setToYM]    = useState(cm);
+  // ac: insights-filter-by-wallet — a wallet selector is shown in the Insights filter bar
+  const [wallet,  setWallet]  = useState('');
+  const [thb,     setThb]     = useState(null);
+  const [idr,     setIdr]     = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error,   setError]   = useState(null);
+
+  function resolvedMonthsYM() {
+    const now = new Date();
+    if (preset === 'this')  return [fmtYM(now)];
+    if (preset === 'last')  return [fmtYM(new Date(now.getFullYear(), now.getMonth() - 1, 1))];
+    if (preset === 'last3') return [1, 2, 3].map(i => fmtYM(new Date(now.getFullYear(), now.getMonth() - i, 1)));
+    return monthsBetweenYM(fromYM, toYM);
   }
 
   useEffect(() => {
     if (preset === 'custom' && !fromYM) return;
+    const months = resolvedMonthsYM();
     let cancelled = false;
     setLoading(true);
     setError(null);
-    getMonthlyOverview(resolvedMonths())
-      .then(rows => {
-        if (cancelled) return;
-        setThb(aggregate(rows.filter(r => r.currency === 'THB')));
-        setIdr(aggregate(rows.filter(r => r.currency === 'IDR')));
-      })
-      .catch(e => { if (!cancelled) setError(e.message); })
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
-  }, [preset, preset === 'custom' ? fromYM : null, preset === 'custom' ? toYM : null]);
 
-  const noData = thb && idr && thb.income === 0 && thb.expenses === 0 && idr.income === 0 && idr.expenses === 0;
+    if (wallet) {
+      // ac: insights-filter-by-wallet — when a single wallet is selected only the relevant currency section is shown
+      const walletInfo = WALLETS.find(w => w.id === wallet);
+      const currency   = walletInfo?.currency ?? 'IDR';
+      Promise.all(months.map(m => getTransactions({ wallet, month: m })))
+        .then(results => {
+          if (cancelled) return;
+          const rows    = results.flat();
+          const summary = aggregateTransactions(rows);
+          // ac: insights-filter-by-wallet — when a single wallet is selected only the relevant currency section is shown
+          if (currency === 'THB') { setThb(summary); setIdr(EMPTY); }
+          else                    { setIdr(summary); setThb(EMPTY); }
+        })
+        .catch(e => { if (!cancelled) setError(e.message); })
+        .finally(() => { if (!cancelled) setLoading(false); });
+    } else {
+      // ac: insights-filter-by-wallet — selecting All wallets shows aggregated data across all wallets
+      getMonthlyOverview(months.map(monthLabel))
+        .then(rows => {
+          if (cancelled) return;
+          setThb(aggregate(rows.filter(r => r.currency === 'THB')));
+          setIdr(aggregate(rows.filter(r => r.currency === 'IDR')));
+        })
+        .catch(e => { if (!cancelled) setError(e.message); })
+        .finally(() => { if (!cancelled) setLoading(false); });
+    }
+    return () => { cancelled = true; };
+  }, [preset, preset === 'custom' ? fromYM : null, preset === 'custom' ? toYM : null, wallet]);
+
+  const noData = thb && idr &&
+    thb.income === 0 && thb.expenses === 0 &&
+    idr.income === 0 && idr.expenses === 0;
 
   return (
     <div className="page">
@@ -171,7 +240,6 @@ export default function Insights() {
         <h1 className="section-title">Insights</h1>
       </div>
 
-      {/* Period selector */}
       <div className="insight-filter-bar">
         <div className="filter-tabs">
           {PRESETS.map(p => (
@@ -184,6 +252,18 @@ export default function Insights() {
             </button>
           ))}
         </div>
+
+        {/* ac: insights-filter-by-wallet — a wallet selector is shown in the Insights filter bar */}
+        <select
+          className="filter-select"
+          value={wallet}
+          onChange={e => setWallet(e.target.value)}
+          aria-label="Wallet"
+        >
+          {WALLET_OPTIONS.map(({ value, label }) => (
+            <option key={value} value={value}>{label}</option>
+          ))}
+        </select>
 
         {preset === 'custom' && (
           <div className="insight-custom-range">

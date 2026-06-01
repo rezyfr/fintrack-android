@@ -1,0 +1,8 @@
+{
+  "id": "insights-wallet-filter",
+  "title": "Insights Wallet Filter",
+  "status": "Approved",
+  "owners": ["frotylatz@gmail.com"],
+  "stories": ["insights-filter-by-wallet"],
+  "flows": ["insights-filter-by-wallet-flow"]
+}

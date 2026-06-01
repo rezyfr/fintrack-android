@@ -1,0 +1,19 @@
+{
+  "id": "insights-filter-by-wallet-flow",
+  "steps": [
+    { "actor": "user", "action": "opens Insights and selects a wallet from the wallet selector" },
+    {
+      "actor": "app",
+      "action": "fetches transactions for the selected wallet and period, computes aggregations, and shows only the relevant currency section",
+      "story": "insights-filter-by-wallet",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "changes the time period preset" },
+    {
+      "actor": "app",
+      "action": "refetches with the same wallet filter applied and updates the displayed data",
+      "story": "insights-filter-by-wallet",
+      "noNavigation": true
+    }
+  ]
+}
