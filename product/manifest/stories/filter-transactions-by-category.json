@@ -1,7 +1,10 @@
 {
-  "feature": "transaction_category_filter",
-  "storyId": "filter-transactions-by-category",
-  "acceptanceCriteria": [
+  "id": "filter-transactions-by-category",
+  "capability": "transaction-category-filter",
+  "role": "user",
+  "want": "to filter the transaction list by category",
+  "soThat": "I can focus on spending in a specific area without opening Insights",
+  "acceptance": [
     "a category selector is shown in the transaction list filter row",
     "selecting a category shows only transactions with that category",
     "selecting All categories clears the category filter",

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { getTransactions, deleteTransactions, updateTransaction } from '../api/supabase';
-import { WALLETS, categoriesFor } from '../constants/transaction';
+import { WALLETS, EXPENSE_CATEGORIES, INCOME_CATEGORIES, categoriesFor } from '../constants/transaction';
 
 function walletCurrency(walletId) {
   return WALLETS.find(w => w.id === walletId)?.currency ?? 'IDR';
@@ -19,6 +19,14 @@ const TX_TYPE_OPTIONS = [
 const WALLET_OPTIONS = [
   { value: '', label: 'All wallets' },
   ...WALLETS.map(w => ({ value: w.id, label: w.name })),
+];
+
+// ac: filter-transactions-by-category — category selector lists all known expense and income categories in alphabetical order
+const CATEGORY_OPTIONS = [
+  { value: '', label: 'All categories' },
+  ...[...new Set([...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES])]
+    .sort()
+    .map(c => ({ value: c, label: c })),
 ];
 
 const CATEGORY_CLASS = {
@@ -153,9 +161,11 @@ function SkeletonRows() {
 }
 
 export default function TransactionList() {
-  const [txType, setTxType]       = useState('');
-  const [wallet, setWallet]       = useState('');
-  const [month, setMonth]         = useState(currentMonth());
+  const [txType,    setTxType]    = useState('');
+  const [wallet,    setWallet]    = useState('');
+  const [month,     setMonth]     = useState(currentMonth());
+  // ac: filter-transactions-by-category — a category selector is shown in the transaction list filter row
+  const [category,  setCategory]  = useState('');
   const [rows, setRows]           = useState([]);
   const [loading, setLoading]     = useState(false);
   const [error, setError]         = useState(null);
@@ -202,7 +212,8 @@ export default function TransactionList() {
     setError(null);
     setSelected(new Set());
     setConfirming(false);
-    getTransactions({ txType: txType || null, wallet: wallet || null, month })
+    // ac: filter-transactions-by-category — the category filter combines with the existing wallet, type, and month filters
+    getTransactions({ txType: txType || null, wallet: wallet || null, month, category: category || null })
       .then((data) => {
         if (ignore) return;
         // ac: transfer-in-wallet-view — mark rows that are incoming transfers for the viewed wallet
@@ -216,7 +227,7 @@ export default function TransactionList() {
       .catch((e)   => { if (!ignore) setError(e.message); })
       .finally(()  => { if (!ignore) setLoading(false); });
     return () => { ignore = true; };
-  }, [txType, wallet, month]);
+  }, [txType, wallet, month, category]);
 
   // Keep select-all checkbox in sync (checked / indeterminate / unchecked)
   useEffect(() => {
@@ -303,15 +314,24 @@ export default function TransactionList() {
           ))}
         </div>
         <div className="filter-row">
-          <label className="sr-only" htmlFor="wallet-filter">Wallet</label>
           <select
-            id="wallet-filter"
             aria-label="Wallet"
             className="filter-select"
             value={wallet}
             onChange={(e) => setWallet(e.target.value)}
           >
             {WALLET_OPTIONS.map(({ value, label }) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </select>
+          {/* ac: filter-transactions-by-category — a category selector is shown in the transaction list filter row */}
+          <select
+            aria-label="Category"
+            className="filter-select"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            {CATEGORY_OPTIONS.map(({ value, label }) => (
               <option key={value} value={value}>{label}</option>
             ))}
           </select>

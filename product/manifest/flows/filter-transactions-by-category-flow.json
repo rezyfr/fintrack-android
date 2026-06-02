@@ -1,0 +1,19 @@
+{
+  "id": "filter-transactions-by-category-flow",
+  "steps": [
+    { "actor": "user", "action": "selects a category from the category selector in the transaction list" },
+    {
+      "actor": "app",
+      "action": "refetches transactions filtered by the selected category and updates the list",
+      "story": "filter-transactions-by-category",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "changes wallet, type, or month filter while a category is active" },
+    {
+      "actor": "app",
+      "action": "applies all active filters together and refreshes the list",
+      "story": "filter-transactions-by-category",
+      "noNavigation": true
+    }
+  ]
+}

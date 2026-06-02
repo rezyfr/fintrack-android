@@ -7,14 +7,18 @@ function authHeaders() {
   };
 }
 
-export async function getTransactions({ tab = null, wallet = null, txType = null, month = null } = {}) {
+export async function getTransactions({ tab = null, wallet = null, txType = null, month = null, category = null } = {}) {
   const url = import.meta.env.VITE_SUPABASE_URL;
   const params = new URLSearchParams();
   params.append('order', 'date.desc');
   params.append('limit', '200');
-  if (tab)    params.append('tab',     `eq.${tab}`);
-  if (wallet) params.append('wallet',  `eq.${wallet}`);
-  if (txType) params.append('tx_type', `eq.${txType}`);
+  if (tab) params.append('tab', `eq.${tab}`);
+  if (wallet) {
+    // ac: transfer-in-wallet-view — also fetch transfers where this wallet is the destination
+    params.append('or', `(wallet.eq.${wallet},and(tx_type.eq.transfer,to_wallet.eq.${wallet}))`);
+  }
+  if (txType)   params.append('tx_type',  `eq.${txType}`);
+  if (category) params.append('category', `eq.${category}`); // ac: filter-transactions-by-category — selecting a category shows only transactions with that category
   if (month) {
     const [year, mon] = month.split('-').map(Number);
     const lastDay = new Date(year, mon, 0).getDate();
