@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { getTransactions, deleteTransactions, updateTransaction } from '../api/supabase';
 import { WALLETS, categoriesFor } from '../constants/transaction';
+
+function walletCurrency(walletId) {
+  return WALLETS.find(w => w.id === walletId)?.currency ?? 'IDR';
+}
 import EditTransactionModal from './EditTransactionModal';
 import MonthNav from './MonthNav';
 
@@ -13,12 +17,8 @@ const TX_TYPE_OPTIONS = [
 ];
 
 const WALLET_OPTIONS = [
-  { value: '',           label: 'All wallets'  },
-  { value: 'BBL',        label: 'Bangkok Bank' },
-  { value: 'BCA',        label: 'BCA'          },
-  { value: 'MANDIRI',    label: 'Mandiri'      },
-  { value: 'MANDIRI_CC', label: 'Mandiri CC'   },
-  { value: 'INVESTMENT', label: 'Investments'  },
+  { value: '', label: 'All wallets' },
+  ...WALLETS.map(w => ({ value: w.id, label: w.name })),
 ];
 
 const CATEGORY_CLASS = {
@@ -42,11 +42,13 @@ function currentMonth() {
 }
 
 function rowCurrency(row) {
+  if (row._is_transfer_in) return walletCurrency(row.to_wallet);
   if (row.wallet) return row.wallet === 'BBL' ? 'THB' : 'IDR';
   return row.tab?.includes('IDR') ? 'IDR' : 'THB';
 }
 
 function amountClass(row) {
+  if (row._is_transfer_in) return 'income';
   const t = row.tx_type || (row.tab?.includes('INCOME') ? 'income' : row.tab?.includes('EXPENSE') ? 'expense' : null);
   if (t === 'income') return 'income';
   if (t === 'expense') return 'expense';
@@ -56,10 +58,12 @@ function amountClass(row) {
 function formatAmount(row) {
   const isIDR = rowCurrency(row) === 'IDR';
   const prefix = isIDR ? 'Rp ' : '฿';
-  const num = Number(row.amount);
+  // ac: transfer-in-wallet-view — show to_amount (or amount) as positive inflow for the destination wallet
+  const num = row._is_transfer_in ? Number(row.to_amount ?? row.amount) : Number(row.amount);
   if (isNaN(num)) return '—';
   const decimals = isIDR ? 0 : 2;
-  return `${prefix}${num.toLocaleString('en', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}`;
+  const formatted = `${prefix}${num.toLocaleString('en', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}`;
+  return row._is_transfer_in ? `+${formatted}` : formatted;
 }
 
 function formatDate(iso) {
@@ -199,7 +203,16 @@ export default function TransactionList() {
     setSelected(new Set());
     setConfirming(false);
     getTransactions({ txType: txType || null, wallet: wallet || null, month })
-      .then((data) => { if (!ignore) setRows(data); })
+      .then((data) => {
+        if (ignore) return;
+        // ac: transfer-in-wallet-view — mark rows that are incoming transfers for the viewed wallet
+        const marked = wallet
+          ? data.map(r => r.tx_type === 'transfer' && r.to_wallet === wallet && r.wallet !== wallet
+              ? { ...r, _is_transfer_in: true }
+              : r)
+          : data;
+        setRows(marked);
+      })
       .catch((e)   => { if (!ignore) setError(e.message); })
       .finally(()  => { if (!ignore) setLoading(false); });
     return () => { ignore = true; };
@@ -417,7 +430,10 @@ export default function TransactionList() {
                   }
                 </td>
                 <td>
-                  {isEditing(row.id, 'category')
+                  {/* ac: transfer-in-wallet-view — label transfer-in rows distinctly in category column */}
+                  {row._is_transfer_in ? (
+                    <span className="chip chip-other">Transfer In</span>
+                  ) : isEditing(row.id, 'category')
                     ? <SelectCell
                         initialValue={row.category}
                         options={categoriesFor(row.tx_type).map(c => ({ value: c, label: c }))}
@@ -432,7 +448,12 @@ export default function TransactionList() {
                   }
                 </td>
                 <td>
-                  {isEditing(row.id, 'wallet')
+                  {/* ac: transfer-in-wallet-view — show source wallet with Transfer In label for incoming transfers */}
+                  {row._is_transfer_in ? (
+                    <span className={`chip chip-wallet chip-wallet--${row.wallet.toLowerCase().replace('_', '-')}`} title={`Transfer from ${row.wallet}`}>
+                      {row.wallet === 'MANDIRI_CC' ? 'CC' : row.wallet} &rarr;
+                    </span>
+                  ) : isEditing(row.id, 'wallet')
                     ? <SelectCell
                         initialValue={row.wallet}
                         options={WALLETS.map(w => ({ value: w.id, label: w.name }))}
