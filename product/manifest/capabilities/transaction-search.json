@@ -1,0 +1,8 @@
+{
+  "id": "transaction-search",
+  "title": "Transaction Search",
+  "status": "Approved",
+  "owners": ["frotylatz@gmail.com"],
+  "stories": ["search-transactions-by-text"],
+  "flows": ["search-transactions-by-text-flow"]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "transfer-in-wallet-view",
+  "capability": "cross-currency-transfers",
+  "role": "user",
+  "want": "to see incoming transfers in the transaction list when I filter by a specific wallet",
+  "soThat": "I can see the wallet's full transaction history including money received via transfer, not just outgoing flows",
+  "acceptance": [
+    "when a wallet filter is active, transfers where that wallet is the destination (to_wallet) also appear in the list",
+    "transfer-in rows display the incoming amount (to_amount if set, otherwise amount) as a positive inflow using the destination wallet's currency",
+    "transfer-in rows are visually labeled 'Transfer In' and show the source wallet",
+    "transfer-in rows appear alongside regular transactions sorted by date"
+  ]
+}

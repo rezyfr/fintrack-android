@@ -1,0 +1,8 @@
+{
+  "id": "batch-transaction-delete",
+  "title": "Batch Transaction Delete",
+  "status": "Approved",
+  "owners": ["frotylatz@gmail.com"],
+  "stories": ["batch-select-and-delete-transactions"],
+  "flows": ["batch-select-and-delete-transactions-flow"]
+}

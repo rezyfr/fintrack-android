@@ -1,0 +1,26 @@
+{
+  "id": "reconcile-wallet-monthly-flow",
+  "steps": [
+    { "actor": "user", "action": "scrolls to the Reconciliation section on the Balances screen" },
+    {
+      "actor": "app",
+      "action": "shows reconciliation rows for each wallet with the current month pre-selected",
+      "story": "reconcile-wallet-monthly",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "enters an opening balance for a wallet from their bank statement" },
+    {
+      "actor": "app",
+      "action": "saves the opening balance to Supabase and recalculates the closing and reconciliation status",
+      "story": "reconcile-wallet-monthly",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "navigates to a different month using the month navigator" },
+    {
+      "actor": "app",
+      "action": "fetches reconciliation data for the selected month and updates all wallet rows",
+      "story": "reconcile-wallet-monthly",
+      "noNavigation": true
+    }
+  ]
+}

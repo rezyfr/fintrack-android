@@ -51,15 +51,22 @@ fun EditTransactionBottomSheet(
     var wallet by remember { mutableStateOf(transaction.wallet?.let { id -> Wallet.entries.firstOrNull { it.id == id } } ?: Wallet.entries.first()) }
     var txType by remember { mutableStateOf(TxType.entries.firstOrNull { it.id == transaction.txType } ?: TxType.entries.first()) }
     var toWallet by remember { mutableStateOf<Wallet?>(null) }
+    // ac: edit-transfer-target-amount — Received Amount state for cross-currency transfers
+    var toAmount by remember { mutableStateOf("") }
 
     var categoryExpanded by remember { mutableStateOf(false) }
     var walletExpanded by remember { mutableStateOf(false) }
     var typeExpanded by remember { mutableStateOf(false) }
     var toWalletExpanded by remember { mutableStateOf(false) }
+    var dismissedQuery by remember { mutableStateOf<String?>(null) }
 
-    val merchantSuggestions = remember(item, merchantHistory) {
-        if (item.isBlank()) merchantHistory
-        else merchantHistory.filter { it.contains(item, ignoreCase = true) }
+    val merchantSuggestions = remember(item, merchantHistory, dismissedQuery) {
+        val query = item.trim()
+        when {
+            query == dismissedQuery -> emptyList()
+            item.isBlank()         -> merchantHistory
+            else                   -> merchantHistory.filter { it.contains(item, ignoreCase = true) }
+        }
     }
 
     ModalBottomSheet(
@@ -89,16 +96,19 @@ fun EditTransactionBottomSheet(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             )
 
-            Box(modifier = Modifier.fillMaxWidth()) {
+            BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                val dropdownWidth = maxWidth
                 OutlinedTextField(
                     value = item,
-                    onValueChange = { item = it },
+                    onValueChange = { item = it; dismissedQuery = null },
                     label = { Text(stringResource(R.string.edit_item_label)) },
                     modifier = Modifier.fillMaxWidth(),
                 )
                 MerchantSuggestionDropdown(
                     suggestions = merchantSuggestions,
-                    onSelect = { item = it },
+                    width = dropdownWidth,
+                    onSelect = { item = it; dismissedQuery = it.trim() },
+                    onDismiss = { dismissedQuery = item.trim() },
                 )
             }
 
@@ -212,8 +222,21 @@ fun EditTransactionBottomSheet(
                 }
             }
 
+            // ac: edit-transfer-target-amount — Received Amount input shown only for cross-currency transfers
+            if (txType == TxType.TRANSFER && toWallet != null && wallet.currency != toWallet?.currency) {
+                OutlinedTextField(
+                    value = toAmount,
+                    onValueChange = { toAmount = it },
+                    label = { Text(stringResource(R.string.edit_to_amount_label)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                )
+            }
+
             Button(
                 onClick = {
+                    // ac: edit-transfer-target-amount — to_amount cleared when not a cross-currency transfer
+                    val isCrossCurrency = txType == TxType.TRANSFER && toWallet != null && wallet.currency != toWallet?.currency
                     // ac: edit-transaction-from-feed — Save emits the edit; FeedViewModel applies it optimistically then PATCHes Supabase
                     onSave(
                         TransactionEdit(
@@ -224,6 +247,7 @@ fun EditTransactionBottomSheet(
                             wallet   = wallet.id,
                             txType   = txType.id,
                             toWallet = if (txType == TxType.TRANSFER) toWallet?.id else null,
+                            toAmount = if (isCrossCurrency) toAmount.toDoubleOrNull() else null,
                         )
                     )
                 },

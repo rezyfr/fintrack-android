@@ -20,7 +20,8 @@ interface SupabaseTransactionService {
         @Query("limit") limit: Int,
         @Query("date") dateFilters: List<String>?,
         @Query("wallet") wallet: String?,
-        @Query("tx_type") txType: String?
+        @Query("tx_type") txType: String?,
+        @Query("category") category: String?,
     ): List<TransactionDto>
 
     @POST("rest/v1/transactions")

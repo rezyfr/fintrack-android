@@ -1,0 +1,19 @@
+{
+  "id": "search-transactions-by-text-flow",
+  "steps": [
+    { "actor": "user", "action": "types a query into the search field in the transaction list" },
+    {
+      "actor": "app",
+      "action": "filters displayed transactions to those whose merchant or item contains the query text",
+      "story": "search-transactions-by-text",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "clears the search field" },
+    {
+      "actor": "app",
+      "action": "restores the full transaction list with other active filters still applied",
+      "story": "search-transactions-by-text",
+      "noNavigation": true
+    }
+  ]
+}

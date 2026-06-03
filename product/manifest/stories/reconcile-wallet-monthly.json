@@ -1,7 +1,10 @@
 {
-  "feature": "wallet_reconciliation",
-  "storyId": "reconcile-wallet-monthly",
-  "acceptanceCriteria": [
+  "id": "reconcile-wallet-monthly",
+  "capability": "wallet-reconciliation",
+  "role": "user",
+  "want": "to enter my bank statement opening balance and see whether my recorded transactions reconcile",
+  "soThat": "I can detect missing or duplicate transactions each month",
+  "acceptance": [
     "a Reconciliation section appears below the wallet balance cards on the Balances screen",
     "a month navigator lets the user select which month to reconcile",
     "each wallet row shows the opening balance input and the calculated net change and closing balance",

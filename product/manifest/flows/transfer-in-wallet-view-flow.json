@@ -1,0 +1,19 @@
+{
+  "id": "transfer-in-wallet-view-flow",
+  "steps": [
+    { "actor": "user", "action": "selects a specific wallet from the wallet filter in the transaction list" },
+    {
+      "actor": "app",
+      "action": "fetches transactions where wallet matches OR where to_wallet matches and tx_type is transfer, returning both outgoing and incoming flows for that wallet",
+      "story": "transfer-in-wallet-view",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "views the transaction list" },
+    {
+      "actor": "app",
+      "action": "renders transfer-in rows with a positive incoming amount (to_amount when set, else amount) in the destination wallet's currency, labeled 'Transfer In' with the source wallet shown",
+      "story": "transfer-in-wallet-view",
+      "noNavigation": true
+    }
+  ]
+}

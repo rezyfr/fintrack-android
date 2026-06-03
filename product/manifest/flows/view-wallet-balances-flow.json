@@ -1,0 +1,18 @@
+{
+  "id": "view-wallet-balances-flow",
+  "steps": [
+    { "actor": "user", "action": "taps the Balances tab in the bottom navigation bar" },
+    {
+      "actor": "app",
+      "action": "navigates to the Balances screen and fetches wallet balances from Supabase",
+      "story": "view-wallet-balances",
+      "requires": "BalancesScreen"
+    },
+    {
+      "actor": "app",
+      "action": "displays each wallet balance card and the currency net totals",
+      "story": "view-wallet-balances",
+      "noNavigation": true
+    }
+  ]
+}

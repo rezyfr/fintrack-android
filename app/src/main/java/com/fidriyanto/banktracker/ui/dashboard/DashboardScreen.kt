@@ -28,14 +28,26 @@ private val Period.label: String
         Period.LAST_3_MONTHS -> "Last 3 Months"
     }
 
+// ac: insights-filter-by-wallet — a wallet selector is shown in the Insights filter bar
+private val WALLET_OPTIONS = listOf(
+    null         to "All wallets",
+    "BBL"        to "Bangkok Bank",
+    "MANDIRI"    to "Mandiri",
+    "BCA"        to "BCA",
+    "MANDIRI_CC" to "Mandiri CC",
+    "BCA_CC"     to "BCA CC",
+    "INVESTMENT" to "Investments",
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
-    val state       by viewModel.state.collectAsStateWithLifecycle()
-    val period      by viewModel.period.collectAsStateWithLifecycle()
-    val isCustom    by viewModel.isCustom.collectAsStateWithLifecycle()
-    val customFrom  by viewModel.customFrom.collectAsStateWithLifecycle()
-    val customTo    by viewModel.customTo.collectAsStateWithLifecycle()
+    val state        by viewModel.state.collectAsStateWithLifecycle()
+    val period       by viewModel.period.collectAsStateWithLifecycle()
+    val isCustom     by viewModel.isCustom.collectAsStateWithLifecycle()
+    val customFrom   by viewModel.customFrom.collectAsStateWithLifecycle()
+    val customTo     by viewModel.customTo.collectAsStateWithLifecycle()
+    val walletFilter by viewModel.walletFilter.collectAsStateWithLifecycle()
 
     Column(
         Modifier
@@ -59,9 +71,11 @@ fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
                 isCustom       = isCustom,
                 customFrom     = customFrom,
                 customTo       = customTo,
+                walletFilter   = walletFilter,
                 availableMonths = viewModel.availableMonths,
                 onSelectPeriod = viewModel::selectPeriod,
                 onSetCustom    = viewModel::setCustomRange,
+                onSetWallet    = viewModel::setWallet,
                 onRefresh      = viewModel::refresh,
                 monthLabel     = viewModel::monthDisplayLabel,
             )
@@ -99,9 +113,11 @@ private fun LoadedContent(
     isCustom: Boolean,
     customFrom: String?,
     customTo: String?,
+    walletFilter: String?,
     availableMonths: List<String>,
     onSelectPeriod: (Period) -> Unit,
     onSetCustom: (String, String) -> Unit,
+    onSetWallet: (String?) -> Unit,
     onRefresh: () -> Unit,
     monthLabel: (String) -> String,
 ) {
@@ -127,6 +143,20 @@ private fun LoadedContent(
                 monthLabel      = monthLabel,
             )
 
+            // ac: insights-filter-by-wallet — a wallet selector is shown in the Insights filter bar alongside the period tabs
+            Row(
+                modifier = Modifier.horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                WALLET_OPTIONS.forEach { (value, label) ->
+                    FilterChip(
+                        selected = walletFilter == value,
+                        onClick = { onSetWallet(value) },
+                        label = { Text(label, fontSize = 12.sp) }
+                    )
+                }
+            }
+
             if (state.refreshError) {
                 Text(
                     if (state.lastUpdated != null) "Last updated ${state.lastUpdated}"
@@ -136,8 +166,9 @@ private fun LoadedContent(
                 )
             }
 
-            CurrencySection("THB", "฿", state.thb)
-            CurrencySection("IDR", "Rp", state.idr)
+            // ac: insights-filter-by-wallet — when a single wallet is selected only the relevant currency section is shown
+            if (!state.thb.isEmpty()) CurrencySection("THB", "฿", state.thb)
+            if (!state.idr.isEmpty()) CurrencySection("IDR", "Rp", state.idr)
             Spacer(Modifier.height(16.dp))
         }
 

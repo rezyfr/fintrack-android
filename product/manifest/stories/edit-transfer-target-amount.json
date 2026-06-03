@@ -1,0 +1,14 @@
+{
+  "id": "edit-transfer-target-amount",
+  "capability": "cross-currency-transfers",
+  "role": "user",
+  "want": "to enter the actual amount received when transferring between wallets of different currencies",
+  "soThat": "the destination wallet's reconciliation reflects what actually landed, not the source amount counted in the wrong currency",
+  "acceptance": [
+    "the transactions table has a nullable to_amount column for cross-currency transfers",
+    "the wallet reconciliation and wallet balances credit the destination wallet with to_amount when it is set, otherwise with amount",
+    "the edit modal shows a Received Amount input only when the transaction type is transfer and the source and destination wallets have different currencies",
+    "saving the edit modal persists the entered to_amount value to Supabase",
+    "the Received Amount field is cleared on save when the transaction type is not transfer or when source and destination wallets share a currency"
+  ]
+}

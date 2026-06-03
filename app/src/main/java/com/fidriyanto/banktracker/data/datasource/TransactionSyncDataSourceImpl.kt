@@ -30,6 +30,7 @@ class TransactionSyncDataSourceImpl @Inject constructor(
     }.onFailure { Log.e("TransactionSyncDS", "delete failed", it) }
 
     override suspend fun update(id: Long, edit: TransactionEdit): Result<Unit> = runCatching {
+        // ac: edit-transfer-target-amount — saving the edit persists the entered to_amount value to Supabase
         val body = TransactionPatchDto(
             amount   = edit.amount,
             item     = edit.item,
@@ -38,6 +39,7 @@ class TransactionSyncDataSourceImpl @Inject constructor(
             wallet   = edit.wallet,
             txType   = edit.txType,
             toWallet = edit.toWallet,
+            toAmount = edit.toAmount,
         )
         Log.d("TransactionSyncDS", "PATCH transactions: id=$id item=${edit.item}")
         val response = service.updateTransaction("eq.$id", body)

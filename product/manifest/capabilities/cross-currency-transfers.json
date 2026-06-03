@@ -1,0 +1,8 @@
+{
+  "id": "cross-currency-transfers",
+  "title": "Cross-Currency Transfers",
+  "status": "Approved",
+  "owners": ["frotylatz@gmail.com"],
+  "stories": ["edit-transfer-target-amount", "transfer-in-wallet-view"],
+  "flows": ["edit-transfer-target-amount-flow", "transfer-in-wallet-view-flow"]
+}

@@ -35,5 +35,6 @@ data class TransactionPatchDto(
     @SerializedName("date")      val date: String,
     @SerializedName("wallet")    val wallet: String?,
     @SerializedName("tx_type")   val txType: String,
-    @SerializedName("to_wallet") val toWallet: String?
+    @SerializedName("to_wallet") val toWallet: String?,
+    @SerializedName("to_amount") val toAmount: Double?,
 )

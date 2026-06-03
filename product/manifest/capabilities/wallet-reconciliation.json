@@ -1,0 +1,8 @@
+{
+  "id": "wallet-reconciliation",
+  "title": "Wallet Reconciliation",
+  "status": "Approved",
+  "owners": ["frotylatz@gmail.com"],
+  "stories": ["reconcile-wallet-monthly"],
+  "flows": ["reconcile-wallet-monthly-flow"]
+}

@@ -22,14 +22,17 @@ class DashboardViewModel @Inject constructor(
     private val _period       = MutableStateFlow(Period.THIS_MONTH)
     private val _customFrom   = MutableStateFlow<String?>(null)
     private val _customTo     = MutableStateFlow<String?>(null)
+    // ac: insights-filter-by-wallet — wallet filter state
+    private val _walletFilter = MutableStateFlow<String?>(null)
     private val _isRefreshing = MutableStateFlow(false)
     private val _refreshError = MutableStateFlow(false)
     @Volatile private var lastFetchedAt: Long? = null
 
-    val period     = _period.asStateFlow()
-    val customFrom = _customFrom.asStateFlow()
-    val customTo   = _customTo.asStateFlow()
-    val isCustom   = combine(_customFrom, _customTo) { f, t -> f != null && t != null }
+    val period       = _period.asStateFlow()
+    val customFrom   = _customFrom.asStateFlow()
+    val customTo     = _customTo.asStateFlow()
+    val walletFilter = _walletFilter.asStateFlow()
+    val isCustom     = combine(_customFrom, _customTo) { f, t -> f != null && t != null }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     val availableMonths: List<String> = (0..23).map { i ->
@@ -38,10 +41,17 @@ class DashboardViewModel @Inject constructor(
     }
 
     val state: StateFlow<DashboardUiState> =
-        combine(_period, _customFrom, _customTo) { p, from, to -> Triple(p, from, to) }
-            .flatMapLatest { (p, from, to) ->
+        combine(_period, _customFrom, _customTo, _walletFilter) { p, from, to, w ->
+            arrayOf(p, from, to, w)
+        }
+            .flatMapLatest { arr ->
+                @Suppress("UNCHECKED_CAST")
+                val p = arr[0] as Period
+                val from = arr[1] as String?
+                val to = arr[2] as String?
+                val w = arr[3] as String?
                 combine(
-                    useCase.observe(p, from, to),
+                    useCase.observe(p, from, to, w),
                     _isRefreshing,
                     _refreshError
                 ) { summaryPair, refreshing, error ->
@@ -78,10 +88,17 @@ class DashboardViewModel @Inject constructor(
         refresh()
     }
 
+    // ac: insights-filter-by-wallet — wallet filter persists when the time period preset is changed
+    fun setWallet(wallet: String?) {
+        _walletFilter.value = wallet
+        _refreshError.value = false
+        refresh()
+    }
+
     fun refresh() = viewModelScope.launch {
         _isRefreshing.value = true
         _refreshError.value = false
-        val result = useCase.refresh(_period.value, _customFrom.value, _customTo.value)
+        val result = useCase.refresh(_period.value, _customFrom.value, _customTo.value, _walletFilter.value)
         if (result.isSuccess) lastFetchedAt = System.currentTimeMillis()
         _refreshError.value = result.isFailure
         _isRefreshing.value = false

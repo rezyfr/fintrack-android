@@ -1,0 +1,33 @@
+{
+  "id": "batch-select-and-delete-transactions-flow",
+  "steps": [
+    { "actor": "user", "action": "long-presses a transaction card to enter selection mode" },
+    {
+      "actor": "app",
+      "action": "enters selection mode, highlights the long-pressed card, and shows a selection toolbar",
+      "story": "batch-select-and-delete-transactions",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "taps additional cards to add or remove them from the selection" },
+    {
+      "actor": "app",
+      "action": "toggles selection state of each tapped card and updates the selected count in the toolbar",
+      "story": "batch-select-and-delete-transactions",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "presses the Delete button in the toolbar" },
+    {
+      "actor": "app",
+      "action": "shows a confirmation dialog stating how many transactions will be deleted",
+      "story": "batch-select-and-delete-transactions",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "confirms the deletion" },
+    {
+      "actor": "app",
+      "action": "deletes all selected transactions, clears the selection, and exits selection mode",
+      "story": "batch-select-and-delete-transactions",
+      "noNavigation": true
+    }
+  ]
+}

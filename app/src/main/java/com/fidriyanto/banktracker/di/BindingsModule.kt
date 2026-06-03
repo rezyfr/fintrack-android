@@ -2,6 +2,8 @@ package com.fidriyanto.banktracker.di
 
 import com.fidriyanto.banktracker.data.datasource.MerchantHistoryDataSource
 import com.fidriyanto.banktracker.data.datasource.MerchantHistoryDataSourceImpl
+import com.fidriyanto.banktracker.data.datasource.WalletBalanceDataSource
+import com.fidriyanto.banktracker.data.datasource.WalletBalanceDataSourceImpl
 import com.fidriyanto.banktracker.data.datasource.MonthlyOverviewLocalDataSource
 import com.fidriyanto.banktracker.data.datasource.MonthlyOverviewLocalDataSourceImpl
 import com.fidriyanto.banktracker.data.datasource.MonthlyOverviewRemoteDataSource
@@ -22,6 +24,8 @@ import com.fidriyanto.banktracker.data.repository.MerchantHistoryRepository
 import com.fidriyanto.banktracker.data.repository.MerchantHistoryRepositoryImpl
 import com.fidriyanto.banktracker.data.repository.TransactionRepository
 import com.fidriyanto.banktracker.data.repository.TransactionRepositoryImpl
+import com.fidriyanto.banktracker.data.repository.WalletBalanceRepository
+import com.fidriyanto.banktracker.data.repository.WalletBalanceRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -42,4 +46,6 @@ abstract class BindingsModule {
     @Binds @Singleton abstract fun bindBudgetRemoteDataSource(impl: BudgetRemoteDataSourceImpl): BudgetRemoteDataSource
     @Binds @Singleton abstract fun bindMerchantHistoryDataSource(impl: MerchantHistoryDataSourceImpl): MerchantHistoryDataSource
     @Binds @Singleton abstract fun bindMerchantHistoryRepository(impl: MerchantHistoryRepositoryImpl): MerchantHistoryRepository
+    @Binds @Singleton abstract fun bindWalletBalanceDataSource(impl: WalletBalanceDataSourceImpl): WalletBalanceDataSource
+    @Binds @Singleton abstract fun bindWalletBalanceRepository(impl: WalletBalanceRepositoryImpl): WalletBalanceRepository
 }

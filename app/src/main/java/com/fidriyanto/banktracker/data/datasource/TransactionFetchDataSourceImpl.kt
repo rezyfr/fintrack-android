@@ -16,7 +16,8 @@ class TransactionFetchDataSourceImpl @Inject constructor(
     override suspend fun fetch(
         month: String?,
         wallet: String?,
-        txType: String?
+        txType: String?,
+        category: String?,
     ): Result<List<TransactionEntity>> = runCatching {
         val dateFilters = month?.let {
             val (y, m) = it.split("-").map { p -> p.toInt() }
@@ -28,7 +29,8 @@ class TransactionFetchDataSourceImpl @Inject constructor(
             limit       = 200,
             dateFilters = dateFilters,
             wallet      = wallet?.let { "eq.$it" },
-            txType      = txType?.let { "eq.$it" }
+            txType      = txType?.let { "eq.$it" },
+            category    = category?.let { "eq.$it" },
         )
         Log.d("TransactionFetchDS", "fetched ${dtos.size} transactions")
         dtos.mapNotNull { it.toEntity() }

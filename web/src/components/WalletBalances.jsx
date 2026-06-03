@@ -119,8 +119,7 @@ export default function WalletBalances() {
   const idrAssets = balances.filter(w => w.currency === 'IDR' && w.type !== 'credit');
   const idrCC     = balances.filter(w => w.currency === 'IDR' && w.type === 'credit');
   const thbNet    = balances.filter(w => w.currency === 'THB').reduce((s, w) => s + w.balance, 0);
-  const idrNet    = idrAssets.reduce((s, w) => s + w.balance, 0)
-                  - idrCC.reduce((s, w) => s + w.balance, 0);
+  const idrNet    = idrAssets.reduce((s, w) => s + w.balance, 0);
 
   return (
     <div className="page">

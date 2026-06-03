@@ -1,0 +1,19 @@
+{
+  "id": "edit-transfer-target-amount-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the edit modal for a transfer whose source and destination wallets have different currencies" },
+    {
+      "actor": "app",
+      "action": "shows a Received Amount input alongside the source Amount input",
+      "story": "edit-transfer-target-amount",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "enters the actual amount received in the destination wallet's currency and submits the form" },
+    {
+      "actor": "app",
+      "action": "persists to_amount to Supabase so reconciliation credits the destination wallet with the correct value",
+      "story": "edit-transfer-target-amount",
+      "noNavigation": true
+    }
+  ]
+}

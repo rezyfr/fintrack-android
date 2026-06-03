@@ -8,4 +8,6 @@ data class TransactionEdit(
     val wallet: String?,
     val txType: String,
     val toWallet: String?,
+    // ac: edit-transfer-target-amount — nullable to_amount for cross-currency transfers
+    val toAmount: Double? = null,
 )

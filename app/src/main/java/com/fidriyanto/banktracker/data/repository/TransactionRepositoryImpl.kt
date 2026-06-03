@@ -30,8 +30,8 @@ class TransactionRepositoryImpl @Inject constructor(
             list.filter { it.status != TransactionStatus.SYNCED }.map { it.toUiModel() }
         }
 
-    override suspend fun fetch(month: String?, wallet: String?, txType: String?): Result<List<TransactionUiModel>> =
-        fetchDataSource.fetch(month, wallet, txType).map { list -> list.map { it.toUiModel() } }
+    override suspend fun fetch(month: String?, wallet: String?, txType: String?, category: String?): Result<List<TransactionUiModel>> =
+        fetchDataSource.fetch(month, wallet, txType, category).map { list -> list.map { it.toUiModel() } }
 
     override suspend fun processNewNotification(parsed: ParsedTransaction): Long? {
         val compositeKey = "${parsed.merchant}|${parsed.amount}|${parsed.date}"

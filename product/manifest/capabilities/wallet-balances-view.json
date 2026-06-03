@@ -1,0 +1,8 @@
+{
+  "id": "wallet-balances-view",
+  "title": "Wallet Balances View",
+  "status": "Approved",
+  "owners": ["frotylatz@gmail.com"],
+  "stories": ["view-wallet-balances"],
+  "flows": ["view-wallet-balances-flow"]
+}

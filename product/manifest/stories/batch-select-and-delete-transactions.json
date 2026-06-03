@@ -1,0 +1,14 @@
+{
+  "id": "batch-select-and-delete-transactions",
+  "capability": "batch-transaction-delete",
+  "role": "user",
+  "want": "to select multiple transactions and delete them at once",
+  "soThat": "I can clean up incorrect or duplicate entries without swiping each one individually",
+  "acceptance": [
+    "a long press on a transaction card toggles selection mode and selects that card",
+    "in selection mode tapping a card toggles its selection state",
+    "a toolbar shows the count of selected items and a Delete button",
+    "pressing Delete shows a confirmation dialog with the count of selected transactions",
+    "confirming the dialog deletes all selected transactions and exits selection mode"
+  ]
+}

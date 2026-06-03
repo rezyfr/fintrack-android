@@ -35,6 +35,7 @@
 
     <!-- Feed screen / TransactionCard -->
     <string name="feed_filter_all">All</string>
+    <string name="feed_search_placeholder">Search transactions</string>
     <string name="feed_category_date">%1$s · %2$s</string>
     <string name="feed_card_description_label">Description</string>
     <string name="feed_card_category_label">Category</string>
@@ -46,6 +47,8 @@
     <string name="delete_dialog_confirm">Delete</string>
     <string name="delete_background_label">Delete</string>
     <string name="snackbar_delete_failed">Failed to delete transaction. Please try again.</string>
+    <string name="batch_delete_title">Delete transactions?</string>
+    <string name="batch_delete_message">Delete %1$d selected transactions? This cannot be undone.</string>
 
     <!-- Edit transaction -->
     <string name="edit_sheet_title">Edit Transaction</string>
@@ -56,5 +59,18 @@
     <string name="edit_wallet_label">Wallet</string>
     <string name="edit_type_label">Type</string>
     <string name="edit_to_wallet_label">To Wallet</string>
+    <string name="edit_to_amount_label">Received Amount</string>
+
+    <!-- Balances screen -->
+    <string name="balances_owed">owed</string>
+    <string name="balances_thb_net">THB Net</string>
+    <string name="balances_idr_net">IDR Net</string>
+    <string name="balances_statement_opening">Statement Opening</string>
+    <string name="balances_net_label">Net: %1$s</string>
+    <string name="balances_closing_label">Closing: %1$s</string>
+    <string name="balances_no_opening">-- No opening balance</string>
+    <string name="balances_no_next_month">No next month data</string>
+    <string name="balances_reconciled">Reconciled</string>
+    <string name="balances_off_by">Off by %1$s</string>
     <string name="snackbar_edit_failed">Failed to update transaction. Please try again.</string>
 </resources>
