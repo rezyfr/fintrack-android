@@ -2,7 +2,7 @@ package com.fidriyanto.banktracker.ui.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fidriyanto.banktracker.domain.usecase.SettingsUseCase
+import com.fidriyanto.banktracker.data.repository.TransactionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,20 +17,20 @@ data class SettingsState(
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val useCase: SettingsUseCase
+    private val transactionRepository: TransactionRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(SettingsState(isListenerActive = true))
     val state = _state.asStateFlow()
 
     fun retryPendingSyncs() = viewModelScope.launch {
         _state.value = _state.value.copy(isSyncing = true)
-        useCase.retryFailedSyncs()
+        transactionRepository.retryFailedSyncs()
         _state.value = _state.value.copy(isSyncing = false)
     }
 
     fun markAllSynced() = viewModelScope.launch {
         _state.value = _state.value.copy(isClearing = true)
-        useCase.markAllSynced()
+        transactionRepository.markAllSynced()
         _state.value = _state.value.copy(isClearing = false)
     }
 }

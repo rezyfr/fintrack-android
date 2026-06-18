@@ -28,6 +28,7 @@ fun TransactionCard(
     transaction: TransactionUiModel,
     onRetry: () -> Unit,
     onConfirm: (item: String, category: String) -> Unit,
+    onClick: () -> Unit = {},
     onLongClick: () -> Unit = {},
 ) {
     val appColors = LocalAppColors.current
@@ -73,10 +74,10 @@ fun TransactionCard(
         modifier = Modifier
             .fillMaxWidth()
             .border(if (borderColor != Color.Transparent) 1.dp else 0.dp, borderColor, RoundedCornerShape(12.dp))
-            // ac: edit-transaction-from-feed — long-press anywhere on the card opens the edit bottom sheet
             .combinedClickable(
                 onClick = {
                     if (transaction.status == TransactionStatus.PENDING_EDIT) expanded = !expanded
+                    else onClick()
                 },
                 onLongClick = onLongClick,
             ),

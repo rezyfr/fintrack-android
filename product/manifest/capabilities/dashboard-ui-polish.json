@@ -1,0 +1,8 @@
+{
+  "id": "dashboard-ui-polish",
+  "title": "Dashboard UI Polish",
+  "status": "Approved",
+  "owners": ["frotylatz@gmail.com"],
+  "stories": ["dashboard-currency-section-header"],
+  "flows": ["dashboard-currency-section-header-flow"]
+}

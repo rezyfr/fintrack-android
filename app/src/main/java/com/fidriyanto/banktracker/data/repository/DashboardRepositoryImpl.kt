@@ -2,11 +2,11 @@ package com.fidriyanto.banktracker.data.repository
 
 import com.fidriyanto.banktracker.data.datasource.MonthlyOverviewLocalDataSource
 import com.fidriyanto.banktracker.data.datasource.MonthlyOverviewRemoteDataSource
-import com.fidriyanto.banktracker.data.datasource.TransactionLocalDataSource
 import com.fidriyanto.banktracker.data.db.MonthlyOverviewEntity
 import com.fidriyanto.banktracker.domain.model.MerchantTotal
 import com.fidriyanto.banktracker.domain.model.MonthlyOverviewSummary
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -15,9 +15,12 @@ import javax.inject.Singleton
 @Singleton
 class DashboardRepositoryImpl @Inject constructor(
     private val localDataSource: MonthlyOverviewLocalDataSource,
-    private val transactionDataSource: TransactionLocalDataSource,
     private val remoteDataSource: MonthlyOverviewRemoteDataSource
 ) : DashboardRepository {
+
+    // in-memory cache populated during refresh(); survives for the session
+    private val _thbMerchants = MutableStateFlow<List<MerchantTotal>>(emptyList())
+    private val _idrMerchants = MutableStateFlow<List<MerchantTotal>>(emptyList())
 
     override fun observeForMonths(
         months: List<String>
@@ -27,20 +30,19 @@ class DashboardRepositoryImpl @Inject constructor(
             localDataSource.observeByMonths(months, "IDR").map { it.map(::toSummary) }
         ) { thb, idr -> Pair(thb, idr) }
 
-    // ac: transport-provider-breakdown: THB and IDR transport breakdowns are independent
-    override fun observeTransportBreakdown(
-        fromDate: String,
-        toDate: String
-    ): Flow<Pair<List<MerchantTotal>, List<MerchantTotal>>> =
-        combine(
-            transactionDataSource.observeTransportTotalsTHB("Transport", fromDate, toDate),
-            transactionDataSource.observeTransportTotalsIDR("Transport", fromDate, toDate)
-        ) { thb, idr -> Pair(thb, idr) }
+    // ac: transport-provider-breakdown — THB and IDR transport breakdowns are shown independently
+    override fun observeTransportMerchants(): Flow<Pair<List<MerchantTotal>, List<MerchantTotal>>> =
+        combine(_thbMerchants, _idrMerchants) { thb, idr -> Pair(thb, idr) }
 
     override suspend fun refresh(months: List<String>): Result<Unit> {
         return try {
             val result = remoteDataSource.fetch(months)
             result.onSuccess { rows -> localDataSource.upsertAll(rows) }
+            // fetch transport merchants on every refresh; failure is non-fatal
+            remoteDataSource.fetchTransportMerchants(months).onSuccess { (thb, idr) ->
+                _thbMerchants.value = thb
+                _idrMerchants.value = idr
+            }
             result.map { }
         } catch (e: Exception) {
             Result.failure(e)

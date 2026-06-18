@@ -15,6 +15,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,12 +61,14 @@ fun EditTransactionBottomSheet(
     var toWalletExpanded by remember { mutableStateOf(false) }
     var dismissedQuery by remember { mutableStateOf<String?>(null) }
 
-    val merchantSuggestions = remember(item, merchantHistory, dismissedQuery) {
-        val query = item.trim()
-        when {
-            query == dismissedQuery -> emptyList()
-            item.isBlank()         -> merchantHistory
-            else                   -> merchantHistory.filter { it.contains(item, ignoreCase = true) }
+    val merchantSuggestions by remember {
+        derivedStateOf {
+            val query = item.trim()
+            when {
+                query == dismissedQuery -> emptyList()
+                item.isBlank()         -> merchantHistory
+                else                   -> merchantHistory.filter { it.contains(item, ignoreCase = true) }
+            }
         }
     }
 

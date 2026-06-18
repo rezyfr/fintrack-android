@@ -10,7 +10,11 @@ create table transactions (
     channel     text not null,
     tab         text not null,
     note        text,
-    created_at  timestamptz default now()
+    created_at  timestamptz default now(),
+    wallet      text not null,
+    tx_type     text not null,
+    to_wallet   text,
+    to_amount   numeric
 );
 
 create table budgets (

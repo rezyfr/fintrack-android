@@ -76,6 +76,31 @@ class ReviewNotificationManager @Inject constructor(
         WorkManager.getInstance(context).enqueue(autoSync)
     }
 
+    suspend fun showCapturedNotification(transactionId: Long) {
+        val entity = transactionDao.getById(transactionId) ?: return
+        val amountStr = if (entity.amount % 1.0 == 0.0) entity.amount.toInt().toString() else entity.amount.toString()
+        val title = "฿$amountStr · ${entity.category}"
+
+        val tapIntent = Intent(context, MainActivity::class.java).apply {
+            putExtra(EXTRA_TRANSACTION_ID, transactionId)
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+        val tapPi = PendingIntent.getActivity(
+            context, (transactionId + 1000000L).toInt(), tapIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(title)
+            .setContentText(entity.item)
+            .setContentIntent(tapPi)
+            .setAutoCancel(true)
+            .build()
+
+        NotificationManagerCompat.from(context).notify((transactionId + 1000000L).toInt(), notification)
+    }
+
     fun dismiss(transactionId: Long) {
         NotificationManagerCompat.from(context).cancel(transactionId.toInt())
         WorkManager.getInstance(context).cancelAllWorkByTag("auto_sync_$transactionId")

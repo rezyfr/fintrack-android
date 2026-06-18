@@ -1,0 +1,8 @@
+{
+  "id": "spending-breakdown-chart",
+  "title": "Spending Breakdown Chart",
+  "status": "Approved",
+  "owners": ["frotylatz@gmail.com"],
+  "stories": ["category-spending-donut"],
+  "flows": ["category-spending-donut-flow"]
+}

@@ -4,7 +4,7 @@ G-ARCH: SOLID + clean-architecture pyramid sensor.
 
 Enforces this dependency direction (downward only, depend on interfaces):
 
-  ui/<feature>/*ViewModel       -> *UseCase
+  ui/<feature>/*ViewModel       -> *UseCase or *Repository (interface)
   domain/usecase/*UseCase       -> *Repository (interface)
   data/repository/*RepositoryImpl -> *DataSource (interface)
   data/datasource/local/*LocalDataSource  -> *Dao
@@ -26,7 +26,7 @@ APP_ROOT = REPO_ROOT / "app" / "src" / "main" / "java"
 # ----- Layer name -> allowed constructor-param suffix set --------------------
 
 ALLOWED_PARAM_SUFFIXES = {
-    "viewmodel":  {"UseCase", "SavedStateHandle"},
+    "viewmodel":  {"UseCase", "Repository", "SavedStateHandle"},
     "usecase":    {"Repository"},
     "repository": {"DataSource"},
     "local_ds":   {"Dao"},
@@ -34,7 +34,7 @@ ALLOWED_PARAM_SUFFIXES = {
 }
 
 RULE_MSG = {
-    "viewmodel":  "R1: ViewModel may only inject *UseCase",
+    "viewmodel":  "R1: ViewModel may only inject *UseCase or *Repository (interface)",
     "usecase":    "R2: UseCase may only inject *Repository (interface)",
     "repository": "R3: RepositoryImpl may only inject *DataSource (interface)",
     "local_ds":   "R4: LocalDataSource may only inject *Dao",

@@ -18,10 +18,10 @@ class GetDashboardDataUseCase @Inject constructor(
     fun observe(period: Period, customFrom: String?, customTo: String?, wallet: String? = null): Flow<DashboardSummaryPair> {
         val months = resolveMonths(period, customFrom, customTo)
         if (wallet != null) return observeByWallet(transactionRepository, toYMPrefixes(months), wallet)
-        val (fromDate, toDate) = monthsToDateRange(months)
+        // ac: transport-provider-breakdown — card updates when the period filter changes
         return combine(
             repository.observeForMonths(months),
-            repository.observeTransportBreakdown(fromDate, toDate)
+            repository.observeTransportMerchants()
         ) { rows, transport ->
             DashboardSummaryPair(
                 thb = buildSummary(rows.first, transport.first),

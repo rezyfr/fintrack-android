@@ -6,6 +6,16 @@ data class MonthlyOverviewRequest(
     @SerializedName("p_months") val pMonths: List<String>
 )
 
+data class TransportMerchantsRequest(
+    @SerializedName("p_months") val pMonths: List<String>
+)
+
+data class TransportMerchantRowDto(
+    @SerializedName("currency") val currency: String,
+    @SerializedName("merchant") val merchant: String,
+    @SerializedName("amount")   val amount: Double,
+)
+
 data class MonthlyOverviewRowDto(
     @SerializedName("month")             val month: String,
     @SerializedName("currency")          val currency: String,

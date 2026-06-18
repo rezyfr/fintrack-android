@@ -1,8 +1,22 @@
+// ac: edit-transfer-target-amount — the transactions table has a nullable to_amount column for cross-currency transfers (see supabase/2026-05-31_to_amount.sql)
+// ac: edit-transfer-target-amount — the wallet reconciliation and wallet balances credit the destination wallet with to_amount when set, otherwise with amount (see supabase/2026-05-31_to_amount.sql)
 import { useState } from 'react';
 import { updateTransaction, deleteTransaction } from '../api/supabase';
 import { WALLETS, TX_TYPES, categoriesFor, deriveTab, currencySymbol } from '../constants/transaction';
 import { useMerchantHistory } from '../hooks/useMerchantHistory';
 import MerchantInput from './MerchantInput';
+
+function walletCurrency(id) {
+  return WALLETS.find((w) => w.id === id)?.currency;
+}
+
+// ac: edit-transfer-target-amount — the edit modal shows a Received Amount input only when type is transfer and source/destination currencies differ
+function isCrossCurrencyTransfer(txType, wallet, toWallet) {
+  if (txType !== 'transfer' || !toWallet) return false;
+  const a = walletCurrency(wallet);
+  const b = walletCurrency(toWallet);
+  return Boolean(a && b && a !== b);
+}
 
 export default function EditTransactionModal({ row, onClose, onSaved, onDeleted }) {
   const [form, setForm] = useState({
@@ -15,6 +29,7 @@ export default function EditTransactionModal({ row, onClose, onSaved, onDeleted 
     wallet:   row.wallet    ?? 'BBL',
     txType:   row.tx_type   ?? 'expense',
     toWallet: row.to_wallet ?? '',
+    toAmount: row.to_amount != null ? String(row.to_amount) : '',
   });
   const [submitting, setSubmitting] = useState(false);
   const [confirming, setConfirming] = useState(false);
@@ -35,6 +50,7 @@ export default function EditTransactionModal({ row, onClose, onSaved, onDeleted 
     setSubmitting(true);
     setErrorMsg('');
     try {
+      const crossCurrency = isCrossCurrencyTransfer(form.txType, form.wallet, form.toWallet);
       const payload = {
         merchant:  form.merchant,
         item:      form.item,
@@ -45,6 +61,9 @@ export default function EditTransactionModal({ row, onClose, onSaved, onDeleted 
         wallet:    form.wallet,
         tx_type:   form.txType,
         to_wallet: form.txType === 'transfer' ? form.toWallet : null,
+        // ac: edit-transfer-target-amount — saving persists the entered to_amount value to Supabase
+        // ac: edit-transfer-target-amount — to_amount is cleared on save when type is not transfer or source and destination wallets share a currency
+        to_amount: crossCurrency && form.toAmount !== '' ? Number(form.toAmount) : null,
         tab:       deriveTab(form.wallet, form.txType),
       };
       await updateTransaction(row.id, payload);
@@ -180,6 +199,22 @@ export default function EditTransactionModal({ row, onClose, onSaved, onDeleted 
                       <option key={w.id} value={w.id}>{w.name}</option>
                     ))}
                   </select>
+                </div>
+              )}
+
+              {/* ac: edit-transfer-target-amount — Received Amount input is shown only when type is transfer and source/destination currencies differ */}
+              {isCrossCurrencyTransfer(form.txType, form.wallet, form.toWallet) && (
+                <div className="form-group">
+                  <label className="form-label" htmlFor="edit-toAmount">Received Amount</label>
+                  <div className="amount-wrap">
+                    <span className="amount-symbol">{currencySymbol(form.toWallet)}</span>
+                    <input
+                      className="form-input amount-input"
+                      id="edit-toAmount" name="toAmount" type="number" step="0.01" min="0"
+                      value={form.toAmount} onChange={handleChange}
+                      placeholder={`amount in ${walletCurrency(form.toWallet)}`}
+                    />
+                  </div>
                 </div>
               )}
 

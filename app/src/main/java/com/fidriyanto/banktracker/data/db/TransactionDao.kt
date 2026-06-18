@@ -44,7 +44,7 @@ interface TransactionDao {
     @Query("""
         SELECT merchant, SUM(amount) as amount FROM transactions
         WHERE category = :category AND txType = 'expense'
-        AND (wallet IS NULL OR wallet = 'BBL')
+        AND wallet = 'BBL'
         AND dateIso >= :fromDate AND dateIso <= :toDate
         GROUP BY merchant ORDER BY amount DESC
     """)

@@ -19,13 +19,15 @@ class DashboardViewModel @Inject constructor(
     private val useCase: GetDashboardDataUseCase
 ) : ViewModel() {
 
-    private val _period       = MutableStateFlow(Period.THIS_MONTH)
-    private val _customFrom   = MutableStateFlow<String?>(null)
-    private val _customTo     = MutableStateFlow<String?>(null)
+    private val _period        = MutableStateFlow(Period.THIS_MONTH)
+    private val _customFrom    = MutableStateFlow<String?>(null)
+    private val _customTo      = MutableStateFlow<String?>(null)
     // ac: insights-filter-by-wallet — wallet filter state
-    private val _walletFilter = MutableStateFlow<String?>(null)
-    private val _isRefreshing = MutableStateFlow(false)
-    private val _refreshError = MutableStateFlow(false)
+    private val _walletFilter  = MutableStateFlow<String?>(null)
+    private val _isRefreshing  = MutableStateFlow(false)
+    private val _refreshError  = MutableStateFlow(false)
+    // incremented by refresh() when a wallet filter is active to re-trigger observeByWallet
+    private val _walletRefreshTick = MutableStateFlow(0)
     @Volatile private var lastFetchedAt: Long? = null
 
     val period       = _period.asStateFlow()
@@ -41,7 +43,7 @@ class DashboardViewModel @Inject constructor(
     }
 
     val state: StateFlow<DashboardUiState> =
-        combine(_period, _customFrom, _customTo, _walletFilter) { p, from, to, w ->
+        combine(_period, _customFrom, _customTo, _walletFilter, _walletRefreshTick) { p, from, to, w, _ ->
             arrayOf(p, from, to, w)
         }
             .flatMapLatest { arr ->
@@ -55,7 +57,8 @@ class DashboardViewModel @Inject constructor(
                     _isRefreshing,
                     _refreshError
                 ) { summaryPair, refreshing, error ->
-                    if (summaryPair.isEmpty() && !refreshing && !error)
+                    // only show the "loading" placeholder when no wallet is selected and Room is empty
+                    if (summaryPair.isEmpty() && !refreshing && !error && w == null)
                         DashboardUiState.LoadingNoCache
                     else
                         DashboardUiState.Loaded(
@@ -98,6 +101,8 @@ class DashboardViewModel @Inject constructor(
     fun refresh() = viewModelScope.launch {
         _isRefreshing.value = true
         _refreshError.value = false
+        // when a wallet filter is active, increment the tick so flatMapLatest re-collects observeByWallet
+        if (_walletFilter.value != null) _walletRefreshTick.value++
         val result = useCase.refresh(_period.value, _customFrom.value, _customTo.value, _walletFilter.value)
         if (result.isSuccess) lastFetchedAt = System.currentTimeMillis()
         _refreshError.value = result.isFailure

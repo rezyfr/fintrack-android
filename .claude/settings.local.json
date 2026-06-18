@@ -35,10 +35,10 @@
       "Bash(./gradlew test *)",
       "Bash(./gradlew :app:testDebugUnitTest)",
       "Bash(./gradlew :app:testDebugUnitTest -i)",
-      "Bash(./gradlew cleanTest :app:testDebugUnitTest)"
+      "Bash(./gradlew cleanTest :app:testDebugUnitTest)",
+      "Bash(python3 -c \"import json; json.load\\(open\\('.claude/settings.json'\\)\\); print\\('JSON OK'\\)\")",
+      "Bash(bash governance/session_resume.sh)"
     ]
   },
-  "enabledPlugins": {
-    "andrej-karpathy-skills@karpathy-skills": true
-  }
+  "enabledPlugins": {}
 }

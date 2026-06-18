@@ -19,14 +19,20 @@
     <string name="settings_mark_all_synced">Mark All as Synced</string>
 
     <!-- Dashboard screen -->
+    <string name="dashboard_section_thb">THB</string>
+    <string name="dashboard_section_idr">IDR</string>
+    <string name="breakdown_title">Spending Breakdown</string>
+    <string name="breakdown_total_label">Total</string>
     <string name="dashboard_no_spending">No spending recorded</string>
     <string name="dashboard_custom_period">Custom</string>
+    <string name="dashboard_no_wallet_data">No transactions for this wallet in the selected period.</string>
 
     <!-- Add screen -->
     <string name="add_title">Add Transaction</string>
     <string name="add_wallet">Wallet</string>
     <string name="add_to_wallet">To Wallet</string>
     <string name="add_amount_label">Amount (%1$s)</string>
+    <string name="add_merchant_label">Merchant</string>
     <string name="add_description_label">Description / Item</string>
     <string name="add_tx_type_label">Type</string>
     <string name="merchant_suggestions_header">Recent</string>
@@ -60,6 +66,15 @@
     <string name="edit_type_label">Type</string>
     <string name="edit_to_wallet_label">To Wallet</string>
     <string name="edit_to_amount_label">Received Amount</string>
+
+    <!-- Budget screen -->
+    <string name="budget_title">Budget</string>
+    <string name="budget_currency_thb">THB</string>
+    <string name="budget_currency_idr">IDR</string>
+    <string name="budget_total_label">Total Budget</string>
+    <string name="budget_spent_label">Spent</string>
+    <string name="budget_no_limit">Tap to set limit</string>
+    <string name="budget_edit_hint">Budget limit</string>
 
     <!-- Balances screen -->
     <string name="balances_owed">owed</string>

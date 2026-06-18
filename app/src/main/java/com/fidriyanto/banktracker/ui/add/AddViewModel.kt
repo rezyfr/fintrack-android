@@ -4,9 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fidriyanto.banktracker.data.model.LedgerTab
 import com.fidriyanto.banktracker.data.model.TransactionEntry
-import com.fidriyanto.banktracker.domain.usecase.GetRecentMerchantsUseCase
-import com.fidriyanto.banktracker.domain.usecase.InsertManualTransactionUseCase
-import com.fidriyanto.banktracker.domain.usecase.SaveMerchantUseCase
+import com.fidriyanto.banktracker.data.repository.MerchantHistoryRepository
+import com.fidriyanto.banktracker.data.repository.TransactionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -39,6 +38,7 @@ data class AddFormState(
     val txType: TxType    = TxType.EXPENSE,
     val toWallet: Wallet? = null,
     val amount: String    = "",
+    val merchant: String  = "",
     val description: String = "",
     val category: String  = "Other",
     val date: LocalDate   = LocalDate.now(),
@@ -49,23 +49,35 @@ data class AddFormState(
 
 @HiltViewModel
 class AddViewModel @Inject constructor(
-    private val useCase: InsertManualTransactionUseCase,
-    private val getRecentMerchants: GetRecentMerchantsUseCase,
-    private val saveMerchant: SaveMerchantUseCase,
+    private val transactionRepository: TransactionRepository,
+    private val merchantHistoryRepository: MerchantHistoryRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(AddFormState())
     val state = _state.asStateFlow()
 
+    private val _dismissedQuery = MutableStateFlow<String?>(null)
+
     val merchantSuggestions: StateFlow<List<String>> = combine(
-        getRecentMerchants(),
+        merchantHistoryRepository.observe(),
         _state,
-    ) { history, s ->
-        val query = s.description.trim()
-        if (query.isEmpty()) history
-        else history.filter { it.contains(query, ignoreCase = true) }
+        _dismissedQuery,
+    ) { history, s, dismissedQuery ->
+        val query = s.merchant.trim()
+        when {
+            query == dismissedQuery -> emptyList()
+            query.isEmpty()        -> history
+            else                   -> history.filter { it.contains(query, ignoreCase = true) }
+        }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    fun update(block: AddFormState.() -> AddFormState) { _state.value = _state.value.block() }
+    fun update(block: AddFormState.() -> AddFormState) {
+        val prev = _state.value
+        val next = prev.block()
+        if (next.merchant != prev.merchant) _dismissedQuery.value = null
+        _state.value = next
+    }
+
+    fun dismissSuggestions() { _dismissedQuery.value = _state.value.merchant.trim() }
 
     fun submit() = viewModelScope.launch {
         val s = _state.value
@@ -83,7 +95,7 @@ class AddViewModel @Inject constructor(
         val entry = TransactionEntry(
             tab      = tab,
             date     = s.date,
-            merchant = s.description,
+            merchant = s.merchant,
             item     = s.description,
             amount   = amount,
             category = s.category,
@@ -91,8 +103,8 @@ class AddViewModel @Inject constructor(
             txType   = s.txType.id,
             toWallet = if (s.txType == TxType.TRANSFER) s.toWallet?.id else null
         )
-        val result = useCase.execute(entry)
-        if (result.isSuccess) saveMerchant(s.description)
+        val result = transactionRepository.insertManual(entry)
+        if (result.isSuccess) merchantHistoryRepository.save(s.merchant)
         _state.value = _state.value.copy(
             isLoading      = false,
             successMessage = if (result.isSuccess) "Saved and syncing!" else null,

@@ -1,0 +1,12 @@
+{
+  "id": "dashboard-currency-section-header-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the Dashboard and scrolls through the insights view" },
+    {
+      "actor": "app",
+      "action": "renders each currency section (THB, IDR) with a bold headline label instead of a divider-style text line",
+      "story": "dashboard-currency-section-header",
+      "noNavigation": true
+    }
+  ]
+}

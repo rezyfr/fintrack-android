@@ -167,8 +167,16 @@ private fun LoadedContent(
             }
 
             // ac: insights-filter-by-wallet — when a single wallet is selected only the relevant currency section is shown
-            if (!state.thb.isEmpty()) CurrencySection("THB", "฿", state.thb)
-            if (!state.idr.isEmpty()) CurrencySection("IDR", "Rp", state.idr)
+            if (!state.thb.isEmpty()) CurrencySection(stringResource(R.string.dashboard_section_thb), "฿", state.thb)
+            if (!state.idr.isEmpty()) CurrencySection(stringResource(R.string.dashboard_section_idr), "Rp", state.idr)
+            if (walletFilter != null && state.thb.isEmpty() && state.idr.isEmpty() && !state.isRefreshing) {
+                Text(
+                    stringResource(R.string.dashboard_no_wallet_data),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
             Spacer(Modifier.height(16.dp))
         }
 
@@ -274,10 +282,13 @@ private fun MonthDropdown(
 
 @Composable
 private fun CurrencySection(label: String, symbol: String, summary: CurrencySummary) {
+    // ac: dashboard-currency-section-header — bold headline text instead of divider-style line
+    // ac: dashboard-currency-section-header — headline text is visibly larger than adjacent body text
     Text(
-        "── $label ──────────────────────────",
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        fontSize = 13.sp
+        label,
+        color = MaterialTheme.colorScheme.onSurface,
+        fontSize = 22.sp,
+        fontWeight = FontWeight.Bold
     )
     BalanceCard(summary = summary, currencySymbol = symbol)
     CategoryBreakdownCard(summary = summary, currencySymbol = symbol)

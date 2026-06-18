@@ -1,0 +1,11 @@
+{
+  "id": "dashboard-currency-section-header",
+  "capability": "dashboard-ui-polish",
+  "role": "user",
+  "want": "currency section breaks in the dashboard to be displayed as headline text",
+  "soThat": "I can clearly distinguish the THB and IDR sections at a glance without a decorative divider line",
+  "acceptance": [
+    "the THB and IDR currency section headers are displayed as bold headline text instead of a divider-style line",
+    "the headline text is visibly larger than adjacent body text to clearly delineate the sections"
+  ]
+}

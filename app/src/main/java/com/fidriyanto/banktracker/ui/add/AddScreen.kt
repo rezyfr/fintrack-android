@@ -95,16 +95,28 @@ fun AddScreen(viewModel: AddViewModel = hiltViewModel()) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
 
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopStart) {
+        // ac: merchant-autocomplete — focusing the merchant field shows a dropdown of up to 10 previously saved merchants
+        BoxWithConstraints(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopStart) {
+            val dropdownWidth = maxWidth
             OutlinedTextField(
-                value = state.description, onValueChange = { viewModel.update { copy(description = it) } },
-                label = { Text(stringResource(R.string.add_description_label)) }, modifier = Modifier.fillMaxWidth()
+                value = state.merchant, onValueChange = { viewModel.update { copy(merchant = it) } },
+                label = { Text(stringResource(R.string.add_merchant_label)) }, modifier = Modifier.fillMaxWidth()
             )
             MerchantSuggestionDropdown(
                 suggestions = merchantSuggestions,
-                onSelect = { viewModel.update { copy(description = it) } },
+                width = dropdownWidth,
+                onSelect = {
+                    viewModel.update { copy(merchant = it) }
+                    viewModel.dismissSuggestions()
+                },
+                onDismiss = { viewModel.dismissSuggestions() },
             )
         }
+
+        OutlinedTextField(
+            value = state.description, onValueChange = { viewModel.update { copy(description = it) } },
+            label = { Text(stringResource(R.string.add_description_label)) }, modifier = Modifier.fillMaxWidth()
+        )
 
         var expanded by remember { mutableStateOf(false) }
         ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {

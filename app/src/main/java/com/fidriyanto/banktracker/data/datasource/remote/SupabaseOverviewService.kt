@@ -2,6 +2,8 @@ package com.fidriyanto.banktracker.data.datasource.remote
 
 import com.fidriyanto.banktracker.data.datasource.remote.dto.MonthlyOverviewRequest
 import com.fidriyanto.banktracker.data.datasource.remote.dto.MonthlyOverviewRowDto
+import com.fidriyanto.banktracker.data.datasource.remote.dto.TransportMerchantRowDto
+import com.fidriyanto.banktracker.data.datasource.remote.dto.TransportMerchantsRequest
 import com.fidriyanto.banktracker.data.datasource.remote.dto.ReconciliationRequest
 import com.fidriyanto.banktracker.data.datasource.remote.dto.ReconciliationRowDto
 import com.fidriyanto.banktracker.data.datasource.remote.dto.StatementBalanceUpsertDto
@@ -17,6 +19,9 @@ import retrofit2.http.Query
 interface SupabaseOverviewService {
     @POST("rest/v1/rpc/get_monthly_overview")
     suspend fun getMonthlyOverview(@Body body: MonthlyOverviewRequest): List<MonthlyOverviewRowDto>
+
+    @POST("rest/v1/rpc/get_transport_merchants")
+    suspend fun getTransportMerchants(@Body body: TransportMerchantsRequest): List<TransportMerchantRowDto>
 
     @GET("rest/v1/wallet_balances")
     suspend fun getWalletBalances(): List<WalletBalanceDto>

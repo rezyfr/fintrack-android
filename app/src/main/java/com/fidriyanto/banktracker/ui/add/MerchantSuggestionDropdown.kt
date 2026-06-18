@@ -1,13 +1,12 @@
 package com.fidriyanto.banktracker.ui.add
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
@@ -20,9 +19,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.PopupProperties
 import com.fidriyanto.banktracker.R
 import com.fidriyanto.banktracker.ui.theme.LocalAppColors
 
@@ -36,27 +36,23 @@ import com.fidriyanto.banktracker.ui.theme.LocalAppColors
 @Composable
 fun MerchantSuggestionDropdown(
     suggestions: List<String>,
+    width: Dp,
     onSelect: (String) -> Unit,
+    onDismiss: () -> Unit = {},
 ) {
     val appColors = LocalAppColors.current
-    val surface   = MaterialTheme.colorScheme.surface
     val outline   = MaterialTheme.colorScheme.outline
 
-    DropdownMenu(
-        expanded = suggestions.isNotEmpty(),
-        onDismissRequest = {},
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(surface),
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
-                .background(surface),
+    // Override extraSmall so DropdownMenu's internal Surface uses 12dp rounded corners
+    // (shape/containerColor params are not available until Material3 1.3.x)
+    MaterialTheme(shapes = MaterialTheme.shapes.copy(extraSmall = RoundedCornerShape(12.dp))) {
+        DropdownMenu(
+            expanded = suggestions.isNotEmpty(),
+            onDismissRequest = onDismiss,
+            // focusable = false keeps the IME open while the dropdown is visible
+            properties = PopupProperties(focusable = false),
+            modifier = Modifier.width(width),
         ) {
-            // Header
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

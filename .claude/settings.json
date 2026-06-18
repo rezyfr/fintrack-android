@@ -17,6 +17,16 @@
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '%s\\n' 'HARNESS REMINDER (project governance): Classify the user prompt above. If it is a NEW FEATURE or BEHAVIOR CHANGE (Android or web) — anything that adds, removes, or alters user-visible behavior or domain logic — you MUST follow the harness BEFORE editing any file in app/ or web/: (1) run `bash governance/session_resume.sh`; (2) write/update tasks/task.json with feature, storyId, and acceptanceCriteria; (3) implement; (4) drive `bash governance/gate_retry_loop.sh` until green; (5) append worklog entries via `bash governance/worklog.sh task` and `bash governance/worklog.sh retro`. If the prompt is a BUGFIX, refactor with no behavior change, doc edit, question, or harness/config change — this requirement does NOT apply; proceed normally. When in doubt, ask the user which category applies before editing.'"
+          }
+        ]
+      }
     ]
   }
 }

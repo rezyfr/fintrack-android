@@ -320,6 +320,8 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
                                         onConfirm = { item, category ->
                                             viewModel.updateAndSync(tx.id, item, category)
                                         },
+                                        // ac: edit-transaction-from-feed — tap opens the edit bottom sheet
+                                        onClick = { pendingEdit = tx },
                                         // ac: batch-select-and-delete-transactions — long press enters selection mode
                                         onLongClick = { selectedIds = setOf(tx.id) },
                                     )

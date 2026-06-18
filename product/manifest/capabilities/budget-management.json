@@ -1,0 +1,8 @@
+{
+  "id": "budget-management",
+  "title": "Budget Management",
+  "status": "Approved",
+  "owners": ["fidriyantoriz@social.plus"],
+  "stories": ["set-category-budget"],
+  "flows": ["set-category-budget-flow"]
+}
