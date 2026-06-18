@@ -1,0 +1,14 @@
+{
+  "id": "installment-overview",
+  "capability": "installment-tracking",
+  "role": "user",
+  "want": "to see all my active credit card installments in one place",
+  "soThat": "I know how much I owe monthly and when each installment ends",
+  "acceptance": [
+    "an Installments screen accessible from the navigation shows all active credit card installments",
+    "each installment card shows merchant name, wallet, amount per month, step progress (current/total), next due date, and estimated completion date",
+    "installments are sorted by next upcoming payment date",
+    "completed installments are shown in a separate Completed section below the active list",
+    "when a new expense transaction matches an installment by merchant and amount, the installment step count auto-increments"
+  ]
+}

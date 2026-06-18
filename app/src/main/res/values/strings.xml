@@ -88,4 +88,28 @@
     <string name="balances_reconciled">Reconciled</string>
     <string name="balances_off_by">Off by %1$s</string>
     <string name="snackbar_edit_failed">Failed to update transaction. Please try again.</string>
+
+    <!-- Installments screen -->
+    <string name="installments_title">Installments</string>
+    <string name="installments_active">Active</string>
+    <string name="installments_completed">Completed</string>
+    <string name="installments_empty">No active installments</string>
+    <string name="installments_per_month">/month</string>
+    <string name="installments_remaining">remaining</string>
+    <string name="installments_next_due">Next</string>
+    <string name="installments_done_by">Done by</string>
+    <string name="installments_monthly_total">Total monthly</string>
+    <string name="installments_active_plans">active plans</string>
+    <string name="installments_paid_off">Paid off</string>
+    <string name="installments_step_of">%1$d of %2$d</string>
+    <string name="installments_remaining_count">%1$d remaining</string>
+    <string name="installments_next_due_date">Next: %1$s</string>
+    <string name="installments_done_by_date">Done by: %1$s</string>
+    <string name="installments_wallet_payments">%1$s · %2$d payments</string>
+    <string name="installments_edit_name_title">Edit Name</string>
+    <string name="installments_edit_name_label">Installment name</string>
+    <string name="installments_total_remaining">Total remaining commitment</string>
+    <string name="installments_increment_step">+1 Step</string>
+    <string name="installments_excluded">Excluded</string>
+    <string name="installments_include">Include</string>
 </resources>

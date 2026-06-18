@@ -1,0 +1,8 @@
+{
+  "id": "installment-tracking",
+  "title": "Installment Tracking",
+  "status": "Approved",
+  "owners": ["frotylatz@gmail.com"],
+  "stories": ["installment-overview", "installment-name-edit", "installment-step-controls"],
+  "flows": ["installment-overview-flow", "installment-name-edit-flow", "installment-step-controls-flow"]
+}

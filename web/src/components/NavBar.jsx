@@ -63,6 +63,13 @@ export default function NavBar({ activeView, onNavigate, darkMode, onToggleTheme
           >
             Import
           </button>
+          <button
+            className="nav-btn"
+            onClick={() => onNavigate('installments')}
+            aria-current={activeView === 'installments' ? 'page' : undefined}
+          >
+            Installments
+          </button>
         </div>
         <button
           className="theme-toggle"

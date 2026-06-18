@@ -3,6 +3,7 @@ package com.fidriyanto.banktracker.ui.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBalance
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.CreditCard
 import androidx.compose.material.icons.outlined.Dashboard
 import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.Savings
@@ -21,6 +22,7 @@ import com.fidriyanto.banktracker.ui.balances.BalancesScreen
 import com.fidriyanto.banktracker.ui.budget.BudgetScreen
 import com.fidriyanto.banktracker.ui.dashboard.DashboardScreen
 import com.fidriyanto.banktracker.ui.feed.FeedScreen
+import com.fidriyanto.banktracker.ui.installments.InstallmentsScreen
 import com.fidriyanto.banktracker.ui.settings.SettingsScreen
 
 sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
@@ -31,10 +33,12 @@ sealed class Screen(val route: String, val label: String, val icon: ImageVector)
     object Balances : Screen("balances", "Balances", Icons.Outlined.AccountBalance)
     // ac: set-category-budget — a Budget screen is accessible from the bottom navigation bar
     object Budget : Screen("budget", "Budget", Icons.Outlined.Savings)
+    // ac: installment-overview — Installments screen accessible from the navigation
+    object Installments : Screen("installments", "Installments", Icons.Outlined.CreditCard)
     object Settings : Screen("settings", "Settings", Icons.Outlined.Settings)
 }
 
-private val screens = listOf(Screen.Feed, Screen.Add, Screen.Dashboard, Screen.Balances, Screen.Budget, Screen.Settings)
+private val screens = listOf(Screen.Feed, Screen.Add, Screen.Dashboard, Screen.Balances, Screen.Budget, Screen.Installments, Screen.Settings)
 
 @Composable
 fun AppNavigation() {
@@ -68,6 +72,7 @@ fun AppNavigation() {
                 composable(Screen.Dashboard.route) { DashboardScreen() }
                 composable(Screen.Balances.route) { BalancesScreen() }
                 composable(Screen.Budget.route) { BudgetScreen() }
+                composable(Screen.Installments.route) { InstallmentsScreen() }
                 composable(Screen.Settings.route) { SettingsScreen() }
             }
         }

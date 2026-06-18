@@ -471,7 +471,7 @@ export default function TransactionList() {
                   {/* ac: transfer-in-wallet-view — show source wallet with Transfer In label for incoming transfers */}
                   {row._is_transfer_in ? (
                     <span className={`chip chip-wallet chip-wallet--${row.wallet.toLowerCase().replace('_', '-')}`} title={`Transfer from ${row.wallet}`}>
-                      {row.wallet === 'MANDIRI_CC' ? 'CC' : row.wallet} &rarr;
+                      {row.wallet === 'MANDIRI_CC' ? 'Mandiri Credit Card' : row.wallet === 'BCA_CC' ? 'BCA Credit Card' : row.wallet} &rarr;
                     </span>
                   ) : isEditing(row.id, 'wallet')
                     ? <SelectCell
@@ -482,7 +482,7 @@ export default function TransactionList() {
                       />
                     : row.wallet && (
                         <span className={`chip chip-wallet chip-wallet--${row.wallet.toLowerCase().replace('_', '-')} editable`} onDoubleClick={() => startEdit(row, 'wallet')}>
-                          {row.wallet === 'MANDIRI_CC' ? 'CC' : row.wallet}
+                          {row.wallet === 'MANDIRI_CC' ? 'Mandiri Credit Card' : row.wallet === 'BCA_CC' ? 'BCA Credit Card' : row.wallet}
                         </span>
                       )
                   }

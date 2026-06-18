@@ -113,6 +113,49 @@ export async function upsertStatementBalance(walletId, month, openingBalance) {
   if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
 }
 
+// ac: installment-overview
+export async function getInstallments() {
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const res = await fetch(`${url}/rest/v1/installments?select=*&order=due_day.asc`, {
+    headers: authHeaders(),
+  });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+  return res.json();
+}
+
+// ac: installment-name-edit — PATCH merchant name for an installment row
+export async function updateInstallmentMerchant(id, merchant) {
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const res = await fetch(`${url}/rest/v1/installments?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { ...authHeaders(), Prefer: 'return=minimal' },
+    body: JSON.stringify({ merchant }),
+  });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+}
+
+// ac: ac-isc-1, ac-isc-2 — PATCH current_step and status
+export async function incrementInstallmentStep(id, newStep, newStatus) {
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const res = await fetch(`${url}/rest/v1/installments?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { ...authHeaders(), Prefer: 'return=minimal' },
+    body: JSON.stringify({ current_step: newStep, status: newStatus }),
+  });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+}
+
+// ac: ac-isc-4 — PATCH excluded flag
+export async function setInstallmentExcluded(id, excluded) {
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const res = await fetch(`${url}/rest/v1/installments?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { ...authHeaders(), Prefer: 'return=minimal' },
+    body: JSON.stringify({ excluded }),
+  });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+}
+
 export async function addTransactions(rows) {
   const url = import.meta.env.VITE_SUPABASE_URL;
   const res = await fetch(`${url}/rest/v1/transactions`, {

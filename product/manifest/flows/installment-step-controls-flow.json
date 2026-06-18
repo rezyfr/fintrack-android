@@ -1,0 +1,30 @@
+{
+  "id": "installment-step-controls-flow",
+  "story": "installment-step-controls",
+  "steps": [
+    {
+      "step": 1,
+      "actor": "user",
+      "action": "taps the +1 button on an active installment card",
+      "triggerElement": "InstallmentCard:incrementButton"
+    },
+    {
+      "step": 2,
+      "actor": "app",
+      "action": "PATCHes current_step+1 (and status=completed if final step), updates the card immediately",
+      "noNavigation": true
+    },
+    {
+      "step": 3,
+      "actor": "user",
+      "action": "taps the exclude toggle on an installment card",
+      "triggerElement": "InstallmentCard:excludeSwitch"
+    },
+    {
+      "step": 4,
+      "actor": "app",
+      "action": "PATCHes excluded field, recalculates summary totals without the excluded installment",
+      "noNavigation": true
+    }
+  ]
+}

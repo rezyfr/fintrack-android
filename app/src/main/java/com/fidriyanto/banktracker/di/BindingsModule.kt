@@ -24,6 +24,10 @@ import com.fidriyanto.banktracker.data.repository.MerchantHistoryRepository
 import com.fidriyanto.banktracker.data.repository.MerchantHistoryRepositoryImpl
 import com.fidriyanto.banktracker.data.repository.TransactionRepository
 import com.fidriyanto.banktracker.data.repository.TransactionRepositoryImpl
+import com.fidriyanto.banktracker.data.datasource.InstallmentDataSource
+import com.fidriyanto.banktracker.data.datasource.InstallmentDataSourceImpl
+import com.fidriyanto.banktracker.data.repository.InstallmentRepository
+import com.fidriyanto.banktracker.data.repository.InstallmentRepositoryImpl
 import com.fidriyanto.banktracker.data.repository.WalletBalanceRepository
 import com.fidriyanto.banktracker.data.repository.WalletBalanceRepositoryImpl
 import dagger.Binds
@@ -48,4 +52,6 @@ abstract class BindingsModule {
     @Binds @Singleton abstract fun bindMerchantHistoryRepository(impl: MerchantHistoryRepositoryImpl): MerchantHistoryRepository
     @Binds @Singleton abstract fun bindWalletBalanceDataSource(impl: WalletBalanceDataSourceImpl): WalletBalanceDataSource
     @Binds @Singleton abstract fun bindWalletBalanceRepository(impl: WalletBalanceRepositoryImpl): WalletBalanceRepository
+    @Binds @Singleton abstract fun bindInstallmentDataSource(impl: InstallmentDataSourceImpl): InstallmentDataSource
+    @Binds @Singleton abstract fun bindInstallmentRepository(impl: InstallmentRepositoryImpl): InstallmentRepository
 }

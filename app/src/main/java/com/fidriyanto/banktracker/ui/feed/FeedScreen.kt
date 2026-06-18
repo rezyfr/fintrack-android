@@ -32,7 +32,7 @@ private val WALLET_OPTIONS = listOf(
     null         to "All wallets",
     "BBL"        to "Bangkok Bank",
     "MANDIRI"    to "Mandiri",
-    "MANDIRI_CC" to "Mandiri CC",
+    "MANDIRI_CC" to "Mandiri Credit Card",
     "BCA"        to "BCA",
     "INVESTMENT" to "Investments",
 )

@@ -1,0 +1,13 @@
+{
+  "id": "installment-step-controls",
+  "capability": "installment-tracking",
+  "title": "Installment Step Controls",
+  "description": "Manual step increment, total remaining commitment, and per-installment exclude toggle on the installments page",
+  "acceptance": [
+    "ac-isc-1: each active installment card shows a +1 step button; tapping increments current_step and updates the card immediately",
+    "ac-isc-2: when current_step reaches total_installments after increment, the installment moves to the completed section",
+    "ac-isc-3: the summary card shows total remaining commitment (sum of remaining payments x amount for non-excluded active installments)",
+    "ac-isc-4: each installment card has an exclude toggle; when enabled the installment is excluded from the monthly total and total remaining commitment",
+    "ac-isc-5: excluded installments remain visible in the list with a visual indicator that they are excluded"
+  ]
+}

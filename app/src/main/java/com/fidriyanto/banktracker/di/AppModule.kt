@@ -7,6 +7,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
 import com.fidriyanto.banktracker.BuildConfig
 import com.fidriyanto.banktracker.data.datasource.remote.SupabaseBudgetService
+import com.fidriyanto.banktracker.data.datasource.remote.SupabaseInstallmentService
 import com.fidriyanto.banktracker.data.datasource.remote.SupabaseOverviewService
 import com.fidriyanto.banktracker.data.datasource.remote.SupabaseTransactionService
 import com.fidriyanto.banktracker.data.db.AppDatabase
@@ -85,6 +86,15 @@ object AppModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(SupabaseBudgetService::class.java)
+
+    @Provides @Singleton
+    fun provideInstallmentService(@Named("supabase") client: OkHttpClient): SupabaseInstallmentService =
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.SUPABASE_URL + "/")
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(SupabaseInstallmentService::class.java)
 
     @Provides @Singleton
     fun provideGson(): Gson = Gson()

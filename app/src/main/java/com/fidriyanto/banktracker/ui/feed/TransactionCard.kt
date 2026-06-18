@@ -102,7 +102,11 @@ fun TransactionCard(
                 Text(badgeText, fontSize = 11.sp, color = badgeColor)
                 transaction.wallet?.let { w ->
                     Text(
-                        if (w == "MANDIRI_CC") "CC" else w,
+                        when (w) {
+                            "MANDIRI_CC" -> "Mandiri Credit Card"
+                            "BCA_CC"     -> "BCA Credit Card"
+                            else         -> w
+                        },
                         fontSize = 10.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 1.dp)
