@@ -83,6 +83,15 @@ Saves `governance/.session-checkpoint.json` (gitignored). Pick up with `session_
 
 Every session must append BOTH a `type=task` and a `type=retrospective` entry to `governance/worklog.jsonl`. The worklog is the cross-session audit trail and is committed to git. Use `governance/worklog.sh` rather than hand-editing.
 
+## Recurring Data-Import Scripts
+
+These are one-off data operations against the live Supabase database, not app/web behavior changes — the governance harness (task.json / gates) does not apply. Treat them as any other write to shared state: confirm scope with the user, never blind-force past a dedup warning.
+
+- **Parse a BCA statement PDF (Credit Card or savings/checking)**: `node scripts/parse_bca_statement.mjs <pdf...>` lists parsed rows with no writes. Add `--insert` to submit to Supabase (aborts if it finds existing rows on the same wallet(s) already in the parsed date range — a prior manual lump-sum entry can double-count against a statement's own line items, as happened for the May 2026 CC payment). Add `--force` only after confirming there's no real overlap. Auto-detects `BCA_CC` vs `BCA_SAVINGS` per file (tries no password first, falls back to the CC password) — pass a mix of both in one run. Reuses `parseBcaCc`/`parseBcaSavings`/`detectFormat` from `web/src/utils/pdfParser.js`, so it stays in sync with the web Import PDF UI. CC PDF password defaults to `***REMOVED-PASSWORD***` (override via `BCA_CC_PDF_PASSWORD` env var); savings statements have no password. Row conventions:
+  - BCA_CC: expense rows -> `wallet=BCA_CC, tx_type=expense, category=Other`; "PEMBAYARAN - MYBCA" rows -> `wallet=BCA, to_wallet=BCA_CC, tx_type=transfer, category=Transfer`.
+  - BCA_SAVINGS: "KARTU KREDIT/PL ... BCA CARD" rows are **skipped** (same CC payment already recorded from the BCA_CC side — confirmed by amounts summing exactly); "...TRANSFER KE 008 FIDRIYANTO..." rows -> `wallet=BCA, to_wallet=MANDIRI, tx_type=transfer, category=Transfer` (the paired "BIAYA TXN KE 008" fee line stays a plain expense); everything else -> `wallet=BCA, tx_type=income/expense, category=Other` (recategorize afterward in the web app).
+- Older statement imports (`scripts/import_bca_cc.py`, `scripts/reimport_mandiri_jan2026.py`) were hand-transcribed one-off scripts, not reusable — don't run them again as-is.
+
 ## Sub-File Load Map
 
 | Task                                       | Load first                                      |
@@ -92,3 +101,4 @@ Every session must append BOTH a `type=task` and a `type=retrospective` entry to
 | Wire up a new feature end-to-end           | `tasks/task.json`, then this file               |
 | Audit what happened last session           | `governance/worklog.jsonl`, `governance/gate-log.jsonl` |
 | Resume after an interruption               | `bash governance/session_resume.sh`             |
+| Parse/import a BCA statement PDF (CC or savings) | `scripts/parse_bca_statement.mjs` (see Recurring Data-Import Scripts above) |

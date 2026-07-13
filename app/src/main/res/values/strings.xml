@@ -32,12 +32,12 @@
     <string name="add_wallet">Wallet</string>
     <string name="add_to_wallet">To Wallet</string>
     <string name="add_amount_label">Amount (%1$s)</string>
-    <string name="add_merchant_label">Merchant</string>
     <string name="add_description_label">Description / Item</string>
     <string name="add_tx_type_label">Type</string>
     <string name="merchant_suggestions_header">Recent</string>
     <string name="add_category_label">Category</string>
-    <string name="add_sync_button">Sync to Sheets</string>
+    <string name="add_date_label">Date</string>
+    <string name="add_submit_button">Submit</string>
 
     <!-- Feed screen / TransactionCard -->
     <string name="feed_filter_all">All</string>
@@ -45,7 +45,15 @@
     <string name="feed_category_date">%1$s · %2$s</string>
     <string name="feed_card_description_label">Description</string>
     <string name="feed_card_category_label">Category</string>
-    <string name="feed_card_confirm_sync">Confirm &amp; Sync</string>
+    <string name="feed_card_confirm">Confirm</string>
+    <string name="feed_advanced_filters">Advanced</string>
+    <string name="feed_clear_filters">Clear</string>
+    <string name="feed_amount_min">Min amount</string>
+    <string name="feed_amount_max">Max amount</string>
+    <string name="feed_date_from">From date</string>
+    <string name="feed_date_to">To date</string>
+    <string name="feed_date_from_value">From: %1$s</string>
+    <string name="feed_date_to_value">To: %1$s</string>
 
     <!-- Delete transaction -->
     <string name="delete_dialog_title">Delete transaction?</string>
@@ -55,6 +63,11 @@
     <string name="snackbar_delete_failed">Failed to delete transaction. Please try again.</string>
     <string name="batch_delete_title">Delete transactions?</string>
     <string name="batch_delete_message">Delete %1$d selected transactions? This cannot be undone.</string>
+
+    <!-- Batch category edit -->
+    <string name="batch_category_label">Category</string>
+    <string name="batch_category_apply">Apply</string>
+    <string name="snackbar_batch_category_failed">Failed to update category. Please try again.</string>
 
     <!-- Edit transaction -->
     <string name="edit_sheet_title">Edit Transaction</string>

@@ -44,13 +44,13 @@ it('parses BCA CC expense row (dot-thousands amount)', () => {
     amount: 472996,
     tx_type: 'expense',
   });
-  expect(rows[0].merchant).toContain('NAGA SWALAYAN');
+  expect(rows[0].item).toContain('NAGA SWALAYAN');
 });
 it('parses BCA CC payment (CR) as transfer', () => {
   const rows = parseBcaCc(BCA_CC_TEXT, 2026);
   const cr = rows.find(r => r.tx_type === 'transfer');
   expect(cr).toMatchObject({ amount: 320096 });
-  expect(cr.merchant).toContain('PEMBAYARAN');
+  expect(cr.item).toContain('PEMBAYARAN');
 });
 it('handles Indonesian month MEI -> 05', () => {
   const rows = parseBcaCc(BCA_CC_TEXT, 2026);
@@ -61,21 +61,21 @@ it('handles Indonesian month MEI -> 05', () => {
 it('parses BCA Savings real text and skips SALDO AWAL', () => {
   const rows = parseBcaSavings(BCA_SAVINGS_TEXT, 2026);
   expect(rows.length).toBeGreaterThan(0);
-  expect(rows.find(r => /SALDO\s*AWAL/i.test(r.merchant))).toBeUndefined();
+  expect(rows.find(r => /SALDO\s*AWAL/i.test(r.item))).toBeUndefined();
 });
 it('parses BCA Savings DB row as expense', () => {
   const rows = parseBcaSavings(BCA_SAVINGS_TEXT, 2026);
-  const xl = rows.find(r => r.merchant.includes('XL-XCFlex'));
+  const xl = rows.find(r => r.item.includes('XL-XCFlex'));
   expect(xl).toMatchObject({ date: '2026-04-01', amount: 51500, tx_type: 'expense' });
 });
 it('parses BCA Savings CR row (no DB) as income', () => {
   const rows = parseBcaSavings(BCA_SAVINGS_TEXT, 2026);
-  const cr = rows.find(r => r.merchant.includes('BI-FAST CR'));
+  const cr = rows.find(r => r.item.includes('BI-FAST CR'));
   expect(cr).toMatchObject({ date: '2026-04-26', amount: 6100000, tx_type: 'income' });
 });
 it('does NOT confuse non-comma reference numbers with amounts', () => {
   const rows = parseBcaSavings(BCA_SAVINGS_TEXT, 2026);
-  const fiz = rows.find(r => r.merchant.includes('FIZARIANI'));
+  const fiz = rows.find(r => r.item.includes('FIZARIANI'));
   expect(fiz.amount).toBe(600000);
 });
 
@@ -87,7 +87,7 @@ it('parses Mandiri CC expense row', () => {
     amount: 63940,
     tx_type: 'expense',
   });
-  expect(rows[0].merchant).toContain('Grab');
+  expect(rows[0].item).toContain('Grab');
 });
 it('parses Mandiri CC payment (CR) as transfer', () => {
   const rows = parseMandiriCc(MANDIRI_CC_TEXT);
@@ -96,26 +96,26 @@ it('parses Mandiri CC payment (CR) as transfer', () => {
 });
 it('skips FX info paren and only captures actual tx amount', () => {
   const rows = parseMandiriCc(MANDIRI_CC_TEXT);
-  const claude = rows.find(r => r.merchant.includes('CLAUDE.AI'));
+  const claude = rows.find(r => r.item.includes('CLAUDE.AI'));
   expect(claude.amount).toBe(3452903);
 });
 it('parses zero-amount BUNGA CICILAN rows', () => {
   const rows = parseMandiriCc(MANDIRI_CC_TEXT);
-  expect(rows.find(r => r.merchant === 'BUNGA CICILAN')?.amount).toBe(0);
+  expect(rows.find(r => r.item === 'BUNGA CICILAN')?.amount).toBe(0);
 });
 
 // ── parseMandiriSavings ──────────────────────────────────────
 it('parses Mandiri Savings D row as expense', () => {
   const rows = parseMandiriSavings(MANDIRI_SAVINGS_TEXT, 2026);
-  const debit = rows.find(r => r.tx_type === 'expense' && r.merchant.includes('20260411'));
+  const debit = rows.find(r => r.tx_type === 'expense' && r.item.includes('20260411'));
   expect(debit).toMatchObject({ date: '2026-04-11', amount: 450000 });
 });
 it('parses Mandiri Savings credit (no D) as income', () => {
   const rows = parseMandiriSavings(MANDIRI_SAVINGS_TEXT, 2026);
-  const credit = rows.find(r => r.merchant.includes('JAGBIDJA'));
+  const credit = rows.find(r => r.item.includes('JAGBIDJA'));
   expect(credit).toMatchObject({ amount: 630292, tx_type: 'income' });
 });
 it('skips single-date Saldo Awal line', () => {
   const rows = parseMandiriSavings(MANDIRI_SAVINGS_TEXT, 2026);
-  expect(rows.find(r => /Saldo\s+Awal/i.test(r.merchant))).toBeUndefined();
+  expect(rows.find(r => /Saldo\s+Awal/i.test(r.item))).toBeUndefined();
 });

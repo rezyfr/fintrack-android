@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -51,7 +52,8 @@ fun MerchantSuggestionDropdown(
             onDismissRequest = onDismiss,
             // focusable = false keeps the IME open while the dropdown is visible
             properties = PopupProperties(focusable = false),
-            modifier = Modifier.width(width),
+            // capped so the list never grows tall enough to sit under the on-screen keyboard
+            modifier = Modifier.width(width).heightIn(max = 240.dp),
         ) {
             Row(
                 modifier = Modifier

@@ -20,6 +20,8 @@
   --purple:       #a78bfa;
   --orange:       #f4a261;
   --pink:         #f06489;
+  --teal:         #1dd1a1;
+  --teal-dim:     rgba(29, 209, 161, 0.13);
   --radius:       10px;
   --radius-sm:    6px;
   --nav-h:        58px;
@@ -48,6 +50,8 @@
   --purple:       #6d4bc4;
   --orange:       #c4640a;
   --pink:         #c43062;
+  --teal:         #0f9b76;
+  --teal-dim:     rgba(15, 155, 118, 0.10);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -312,6 +316,25 @@ body {
 
 .filter-select option { background: var(--card); }
 
+/* ac: advanced-transaction-filters — search, amount, and date filter inputs */
+.filter-input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color var(--t);
+  color-scheme: dark;
+  min-width: 0;
+}
+[data-theme="light"] .filter-input { color-scheme: light; }
+.filter-input:focus { border-color: var(--gold); }
+.filter-input::placeholder { color: var(--text-2); }
+.filter-input--narrow { max-width: 120px; }
+
 .month-input {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -482,6 +505,7 @@ body {
 .chip-travel        { background: var(--blue-dim);        color: var(--blue); }
 .chip-business      { background: rgba(167,139,250,0.13); color: var(--purple); }
 .chip-gifts         { background: rgba(240,100,137,0.13); color: var(--pink); }
+.chip-family        { background: var(--teal-dim);        color: var(--teal); }
 .chip-other         { background: rgba(100,100,120,0.12); color: var(--text-2); }
 
 .chip-channel {

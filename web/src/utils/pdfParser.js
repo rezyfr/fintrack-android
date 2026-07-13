@@ -54,7 +54,7 @@ export function parseBcaCc(text, year = new Date().getFullYear()) {
     if (!month) continue;
     rows.push({
       date: `${year}-${pad(month)}-${m[1]}`,
-      merchant: m[3].trim(),
+      item: m[3].trim(),
       amount: parseAmtDot(m[4]),
       tx_type: m[5] ? 'transfer' : 'expense',
       category: 'Other',
@@ -89,7 +89,7 @@ export function parseBcaSavings(text, year = new Date().getFullYear()) {
     if (!desc) continue;
     rows.push({
       date: `${year}-${m[2]}-${m[1]}`,
-      merchant: desc,
+      item: desc,
       amount: parseAmtComma(txAmt[0]),
       tx_type: isDebit ? 'expense' : 'income',
       category: 'Other',
@@ -113,7 +113,7 @@ export function parseMandiriCc(text) {
     if (MANDIRI_CC_HEADER.test(m[4])) continue;
     rows.push({
       date: `${2000 + parseInt(m[3], 10)}-${pad(month)}-${m[1]}`,
-      merchant: m[4].trim(),
+      item: m[4].trim(),
       amount: parseAmtComma(m[5]),
       tx_type: m[6] ? 'transfer' : 'expense',
       category: 'Other',
@@ -131,7 +131,7 @@ export function parseMandiriSavings(text, year = new Date().getFullYear()) {
   while ((m = re.exec(text)) !== null) {
     rows.push({
       date: `${year}-${m[2]}-${m[1]}`,
-      merchant: m[3].trim(),
+      item: m[3].trim(),
       amount: parseAmtComma(m[4]),
       tx_type: m[5] ? 'expense' : 'income',
       category: 'Other',

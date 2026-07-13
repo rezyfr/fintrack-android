@@ -25,8 +25,8 @@ class MonthlyOverviewRemoteDataSourceImpl @Inject constructor(
     override suspend fun fetchTransportMerchants(months: List<String>): Result<Pair<List<MerchantTotal>, List<MerchantTotal>>> =
         runCatching {
             val rows = service.getTransportMerchants(TransportMerchantsRequest(pMonths = months))
-            val thb = rows.filter { it.currency == "THB" }.map { MerchantTotal(it.merchant, it.amount) }
-            val idr = rows.filter { it.currency == "IDR" }.map { MerchantTotal(it.merchant, it.amount) }
+            val thb = rows.filter { it.currency == "THB" }.map { MerchantTotal(it.item, it.amount) }
+            val idr = rows.filter { it.currency == "IDR" }.map { MerchantTotal(it.item, it.amount) }
             Pair(thb, idr)
         }.onFailure { Log.e("MonthlyOverviewRemoteDS", "fetchTransportMerchants failed", it) }
 }

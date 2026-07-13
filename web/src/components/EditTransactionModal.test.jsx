@@ -8,7 +8,6 @@ vi.mock('../api/supabase');
 
 const MOCK_ROW = {
   id: 42,
-  merchant: 'Grab',
   item: 'Food delivery',
   amount: 150,
   category: 'Food & Drink',
@@ -26,9 +25,9 @@ beforeEach(() => {
 });
 afterEach(() => vi.resetAllMocks());
 
-it('pre-populates merchant from row', () => {
+it('pre-populates item from row', () => {
   render(<EditTransactionModal row={MOCK_ROW} onClose={vi.fn()} onSaved={vi.fn()} onDeleted={vi.fn()} />);
-  expect(screen.getByLabelText('Merchant')).toHaveValue('Grab');
+  expect(screen.getByLabelText('Item')).toHaveValue('Food delivery');
 });
 
 it('pre-populates wallet from row', () => {

@@ -8,7 +8,6 @@ import com.fidriyanto.banktracker.data.model.TransactionStatus
 @Entity(tableName = "transactions")
 data class TransactionEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val merchant: String,
     val item: String,
     val amount: Double,
     val category: String,

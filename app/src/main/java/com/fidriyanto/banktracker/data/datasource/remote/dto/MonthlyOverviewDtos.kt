@@ -12,7 +12,7 @@ data class TransportMerchantsRequest(
 
 data class TransportMerchantRowDto(
     @SerializedName("currency") val currency: String,
-    @SerializedName("merchant") val merchant: String,
+    @SerializedName("item")     val item: String,
     @SerializedName("amount")   val amount: Double,
 )
 

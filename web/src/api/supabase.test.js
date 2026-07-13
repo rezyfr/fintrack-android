@@ -44,7 +44,6 @@ describe('addTransaction', () => {
   it('posts with correct headers and body', async () => {
     global.fetch.mockResolvedValue({ ok: true });
     const row = {
-      merchant: 'Grab',
       item: 'Food delivery',
       amount: 150,
       category: 'Food & Drink',

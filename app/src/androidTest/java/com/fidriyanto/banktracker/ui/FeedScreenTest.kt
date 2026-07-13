@@ -34,9 +34,9 @@ class FeedScreenTest {
 
     private fun entity(item: String = "Coffee", status: TransactionStatus = TransactionStatus.PENDING_EDIT) =
         TransactionEntity(
-            merchant = item, item = item, amount = 80.0, category = "Food & Drink",
-            dateIso = "2026-05-16", channel = "Card", referenceNo = "REF001",
-            tab = SheetTab.EXPENSES, status = status
+            item = item, amount = 80.0, category = "Food & Drink",
+            dateIso = "2026-05-16", referenceNo = "REF001",
+            tab = com.fidriyanto.banktracker.data.model.LedgerTab.EXPENSES, status = status
         )
 
     @Test

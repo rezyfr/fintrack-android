@@ -1,5 +1,6 @@
 package com.fidriyanto.banktracker.data.datasource.remote
 
+import com.fidriyanto.banktracker.data.datasource.remote.dto.CategoryPatchDto
 import com.fidriyanto.banktracker.data.datasource.remote.dto.TransactionDto
 import com.fidriyanto.banktracker.data.datasource.remote.dto.TransactionInsertDto
 import com.fidriyanto.banktracker.data.datasource.remote.dto.TransactionPatchDto
@@ -22,6 +23,9 @@ interface SupabaseTransactionService {
         @Query("wallet") wallet: String?,
         @Query("tx_type") txType: String?,
         @Query("category") category: String?,
+        // ac: advanced-transaction-filters
+        @Query("item") itemFilter: String? = null,
+        @Query("amount") amountFilters: List<String>? = null,
     ): List<TransactionDto>
 
     @POST("rest/v1/transactions")
@@ -36,5 +40,13 @@ interface SupabaseTransactionService {
     suspend fun updateTransaction(
         @Query("id") idFilter: String,
         @Body body: TransactionPatchDto,
+    ): Response<ResponseBody>
+
+    // ac: batch-edit-transaction-category — idFilter is an "in.(1,2,3)" postgrest filter matching multiple rows
+    @PATCH("rest/v1/transactions")
+    @Headers("Prefer: return=minimal")
+    suspend fun updateCategoryBatch(
+        @Query("id") idFilter: String,
+        @Body body: CategoryPatchDto,
     ): Response<ResponseBody>
 }

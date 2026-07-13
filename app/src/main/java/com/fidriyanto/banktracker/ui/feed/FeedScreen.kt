@@ -1,12 +1,14 @@
 package com.fidriyanto.banktracker.ui.feed
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
@@ -20,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -63,6 +66,15 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
     val categoryFilter  by viewModel.categoryFilter.collectAsStateWithLifecycle()
     val searchQuery     by viewModel.searchQuery.collectAsStateWithLifecycle()
     val merchantHistory by viewModel.merchantHistory.collectAsStateWithLifecycle()
+    // ac: advanced-transaction-filters
+    val amountMin       by viewModel.amountMin.collectAsStateWithLifecycle()
+    val amountMax       by viewModel.amountMax.collectAsStateWithLifecycle()
+    val dateFrom        by viewModel.dateFrom.collectAsStateWithLifecycle()
+    val dateTo          by viewModel.dateTo.collectAsStateWithLifecycle()
+    var amountMinText   by remember { mutableStateOf("") }
+    var amountMaxText   by remember { mutableStateOf("") }
+    var showAdvanced    by remember { mutableStateOf(false) }
+    val hasAdvancedFilters = amountMin != null || amountMax != null || dateFrom != null || dateTo != null
 
     val pullState = rememberPullToRefreshState()
     LaunchedEffect(pullState.isRefreshing) {
@@ -78,9 +90,13 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
     var selectedIds by remember { mutableStateOf<Set<Long>>(emptySet()) }
     val inSelectionMode = selectedIds.isNotEmpty()
     var pendingBatchDelete by remember { mutableStateOf(false) }
+    // ac: batch-edit-transaction-category — pending category picker state
+    var pendingBatchCategory by remember { mutableStateOf<String?>(null) }
+    var batchCategoryMenuExpanded by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
     val deleteFailedMessage = stringResource(R.string.snackbar_delete_failed)
     val editFailedMessage = stringResource(R.string.snackbar_edit_failed)
+    val batchCategoryFailedMessage = stringResource(R.string.snackbar_batch_category_failed)
     val retryLabel = stringResource(R.string.action_retry)
 
     LaunchedEffect(viewModel) {
@@ -107,6 +123,12 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
                 // ac: edit-transaction-from-feed — snackbar Retry re-PATCHes with the same edit payload
                 viewModel.edit(event.id, event.edit)
             }
+        }
+    }
+    LaunchedEffect(viewModel) {
+        // ac: batch-edit-transaction-category — if the batch update fails, an error is shown
+        viewModel.batchCategoryFailures.collect {
+            snackbarHostState.showSnackbar(message = batchCategoryFailedMessage, duration = SnackbarDuration.Long)
         }
     }
 
@@ -152,7 +174,7 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
                     FilterChip(
                         selected = monthFilter == ym,
                         onClick = { viewModel.setMonth(ym) },
-                        label = { Text(FeedViewModel.monthDisplayLabel(ym), fontSize = 12.sp) }
+                        label = { Text(monthDisplayLabel(ym), fontSize = 12.sp) }
                     )
                 }
             }
@@ -216,24 +238,141 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
                 }
             }
 
+            Spacer(Modifier.height(4.dp))
+
+            // ac: advanced-transaction-filters — toggle and inputs for amount range and date range
+            Row(
+                modifier = Modifier.padding(horizontal = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                FilterChip(
+                    selected = showAdvanced || hasAdvancedFilters,
+                    onClick = { showAdvanced = !showAdvanced },
+                    label = { Text(stringResource(R.string.feed_advanced_filters), fontSize = 12.sp) },
+                )
+                if (hasAdvancedFilters) {
+                    Spacer(Modifier.width(8.dp))
+                    TextButton(onClick = {
+                        viewModel.clearAdvancedFilters()
+                        amountMinText = ""; amountMaxText = ""
+                    }) {
+                        Text(stringResource(R.string.feed_clear_filters), fontSize = 12.sp)
+                    }
+                }
+            }
+
+            if (showAdvanced) {
+                Column(Modifier.padding(horizontal = 12.dp)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedTextField(
+                            value = amountMinText,
+                            onValueChange = { v ->
+                                amountMinText = v
+                                viewModel.setAmountMin(v.toDoubleOrNull())
+                            },
+                            placeholder = { Text(stringResource(R.string.feed_amount_min), fontSize = 12.sp) },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                            modifier = Modifier.weight(1f).height(48.dp),
+                            textStyle = LocalTextStyle.current.copy(fontSize = 13.sp),
+                        )
+                        OutlinedTextField(
+                            value = amountMaxText,
+                            onValueChange = { v ->
+                                amountMaxText = v
+                                viewModel.setAmountMax(v.toDoubleOrNull())
+                            },
+                            placeholder = { Text(stringResource(R.string.feed_amount_max), fontSize = 12.sp) },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                            modifier = Modifier.weight(1f).height(48.dp),
+                            textStyle = LocalTextStyle.current.copy(fontSize = 13.sp),
+                        )
+                    }
+                    Spacer(Modifier.height(6.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        DateFilterChip(
+                            label = dateFrom?.let { stringResource(R.string.feed_date_from_value, it) }
+                                ?: stringResource(R.string.feed_date_from),
+                            selected = dateFrom != null,
+                            onPick = { viewModel.setDateFrom(it) },
+                            onClear = { viewModel.setDateFrom(null) },
+                            modifier = Modifier.weight(1f),
+                        )
+                        DateFilterChip(
+                            label = dateTo?.let { stringResource(R.string.feed_date_to_value, it) }
+                                ?: stringResource(R.string.feed_date_to),
+                            selected = dateTo != null,
+                            onPick = { viewModel.setDateTo(it) },
+                            onClear = { viewModel.setDateTo(null) },
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+                }
+            }
+
             Spacer(Modifier.height(8.dp))
 
             // ac: batch-select-and-delete-transactions — toolbar shows count and Delete button
             if (inSelectionMode) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        "${selectedIds.size} selected",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        TextButton(onClick = { selectedIds = emptySet() }) {
+                Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            "${selectedIds.size} selected",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                        TextButton(onClick = { selectedIds = emptySet(); pendingBatchCategory = null }) {
                             Text(stringResource(R.string.action_cancel))
+                        }
+                    }
+                    Spacer(Modifier.height(6.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        // ac: batch-edit-transaction-category — category picker alongside Delete
+                        ExposedDropdownMenuBox(
+                            expanded = batchCategoryMenuExpanded,
+                            onExpandedChange = { batchCategoryMenuExpanded = it },
+                            modifier = Modifier.weight(1f),
+                        ) {
+                            OutlinedTextField(
+                                value = pendingBatchCategory ?: "",
+                                onValueChange = {},
+                                readOnly = true,
+                                placeholder = { Text(stringResource(R.string.batch_category_label), fontSize = 12.sp) },
+                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(batchCategoryMenuExpanded) },
+                                modifier = Modifier.menuAnchor().fillMaxWidth(),
+                                textStyle = LocalTextStyle.current.copy(fontSize = 13.sp),
+                            )
+                            ExposedDropdownMenu(
+                                expanded = batchCategoryMenuExpanded,
+                                onDismissRequest = { batchCategoryMenuExpanded = false },
+                            ) {
+                                CATEGORY_OPTIONS.forEach { cat ->
+                                    DropdownMenuItem(
+                                        text = { Text(cat) },
+                                        onClick = { pendingBatchCategory = cat; batchCategoryMenuExpanded = false },
+                                    )
+                                }
+                            }
+                        }
+                        // ac: batch-edit-transaction-category — Apply button updates every selected transaction
+                        Button(
+                            enabled = pendingBatchCategory != null,
+                            onClick = {
+                                pendingBatchCategory?.let { viewModel.updateCategoryMultiple(selectedIds, it) }
+                                selectedIds = emptySet()
+                                pendingBatchCategory = null
+                            },
+                        ) {
+                            Text(stringResource(R.string.batch_category_apply))
                         }
                         Button(onClick = { pendingBatchDelete = true }) {
                             Icon(Icons.Outlined.Delete, contentDescription = null, modifier = Modifier.size(16.dp))
@@ -390,6 +529,44 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
                 }
             },
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DateFilterChip(
+    label: String,
+    selected: Boolean,
+    onPick: (String) -> Unit,
+    onClear: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var showPicker by remember { mutableStateOf(false) }
+    FilterChip(
+        selected = selected,
+        onClick = { if (selected) onClear() else showPicker = true },
+        label = { Text(label, fontSize = 12.sp, maxLines = 1) },
+        modifier = modifier,
+    )
+    if (showPicker) {
+        val state = rememberDatePickerState()
+        DatePickerDialog(
+            onDismissRequest = { showPicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    state.selectedDateMillis?.let { ms ->
+                        val ld = java.time.Instant.ofEpochMilli(ms).atZone(java.time.ZoneOffset.UTC).toLocalDate()
+                        onPick(ld.toString())
+                    }
+                    showPicker = false
+                }) { Text(stringResource(R.string.action_save)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showPicker = false }) { Text(stringResource(R.string.action_cancel)) }
+            },
+        ) {
+            DatePicker(state = state)
+        }
     }
 }
 

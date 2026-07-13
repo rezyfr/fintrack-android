@@ -1,0 +1,19 @@
+{
+  "id": "batch-edit-transaction-category-flow",
+  "steps": [
+    { "actor": "user", "action": "enters batch selection mode and selects one or more transactions" },
+    {
+      "actor": "app",
+      "action": "shows a category picker and an Apply button in the selection toolbar alongside Delete",
+      "story": "batch-edit-transaction-category",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "chooses a target category and presses Apply" },
+    {
+      "actor": "app",
+      "action": "updates the category of every selected transaction, refreshes the list, and exits selection mode",
+      "story": "batch-edit-transaction-category",
+      "noNavigation": true
+    }
+  ]
+}

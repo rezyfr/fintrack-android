@@ -1,0 +1,8 @@
+{
+  "id": "add-transaction-form",
+  "title": "Add Transaction Form",
+  "status": "Approved",
+  "owners": ["frotylatz@gmail.com"],
+  "stories": ["add-transaction-date"],
+  "flows": ["add-transaction-date-flow"]
+}

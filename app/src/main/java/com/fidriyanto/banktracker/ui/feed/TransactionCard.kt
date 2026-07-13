@@ -144,7 +144,7 @@ fun TransactionCard(
                         },
                         enabled = itemInput.isNotBlank() && categoryInput.isNotBlank()
                     ) {
-                        Text(stringResource(R.string.feed_card_confirm_sync))
+                        Text(stringResource(R.string.feed_card_confirm))
                     }
                 }
             }

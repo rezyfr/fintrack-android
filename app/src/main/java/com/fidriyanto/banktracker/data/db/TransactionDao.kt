@@ -42,20 +42,20 @@ interface TransactionDao {
     suspend fun markAllSynced()
 
     @Query("""
-        SELECT merchant, SUM(amount) as amount FROM transactions
+        SELECT item AS merchant, SUM(amount) as amount FROM transactions
         WHERE category = :category AND txType = 'expense'
         AND wallet = 'BBL'
         AND dateIso >= :fromDate AND dateIso <= :toDate
-        GROUP BY merchant ORDER BY amount DESC
+        GROUP BY item ORDER BY amount DESC
     """)
     fun observeTransportTotalsTHB(category: String, fromDate: String, toDate: String): Flow<List<MerchantTotal>>
 
     @Query("""
-        SELECT merchant, SUM(amount) as amount FROM transactions
+        SELECT item AS merchant, SUM(amount) as amount FROM transactions
         WHERE category = :category AND txType = 'expense'
         AND wallet IS NOT NULL AND wallet != 'BBL'
         AND dateIso >= :fromDate AND dateIso <= :toDate
-        GROUP BY merchant ORDER BY amount DESC
+        GROUP BY item ORDER BY amount DESC
     """)
     fun observeTransportTotalsIDR(category: String, fromDate: String, toDate: String): Flow<List<MerchantTotal>>
 }

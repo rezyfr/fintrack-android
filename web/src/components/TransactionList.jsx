@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { getTransactions, deleteTransactions, updateTransaction } from '../api/supabase';
+import { getTransactions, deleteTransactions, updateTransaction, updateTransactionsCategory } from '../api/supabase';
 import { WALLETS, EXPENSE_CATEGORIES, INCOME_CATEGORIES, categoriesFor } from '../constants/transaction';
 
 function walletCurrency(walletId) {
@@ -29,6 +29,9 @@ const CATEGORY_OPTIONS = [
     .map(c => ({ value: c, label: c })),
 ];
 
+// ac: batch-edit-transaction-category — category picker offered in the batch action bar (no blank "All" option)
+const BATCH_CATEGORY_OPTIONS = CATEGORY_OPTIONS.filter(o => o.value !== '');
+
 const CATEGORY_CLASS = {
   'Food & Drink':       'chip-food',
   'Transport':          'chip-transport',
@@ -41,6 +44,7 @@ const CATEGORY_CLASS = {
   'Travel':             'chip-travel',
   'Business':           'chip-business',
   'Gifts':              'chip-gifts',
+  'Family':             'chip-family',
   'Other':              'chip-other',
 };
 
@@ -166,6 +170,12 @@ export default function TransactionList() {
   const [month,     setMonth]     = useState(currentMonth());
   // ac: filter-transactions-by-category — a category selector is shown in the transaction list filter row
   const [category,  setCategory]  = useState('');
+  // ac: advanced-transaction-filters — search, amount range, and date range state
+  const [search,    setSearch]    = useState('');
+  const [amountMin, setAmountMin] = useState('');
+  const [amountMax, setAmountMax] = useState('');
+  const [dateFrom,  setDateFrom]  = useState('');
+  const [dateTo,    setDateTo]    = useState('');
   const [rows, setRows]           = useState([]);
   const [loading, setLoading]     = useState(false);
   const [error, setError]         = useState(null);
@@ -175,6 +185,9 @@ export default function TransactionList() {
   const [selected, setSelected]       = useState(new Set());
   const [confirming, setConfirming]   = useState(false);
   const [deleting, setDeleting]       = useState(false);
+  // ac: batch-edit-transaction-category — pending category picker state
+  const [batchCategory, setBatchCategory] = useState('');
+  const [applyingCategory, setApplyingCategory] = useState(false);
 
   const [editing, setEditing] = useState(null); // { rowId, field }
 
@@ -212,8 +225,20 @@ export default function TransactionList() {
     setError(null);
     setSelected(new Set());
     setConfirming(false);
-    // ac: filter-transactions-by-category — the category filter combines with the existing wallet, type, and month filters
-    getTransactions({ txType: txType || null, wallet: wallet || null, month, category: category || null })
+    setBatchCategory('');
+    // ac: advanced-transaction-filters — all filters combine in a single API call
+    const hasDateRange = dateFrom || dateTo;
+    getTransactions({
+      txType: txType || null,
+      wallet: wallet || null,
+      month: hasDateRange ? null : month,
+      category: category || null,
+      search: search || null,
+      amountMin: amountMin !== '' ? Number(amountMin) : null,
+      amountMax: amountMax !== '' ? Number(amountMax) : null,
+      dateFrom: dateFrom || null,
+      dateTo: dateTo || null,
+    })
       .then((data) => {
         if (ignore) return;
         // ac: transfer-in-wallet-view — mark rows that are incoming transfers for the viewed wallet
@@ -227,7 +252,7 @@ export default function TransactionList() {
       .catch((e)   => { if (!ignore) setError(e.message); })
       .finally(()  => { if (!ignore) setLoading(false); });
     return () => { ignore = true; };
-  }, [txType, wallet, month, category]);
+  }, [txType, wallet, month, category, search, amountMin, amountMax, dateFrom, dateTo]);
 
   // Keep select-all checkbox in sync (checked / indeterminate / unchecked)
   useEffect(() => {
@@ -267,6 +292,24 @@ export default function TransactionList() {
       setError(e.message);
     } finally {
       setDeleting(false);
+    }
+  }
+
+  // ac: batch-edit-transaction-category — updates the category of every selected transaction
+  async function handleBatchCategoryApply() {
+    if (!batchCategory) return;
+    const ids = [...selected];
+    setApplyingCategory(true);
+    try {
+      await updateTransactionsCategory(ids, batchCategory);
+      setRows(prev => prev.map(r => ids.includes(r.id) ? { ...r, category: batchCategory } : r));
+      setSelected(new Set());
+      setBatchCategory('');
+    } catch (e) {
+      // ac: batch-edit-transaction-category — if the batch update fails, an error is shown and rows keep their original category
+      setError(e.message);
+    } finally {
+      setApplyingCategory(false);
     }
   }
 
@@ -335,7 +378,61 @@ export default function TransactionList() {
               <option key={value} value={value}>{label}</option>
             ))}
           </select>
-          <MonthNav value={month} onChange={setMonth} />
+          <MonthNav value={month} onChange={(v) => { setMonth(v); setDateFrom(''); setDateTo(''); }} />
+        </div>
+        {/* ac: advanced-transaction-filters — search, amount range, and date range inputs */}
+        <div className="filter-row">
+          <input
+            className="filter-input"
+            type="text"
+            placeholder="Search item..."
+            aria-label="Search item"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <input
+            className="filter-input filter-input--narrow"
+            type="number"
+            placeholder="Min amount"
+            aria-label="Minimum amount"
+            min="0"
+            step="0.01"
+            value={amountMin}
+            onChange={(e) => setAmountMin(e.target.value)}
+          />
+          <input
+            className="filter-input filter-input--narrow"
+            type="number"
+            placeholder="Max amount"
+            aria-label="Maximum amount"
+            min="0"
+            step="0.01"
+            value={amountMax}
+            onChange={(e) => setAmountMax(e.target.value)}
+          />
+          <input
+            className="filter-input"
+            type="date"
+            aria-label="From date"
+            value={dateFrom}
+            onChange={(e) => setDateFrom(e.target.value)}
+          />
+          <input
+            className="filter-input"
+            type="date"
+            aria-label="To date"
+            value={dateTo}
+            min={dateFrom}
+            onChange={(e) => setDateTo(e.target.value)}
+          />
+          {(search || amountMin || amountMax || dateFrom || dateTo) && (
+            <button
+              className="filter-tab"
+              onClick={() => { setSearch(''); setAmountMin(''); setAmountMax(''); setDateFrom(''); setDateTo(''); }}
+            >
+              Clear
+            </button>
+          )}
         </div>
       </div>
 
@@ -343,6 +440,30 @@ export default function TransactionList() {
       {anySelected && (
         <div className="batch-bar">
           <span className="batch-count">{selected.size} selected</span>
+          {/* ac: batch-edit-transaction-category — category picker and Apply button alongside Delete */}
+          {!confirming && (
+            <>
+              <select
+                aria-label="Batch category"
+                className="filter-select"
+                value={batchCategory}
+                onChange={(e) => setBatchCategory(e.target.value)}
+                disabled={applyingCategory}
+              >
+                <option value="">Set category…</option>
+                {BATCH_CATEGORY_OPTIONS.map(({ value, label }) => (
+                  <option key={value} value={value}>{label}</option>
+                ))}
+              </select>
+              <button
+                className="btn-secondary"
+                onClick={handleBatchCategoryApply}
+                disabled={!batchCategory || applyingCategory}
+              >
+                {applyingCategory ? 'Applying…' : 'Apply'}
+              </button>
+            </>
+          )}
           {!confirming ? (
             <button className="btn-danger-outline" onClick={() => setConfirming(true)}>
               Delete selected
@@ -378,7 +499,6 @@ export default function TransactionList() {
                 />
               </th>
               <th>Date</th>
-              <th>Merchant</th>
               <th>Item</th>
               <th className="align-right">Amount</th>
               <th>Category</th>
@@ -392,7 +512,7 @@ export default function TransactionList() {
 
             {!loading && error && (
               <tr>
-                <td colSpan={9}>
+                <td colSpan={8}>
                   <div className="table-state">
                     <div className="table-state-icon">⚠</div>
                     <div className="table-state-title">Failed to load</div>
@@ -404,7 +524,7 @@ export default function TransactionList() {
 
             {!loading && !error && rows.length === 0 && (
               <tr>
-                <td colSpan={9}>
+                <td colSpan={8}>
                   <div className="table-state">
                     <div className="table-state-icon">◎</div>
                     <div className="table-state-title">No transactions</div>
@@ -420,7 +540,7 @@ export default function TransactionList() {
                   <input
                     type="checkbox"
                     className="tx-checkbox"
-                    aria-label={`Select ${row.merchant}`}
+                    aria-label={`Select ${row.item}`}
                     checked={selected.has(row.id)}
                     onChange={() => toggleRow(row.id)}
                   />
@@ -429,12 +549,6 @@ export default function TransactionList() {
                   {isEditing(row.id, 'date')
                     ? <TextCell initialValue={row.date} type="date" onCommit={commitEdit} onCancel={cancelEdit} />
                     : <span className="tx-date editable" onDoubleClick={() => startEdit(row, 'date')}>{formatDate(row.date)}</span>
-                  }
-                </td>
-                <td>
-                  {isEditing(row.id, 'merchant')
-                    ? <TextCell initialValue={row.merchant} onCommit={commitEdit} onCancel={cancelEdit} />
-                    : <span className="tx-merchant editable" onDoubleClick={() => startEdit(row, 'merchant')}>{row.merchant}</span>
                   }
                 </td>
                 <td>
@@ -497,7 +611,7 @@ export default function TransactionList() {
                   {/* ac: inline-cell-edit — edit icon opens the full modal for fields not editable inline */}
                   <button
                     className="edit-btn"
-                    aria-label={`Edit ${row.merchant}`}
+                    aria-label={`Edit ${row.item}`}
                     onClick={() => setEditingRow(row)}
                   >
                     ✎

@@ -9,7 +9,7 @@ function today() {
 }
 
 const EMPTY = {
-  merchant: '', item: '', amount: '',
+  item: '', amount: '',
   category: 'Food & Drink',
   wallet: 'BBL', txType: 'expense', toWallet: '', date: '', note: '',
 };
@@ -37,7 +37,6 @@ export default function AddTransactionForm() {
     setErrorMsg('');
     try {
       const payload = {
-        merchant:  form.merchant,
         item:      form.item,
         amount:    Number(form.amount),
         category:  form.category,
@@ -49,7 +48,7 @@ export default function AddTransactionForm() {
         tab:       deriveTab(form.wallet, form.txType),
       };
       await addTransaction(payload);
-      addToHistory(form.merchant);
+      addToHistory(form.item);
       setStatus('success');
       setForm({ ...EMPTY, date: today() });
     } catch (err) {
@@ -80,24 +79,13 @@ export default function AddTransactionForm() {
           <div className="form-grid">
 
             <div className="form-group">
-              <label className="form-label" htmlFor="merchant">Merchant</label>
+              <label className="form-label" htmlFor="item">Item</label>
               <MerchantInput
-                id="merchant" name="merchant"
-                value={form.merchant}
+                id="item" name="item"
+                value={form.item}
                 onChange={handleChange}
                 history={merchantHistory}
-                onSelect={(m) => setForm((f) => ({ ...f, merchant: m }))}
-                placeholder="e.g. LINE MAN"
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="form-label" htmlFor="item">Item</label>
-              <input
-                className="form-input"
-                id="item" name="item"
-                value={form.item} onChange={handleChange}
+                onSelect={(m) => setForm((f) => ({ ...f, item: m }))}
                 placeholder="e.g. Pad Thai"
                 required
               />

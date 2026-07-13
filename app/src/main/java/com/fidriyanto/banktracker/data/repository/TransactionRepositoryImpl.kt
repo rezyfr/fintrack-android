@@ -30,18 +30,22 @@ class TransactionRepositoryImpl @Inject constructor(
             list.filter { it.status != TransactionStatus.SYNCED }.map { it.toUiModel() }
         }
 
-    override suspend fun fetch(month: String?, wallet: String?, txType: String?, category: String?): Result<List<TransactionUiModel>> =
-        fetchDataSource.fetch(month, wallet, txType, category).map { list -> list.map { it.toUiModel() } }
+    override suspend fun fetch(
+        month: String?, wallet: String?, txType: String?, category: String?,
+        search: String?, amountMin: Double?, amountMax: Double?,
+        dateFrom: String?, dateTo: String?,
+    ): Result<List<TransactionUiModel>> =
+        fetchDataSource.fetch(month, wallet, txType, category, search, amountMin, amountMax, dateFrom, dateTo)
+            .map { list -> list.map { it.toUiModel() } }
 
     override suspend fun processNewNotification(parsed: ParsedTransaction): Long? {
-        val compositeKey = "${parsed.merchant}|${parsed.amount}|${parsed.date}"
+        val compositeKey = "${parsed.item}|${parsed.amount}|${parsed.date}|${parsed.timestampMs}"
         if (localDataSource.refExists(compositeKey) > 0) return null
         localDataSource.insertRef(ProcessedRefEntity(compositeKey))
         // ac: bca-expense-notification — wallet and tab derived from parsed notification
         val tab = if (parsed.wallet == "BBL") LedgerTab.EXPENSES else LedgerTab.IDR_EXPENSES
         val entity = TransactionEntity(
-            merchant = parsed.merchant,
-            item     = parsed.merchant,
+            item     = parsed.item,
             amount   = parsed.amount,
             category = parsed.category,
             dateIso  = parsed.date.toString(),
@@ -62,10 +66,12 @@ class TransactionRepositoryImpl @Inject constructor(
         val entry = TransactionEntry(
             tab      = entity.tab,
             date     = LocalDate.parse(entity.dateIso),
-            merchant = entity.merchant,
             item     = entity.item,
             amount   = entity.amount,
             category = entity.category,
+            wallet   = entity.wallet,
+            txType   = entity.txType,
+            toWallet = entity.toWallet,
         )
         return syncDataSource.sync(entry).also { result ->
             val newStatus = if (result.isSuccess) TransactionStatus.SYNCED else TransactionStatus.SYNC_FAILED
@@ -73,9 +79,11 @@ class TransactionRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateCategoryMultiple(ids: Set<Long>, category: String): Result<Unit> =
+        batchUpdateCategory(ids, category, localDataSource, syncDataSource, ::syncTransaction)
+
     override suspend fun insertManual(entry: TransactionEntry): Result<Unit> {
         val entity = TransactionEntity(
-            merchant = entry.merchant,
             item     = entry.item,
             amount   = entry.amount,
             category = entry.category,
@@ -137,9 +145,3 @@ class TransactionRepositoryImpl @Inject constructor(
 
     override suspend fun markAllSynced() = localDataSource.markAllSynced()
 }
-
-private fun TransactionEntity.toUiModel() = TransactionUiModel(
-    id = id, merchant = merchant, item = item, category = category,
-    amount = amount, dateIso = dateIso, wallet = wallet,
-    txType = txType ?: "expense", status = status
-)

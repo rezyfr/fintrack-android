@@ -4,7 +4,6 @@ import com.fidriyanto.banktracker.data.model.TransactionStatus
 
 data class TransactionUiModel(
     val id: Long,
-    val merchant: String,
     val item: String,
     val category: String,
     val amount: Double,

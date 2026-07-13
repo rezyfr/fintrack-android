@@ -2,12 +2,10 @@
 
 create table transactions (
     id          bigserial primary key,
-    merchant    text not null,
     item        text not null,
     amount      numeric not null,
     category    text not null,
     date        date not null,
-    channel     text not null,
     tab         text not null,
     note        text,
     created_at  timestamptz default now(),

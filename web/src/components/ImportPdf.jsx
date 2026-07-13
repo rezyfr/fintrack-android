@@ -22,7 +22,7 @@ export default function ImportPdf() {
     try {
       const result = await parseStatement(file, pw, selectedWallet);
       setFormat(result.format);
-      setRows(result.rows.map((r, i) => ({ ...r, txType: r.tx_type, item: r.merchant, toWallet: '', selected: true, id: i })));
+      setRows(result.rows.map((r, i) => ({ ...r, txType: r.tx_type, toWallet: '', selected: true, id: i })));
       setNeedsPassword(false);
       setPassword('');
       setStep('preview');
@@ -51,8 +51,7 @@ export default function ImportPdf() {
       const payload = rows
         .filter(r => r.selected)
         .map(r => ({
-          merchant:  r.merchant,
-          item:      r.item || r.merchant,
+          item:      r.item,
           amount:    r.amount,
           category:  r.category,
           date:      r.date,
@@ -171,7 +170,6 @@ export default function ImportPdf() {
                   <tr>
                     <th></th>
                     <th>Date</th>
-                    <th>Merchant</th>
                     <th>Item</th>
                     <th>Amount</th>
                     <th>Type</th>
@@ -197,7 +195,6 @@ export default function ImportPdf() {
                           onChange={e => updateRow(r.id, 'date', e.target.value)}
                         />
                       </td>
-                      <td>{r.merchant}</td>
                       <td>
                         <input
                           className="form-input"

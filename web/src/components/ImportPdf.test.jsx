@@ -9,8 +9,8 @@ vi.mock('../utils/pdfParser');
 vi.mock('../api/supabase');
 
 const MOCK_ROWS = [
-  { date: '2026-04-09', merchant: 'Grab', amount: 63940, tx_type: 'expense', category: 'Transport' },
-  { date: '2026-04-10', merchant: 'Gojek', amount: 30000, tx_type: 'expense', category: 'Transport' },
+  { date: '2026-04-09', item: 'Grab', amount: 63940, tx_type: 'expense', category: 'Transport' },
+  { date: '2026-04-10', item: 'Gojek', amount: 30000, tx_type: 'expense', category: 'Transport' },
 ];
 
 beforeEach(() => {
@@ -38,8 +38,8 @@ it('shows extracted rows in preview table', async () => {
   render(<ImportPdf />);
   await user.upload(screen.getByLabelText('PDF Statement'), new File(['%PDF'], 's.pdf', { type: 'application/pdf' }));
   await user.click(screen.getByRole('button', { name: 'Extract Transactions' }));
-  expect(await screen.findByText('Grab')).toBeInTheDocument();
-  expect(screen.getByText('Gojek')).toBeInTheDocument();
+  expect(await screen.findByDisplayValue('Grab')).toBeInTheDocument();
+  expect(screen.getByDisplayValue('Gojek')).toBeInTheDocument();
 });
 
 it('calls addTransactions with wallet and tx_type on import', async () => {
@@ -47,12 +47,12 @@ it('calls addTransactions with wallet and tx_type on import', async () => {
   render(<ImportPdf />);
   await user.upload(screen.getByLabelText('PDF Statement'), new File(['%PDF'], 's.pdf', { type: 'application/pdf' }));
   await user.click(screen.getByRole('button', { name: 'Extract Transactions' }));
-  await screen.findByText('Grab');
+  await screen.findByDisplayValue('Grab');
   await user.click(screen.getByRole('button', { name: /import/i }));
   await waitFor(() => {
     expect(api.addTransactions).toHaveBeenCalledWith(
       expect.arrayContaining([
-        expect.objectContaining({ merchant: 'Grab', tx_type: 'expense' }),
+        expect.objectContaining({ item: 'Grab', tx_type: 'expense' }),
       ])
     );
   });
@@ -72,8 +72,8 @@ it('shows success status and resets after import', async () => {
   render(<ImportPdf />);
   await user.upload(screen.getByLabelText('PDF Statement'), new File(['%PDF'], 's.pdf', { type: 'application/pdf' }));
   await user.click(screen.getByRole('button', { name: 'Extract Transactions' }));
-  await screen.findByText('Grab');
+  await screen.findByDisplayValue('Grab');
   await user.click(screen.getByRole('button', { name: /import/i }));
   expect(await screen.findByRole('status')).toHaveTextContent(/imported/i);
-  expect(screen.queryByText('Grab')).not.toBeInTheDocument();
+  expect(screen.queryByDisplayValue('Grab')).not.toBeInTheDocument();
 });

@@ -1,7 +1,10 @@
 {
-  "feature": "batch_transaction_category_edit",
-  "storyId": "batch-edit-transaction-category",
-  "acceptanceCriteria": [
+  "id": "batch-edit-transaction-category",
+  "capability": "batch-transaction-category-edit",
+  "role": "user",
+  "want": "to select multiple transactions and change their category in one action",
+  "soThat": "I can bulk-recategorize a batch of statement imports or miscategorized entries without editing each one individually",
+  "acceptance": [
     "while in the existing batch selection mode, a category picker and Apply button appear alongside the Delete action",
     "choosing a category and pressing Apply updates the category of every selected transaction",
     "the transaction list reflects the new category for all affected rows without a manual refresh",

@@ -20,7 +20,6 @@ function isCrossCurrencyTransfer(txType, wallet, toWallet) {
 
 export default function EditTransactionModal({ row, onClose, onSaved, onDeleted }) {
   const [form, setForm] = useState({
-    merchant: row.merchant  ?? '',
     item:     row.item      ?? '',
     amount:   String(row.amount ?? ''),
     category: row.category  ?? 'Other',
@@ -52,7 +51,6 @@ export default function EditTransactionModal({ row, onClose, onSaved, onDeleted 
     try {
       const crossCurrency = isCrossCurrencyTransfer(form.txType, form.wallet, form.toWallet);
       const payload = {
-        merchant:  form.merchant,
         item:      form.item,
         amount:    Number(form.amount),
         category:  form.category,
@@ -67,7 +65,7 @@ export default function EditTransactionModal({ row, onClose, onSaved, onDeleted 
         tab:       deriveTab(form.wallet, form.txType),
       };
       await updateTransaction(row.id, payload);
-      addToHistory(form.merchant);
+      addToHistory(form.item);
       onSaved({ ...row, ...payload });
     } catch (err) {
       setErrorMsg(err.message);
@@ -119,23 +117,13 @@ export default function EditTransactionModal({ row, onClose, onSaved, onDeleted 
             <div className="form-grid">
 
               <div className="form-group">
-                <label className="form-label" htmlFor="edit-merchant">Merchant</label>
+                <label className="form-label" htmlFor="edit-item">Item</label>
                 <MerchantInput
-                  id="edit-merchant" name="merchant"
-                  value={form.merchant}
+                  id="edit-item" name="item"
+                  value={form.item}
                   onChange={handleChange}
                   history={merchantHistory}
-                  onSelect={(m) => setForm((f) => ({ ...f, merchant: m }))}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label" htmlFor="edit-item">Item</label>
-                <input
-                  className="form-input"
-                  id="edit-item" name="item"
-                  value={form.item} onChange={handleChange}
+                  onSelect={(m) => setForm((f) => ({ ...f, item: m }))}
                   required
                 />
               </div>

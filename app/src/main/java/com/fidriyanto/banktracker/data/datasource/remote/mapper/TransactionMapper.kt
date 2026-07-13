@@ -12,7 +12,6 @@ internal const val REMOTE_ID_OFFSET = 10_000_000L
 fun TransactionDto.toEntity(): TransactionEntity? = runCatching {
     TransactionEntity(
         id          = id + REMOTE_ID_OFFSET,
-        merchant    = merchant.orEmpty(),
         item        = item.orEmpty(),
         amount      = amount,
         category    = category ?: "Other",
@@ -30,7 +29,6 @@ fun TransactionDto.toEntity(): TransactionEntity? = runCatching {
 fun TransactionEntry.toInsertDto() = TransactionInsertDto(
     tab      = tab.name,
     date     = date.toString(),
-    merchant = merchant,
     item     = item,
     amount   = amount,
     category = category,

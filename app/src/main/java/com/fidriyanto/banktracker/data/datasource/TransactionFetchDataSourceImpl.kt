@@ -18,19 +18,39 @@ class TransactionFetchDataSourceImpl @Inject constructor(
         wallet: String?,
         txType: String?,
         category: String?,
+        search: String?,
+        amountMin: Double?,
+        amountMax: Double?,
+        dateFrom: String?,
+        dateTo: String?,
     ): Result<List<TransactionEntity>> = runCatching {
-        val dateFilters = month?.let {
-            val (y, m) = it.split("-").map { p -> p.toInt() }
-            val lastDay = LocalDate.of(y, m, 1).lengthOfMonth().toString().padStart(2, '0')
-            listOf("gte.${it}-01", "lte.${it}-${lastDay}")
+        // ac: advanced-transaction-filters — date range overrides month filter
+        val dateFilters = if (dateFrom != null || dateTo != null) {
+            listOfNotNull(
+                dateFrom?.let { "gte.$it" },
+                dateTo?.let { "lte.$it" },
+            ).ifEmpty { null }
+        } else {
+            month?.let {
+                val (y, m) = it.split("-").map { p -> p.toInt() }
+                val lastDay = LocalDate.of(y, m, 1).lengthOfMonth().toString().padStart(2, '0')
+                listOf("gte.${it}-01", "lte.${it}-${lastDay}")
+            }
         }
+        // ac: advanced-transaction-filters — amount range
+        val amountFilters = listOfNotNull(
+            amountMin?.let { "gte.$it" },
+            amountMax?.let { "lte.$it" },
+        ).ifEmpty { null }
         val dtos = service.fetchTransactions(
-            order       = "date.desc",
-            limit       = 200,
-            dateFilters = dateFilters,
-            wallet      = wallet?.let { "eq.$it" },
-            txType      = txType?.let { "eq.$it" },
-            category    = category?.let { "eq.$it" },
+            order         = "date.desc",
+            limit         = 200,
+            dateFilters   = dateFilters,
+            wallet        = wallet?.let { "eq.$it" },
+            txType        = txType?.let { "eq.$it" },
+            category      = category?.let { "eq.$it" },
+            itemFilter    = search?.let { "ilike.*$it*" },
+            amountFilters = amountFilters,
         )
         Log.d("TransactionFetchDS", "fetched ${dtos.size} transactions")
         dtos.mapNotNull { it.toEntity() }

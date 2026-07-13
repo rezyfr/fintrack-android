@@ -5,7 +5,6 @@ import java.time.LocalDate
 data class TransactionEntry(
     val tab: LedgerTab,
     val date: LocalDate,
-    val merchant: String,
     val item: String,
     val amount: Double,
     val category: String,

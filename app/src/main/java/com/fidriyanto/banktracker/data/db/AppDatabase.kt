@@ -13,7 +13,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
         MonthlyOverviewEntity::class,
         MonthlyBudgetEntity::class
     ],
-    version = 7
+    version = 8
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -79,6 +79,34 @@ abstract class AppDatabase : RoomDatabase() {
         val MIGRATION_6_7 = object : Migration(6, 7) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("DROP TABLE IF EXISTS `category_cache`")
+            }
+        }
+
+        val MIGRATION_7_8 = object : Migration(7, 8) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE transactions_new (
+                        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        `item` TEXT NOT NULL,
+                        `amount` REAL NOT NULL,
+                        `category` TEXT NOT NULL,
+                        `dateIso` TEXT NOT NULL,
+                        `referenceNo` TEXT NOT NULL,
+                        `tab` TEXT NOT NULL,
+                        `status` TEXT NOT NULL,
+                        `createdAt` INTEGER NOT NULL,
+                        `wallet` TEXT,
+                        `txType` TEXT NOT NULL DEFAULT 'expense',
+                        `toWallet` TEXT
+                    )
+                """)
+                db.execSQL("""
+                    INSERT INTO transactions_new
+                    SELECT id, item, amount, category, dateIso, referenceNo, tab, status, createdAt, wallet, txType, toWallet
+                    FROM transactions
+                """)
+                db.execSQL("DROP TABLE transactions")
+                db.execSQL("ALTER TABLE transactions_new RENAME TO transactions")
             }
         }
     }

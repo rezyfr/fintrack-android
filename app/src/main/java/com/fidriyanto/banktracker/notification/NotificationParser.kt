@@ -58,12 +58,13 @@ object NotificationParser {
             val bcaMatch = bcaAmountRegex.find(text) ?: return null
             val amount = bcaMatch.groupValues[1].replace(",", "").toDoubleOrNull() ?: return null
             val rawCategory = bcaMatch.groupValues[2].trim()
-            // ac: bca-expense-notification — the merchant field is set to the BCA category text
+            // ac: bca-expense-notification — the item field is set to the BCA category text
             return ParsedTransaction(
-                merchant = rawCategory,
+                item     = rawCategory,
                 amount   = amount,
                 date     = date,
                 referenceNo = "",
+                timestampMs = timestampMs,
                 wallet   = "BCA",
                 category = mapBcaCategory(rawCategory),
             )
@@ -75,10 +76,11 @@ object NotificationParser {
         val merchant = text.substring(0, amountMatch.range.first).trim()
         if (merchant.isEmpty()) return null
         return ParsedTransaction(
-            merchant = merchant,
+            item     = merchant,
             amount   = amount,
             date     = date,
             referenceNo = "",
+            timestampMs = timestampMs,
             wallet   = "BBL",
             category = "Other",
         )

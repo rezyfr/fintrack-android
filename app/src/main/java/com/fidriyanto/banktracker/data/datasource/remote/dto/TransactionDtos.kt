@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class TransactionDto(
     @SerializedName("id")        val id: Long,
-    @SerializedName("merchant")  val merchant: String?,
     @SerializedName("item")      val item: String?,
     @SerializedName("amount")    val amount: Double,
     @SerializedName("category")  val category: String?,
@@ -18,7 +17,6 @@ data class TransactionDto(
 data class TransactionInsertDto(
     @SerializedName("tab")       val tab: String,
     @SerializedName("date")      val date: String,
-    @SerializedName("merchant")  val merchant: String,
     @SerializedName("item")      val item: String,
     @SerializedName("amount")    val amount: Double,
     @SerializedName("category")  val category: String,
@@ -37,4 +35,9 @@ data class TransactionPatchDto(
     @SerializedName("tx_type")   val txType: String,
     @SerializedName("to_wallet") val toWallet: String?,
     @SerializedName("to_amount") val toAmount: Double?,
+)
+
+// ac: batch-edit-transaction-category — partial patch so a batch category update never touches other fields
+data class CategoryPatchDto(
+    @SerializedName("category") val category: String,
 )

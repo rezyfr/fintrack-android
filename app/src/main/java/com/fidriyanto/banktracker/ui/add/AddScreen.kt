@@ -1,5 +1,7 @@
 package com.fidriyanto.banktracker.ui.add
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
@@ -18,11 +20,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fidriyanto.banktracker.R
 import com.fidriyanto.banktracker.ui.theme.LocalAppColors
+import java.time.Instant
+import java.time.ZoneOffset
 
 internal fun categoriesFor(txType: TxType): List<String> = when (txType) {
     TxType.EXPENSE    -> listOf(
         "Bills", "Subscriptions", "Entertainment", "Food & Drink", "Groceries",
-        "Health & Wellbeing", "Other", "Shopping", "Transport", "Travel", "Business", "Gifts"
+        "Health & Wellbeing", "Family", "Other", "Shopping", "Transport", "Travel", "Business", "Gifts"
     )
     TxType.INCOME     -> listOf("Salary", "Freelance", "Business", "Dividends", "Rental", "Bonus", "Gift", "Other")
     TxType.TRANSFER   -> listOf("Transfer Out")
@@ -35,6 +39,30 @@ fun AddScreen(viewModel: AddViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val merchantSuggestions by viewModel.merchantSuggestions.collectAsStateWithLifecycle()
     val appColors = LocalAppColors.current
+
+    var showDatePicker by remember { mutableStateOf(false) }
+    // ac: add-transaction-date — tapping the date field opens a date picker dialog pre-set to the current field value
+    if (showDatePicker) {
+        val datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = state.date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
+        )
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                // ac: add-transaction-date — selecting a date from the picker updates the date field to the chosen date
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let { millis ->
+                        val picked = Instant.ofEpochMilli(millis).atZone(ZoneOffset.UTC).toLocalDate()
+                        viewModel.update { copy(date = picked) }
+                    }
+                    showDatePicker = false
+                }) { Text(stringResource(R.string.action_save)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) { Text(stringResource(R.string.action_cancel)) }
+            }
+        ) { DatePicker(state = datePickerState) }
+    }
 
     Column(
         Modifier
@@ -95,27 +123,34 @@ fun AddScreen(viewModel: AddViewModel = hiltViewModel()) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
 
-        // ac: merchant-autocomplete — focusing the merchant field shows a dropdown of up to 10 previously saved merchants
         BoxWithConstraints(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopStart) {
             val dropdownWidth = maxWidth
             OutlinedTextField(
-                value = state.merchant, onValueChange = { viewModel.update { copy(merchant = it) } },
-                label = { Text(stringResource(R.string.add_merchant_label)) }, modifier = Modifier.fillMaxWidth()
+                value = state.description, onValueChange = { viewModel.update { copy(description = it) } },
+                label = { Text(stringResource(R.string.add_description_label)) }, modifier = Modifier.fillMaxWidth()
             )
             MerchantSuggestionDropdown(
                 suggestions = merchantSuggestions,
                 width = dropdownWidth,
                 onSelect = {
-                    viewModel.update { copy(merchant = it) }
+                    viewModel.update { copy(description = it) }
                     viewModel.dismissSuggestions()
                 },
                 onDismiss = { viewModel.dismissSuggestions() },
             )
         }
 
+        // ac: add-transaction-date — date field defaults to today and opens a date picker on press
+        val dateInteractionSource = remember { MutableInteractionSource() }
+        val isDatePressed by dateInteractionSource.collectIsPressedAsState()
+        if (isDatePressed) showDatePicker = true
         OutlinedTextField(
-            value = state.description, onValueChange = { viewModel.update { copy(description = it) } },
-            label = { Text(stringResource(R.string.add_description_label)) }, modifier = Modifier.fillMaxWidth()
+            value = state.date.toString(),
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(stringResource(R.string.add_date_label)) },
+            modifier = Modifier.fillMaxWidth(),
+            interactionSource = dateInteractionSource,
         )
 
         var expanded by remember { mutableStateOf(false) }
@@ -145,7 +180,8 @@ fun AddScreen(viewModel: AddViewModel = hiltViewModel()) {
             enabled = !state.isLoading,
         ) {
             if (state.isLoading) CircularProgressIndicator(Modifier.size(20.dp), color = MaterialTheme.colorScheme.onPrimary)
-            else Text(stringResource(R.string.add_sync_button), fontWeight = FontWeight.SemiBold)
+            // ac: add-transaction-date — submit button is labelled Submit
+            else Text(stringResource(R.string.add_submit_button), fontWeight = FontWeight.SemiBold)
         }
     }
 }

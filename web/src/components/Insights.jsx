@@ -49,7 +49,7 @@ const CATEGORY_CLASS = {
   food_drink: 'chip-food', transport: 'chip-transport', bills: 'chip-bills',
   subscriptions: 'chip-subscriptions', entertainment: 'chip-entertainment',
   groceries: 'chip-groceries', health_wellbeing: 'chip-health',
-  family: 'chip-other', shopping: 'chip-shopping', travel: 'chip-travel',
+  family: 'chip-family', shopping: 'chip-shopping', travel: 'chip-travel',
   business: 'chip-business', gifts: 'chip-gifts', other: 'chip-other',
 };
 

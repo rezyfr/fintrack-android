@@ -7,7 +7,7 @@ function authHeaders() {
   };
 }
 
-export async function getTransactions({ tab = null, wallet = null, txType = null, month = null, category = null } = {}) {
+export async function getTransactions({ tab = null, wallet = null, txType = null, month = null, category = null, search = null, amountMin = null, amountMax = null, dateFrom = null, dateTo = null } = {}) {
   const url = import.meta.env.VITE_SUPABASE_URL;
   const params = new URLSearchParams();
   params.append('order', 'date.desc');
@@ -19,7 +19,16 @@ export async function getTransactions({ tab = null, wallet = null, txType = null
   }
   if (txType)   params.append('tx_type',  `eq.${txType}`);
   if (category) params.append('category', `eq.${category}`); // ac: filter-transactions-by-category — selecting a category shows only transactions with that category
-  if (month) {
+  // ac: advanced-transaction-filters — search by item text
+  if (search) params.append('item', `ilike.*${search}*`);
+  // ac: advanced-transaction-filters — amount range
+  if (amountMin != null) params.append('amount', `gte.${amountMin}`);
+  if (amountMax != null) params.append('amount', `lte.${amountMax}`);
+  // ac: advanced-transaction-filters — date range (specific dates override month)
+  if (dateFrom || dateTo) {
+    if (dateFrom) params.append('date', `gte.${dateFrom}`);
+    if (dateTo)   params.append('date', `lte.${dateTo}`);
+  } else if (month) {
     const [year, mon] = month.split('-').map(Number);
     const lastDay = new Date(year, mon, 0).getDate();
     const pad = (n) => String(n).padStart(2, '0');
@@ -88,6 +97,18 @@ export async function deleteTransactions(ids) {
   const res = await fetch(`${url}/rest/v1/transactions?id=in.(${ids.join(',')})`, {
     method: 'DELETE',
     headers: authHeaders(),
+  });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+}
+
+// ac: batch-edit-transaction-category — single PATCH scoped to id=in.(...), only the category column changes
+export async function updateTransactionsCategory(ids, category) {
+  if (!ids.length) return;
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const res = await fetch(`${url}/rest/v1/transactions?id=in.(${ids.join(',')})`, {
+    method: 'PATCH',
+    headers: { ...authHeaders(), Prefer: 'return=minimal' },
+    body: JSON.stringify({ category }),
   });
   if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
 }

@@ -38,7 +38,6 @@ data class AddFormState(
     val txType: TxType    = TxType.EXPENSE,
     val toWallet: Wallet? = null,
     val amount: String    = "",
-    val merchant: String  = "",
     val description: String = "",
     val category: String  = "Other",
     val date: LocalDate   = LocalDate.now(),
@@ -62,7 +61,7 @@ class AddViewModel @Inject constructor(
         _state,
         _dismissedQuery,
     ) { history, s, dismissedQuery ->
-        val query = s.merchant.trim()
+        val query = s.description.trim()
         when {
             query == dismissedQuery -> emptyList()
             query.isEmpty()        -> history
@@ -73,11 +72,11 @@ class AddViewModel @Inject constructor(
     fun update(block: AddFormState.() -> AddFormState) {
         val prev = _state.value
         val next = prev.block()
-        if (next.merchant != prev.merchant) _dismissedQuery.value = null
+        if (next.description != prev.description) _dismissedQuery.value = null
         _state.value = next
     }
 
-    fun dismissSuggestions() { _dismissedQuery.value = _state.value.merchant.trim() }
+    fun dismissSuggestions() { _dismissedQuery.value = _state.value.description.trim() }
 
     fun submit() = viewModelScope.launch {
         val s = _state.value
@@ -92,10 +91,10 @@ class AddViewModel @Inject constructor(
             s.txType == TxType.INCOME                                -> LedgerTab.IDR_INCOME
             else                                                     -> LedgerTab.IDR_EXPENSES
         }
+        // ac: add-transaction-date — the submitted transaction uses the selected date, not the current date
         val entry = TransactionEntry(
             tab      = tab,
             date     = s.date,
-            merchant = s.merchant,
             item     = s.description,
             amount   = amount,
             category = s.category,
@@ -104,7 +103,7 @@ class AddViewModel @Inject constructor(
             toWallet = if (s.txType == TxType.TRANSFER) s.toWallet?.id else null
         )
         val result = transactionRepository.insertManual(entry)
-        if (result.isSuccess) merchantHistoryRepository.save(s.merchant)
+        if (result.isSuccess) merchantHistoryRepository.save(s.description)
         _state.value = _state.value.copy(
             isLoading      = false,
             successMessage = if (result.isSuccess) "Saved and syncing!" else null,

@@ -2,6 +2,7 @@ package com.fidriyanto.banktracker.data.datasource
 
 import android.util.Log
 import com.fidriyanto.banktracker.data.datasource.remote.SupabaseTransactionService
+import com.fidriyanto.banktracker.data.datasource.remote.dto.CategoryPatchDto
 import com.fidriyanto.banktracker.data.datasource.remote.dto.TransactionPatchDto
 import com.fidriyanto.banktracker.data.datasource.remote.mapper.toInsertDto
 import com.fidriyanto.banktracker.data.model.TransactionEdit
@@ -16,7 +17,7 @@ class TransactionSyncDataSourceImpl @Inject constructor(
 
     override suspend fun sync(entry: TransactionEntry): Result<Unit> = runCatching {
         val body = entry.toInsertDto()
-        Log.d("TransactionSyncDS", "POST transactions: merchant=${entry.merchant} amount=${entry.amount}")
+        Log.d("TransactionSyncDS", "POST transactions: item=${entry.item} amount=${entry.amount}")
         val response = service.insertTransaction(body)
         Log.d("TransactionSyncDS", "status=${response.code()}")
         if (!response.isSuccessful) error("Supabase error: HTTP ${response.code()}")
@@ -46,4 +47,13 @@ class TransactionSyncDataSourceImpl @Inject constructor(
         Log.d("TransactionSyncDS", "status=${response.code()}")
         if (!response.isSuccessful) error("Supabase error: HTTP ${response.code()}")
     }.onFailure { Log.e("TransactionSyncDS", "update failed", it) }
+
+    // ac: batch-edit-transaction-category — single PATCH scoped to id=in.(...), only the category column changes
+    override suspend fun updateCategoryBatch(remoteIds: List<Long>, category: String): Result<Unit> = runCatching {
+        val idFilter = "in.(${remoteIds.joinToString(",")})"
+        Log.d("TransactionSyncDS", "PATCH transactions category batch: ids=$remoteIds")
+        val response = service.updateCategoryBatch(idFilter, CategoryPatchDto(category))
+        Log.d("TransactionSyncDS", "status=${response.code()}")
+        if (!response.isSuccessful) error("Supabase error: HTTP ${response.code()}")
+    }.onFailure { Log.e("TransactionSyncDS", "updateCategoryBatch failed", it) }
 }

@@ -17,16 +17,15 @@ fun DeleteTransactionDialog(
     onCancel: () -> Unit,
     onConfirm: () -> Unit,
 ) {
-    // ac: delete-transaction-from-feed — dialog body names the merchant + amount so the user can confirm intent
+    // ac: delete-transaction-from-feed — dialog body names the item + amount so the user can confirm intent
     val amount = formatDeleteAmount(transaction.amount, transaction.wallet)
-    val merchant = transaction.merchant.ifBlank { transaction.item }
 
     AlertDialog(
         onDismissRequest = onCancel,
         title = { Text(stringResource(R.string.delete_dialog_title)) },
         text = {
             Text(
-                stringResource(R.string.delete_dialog_message, merchant, amount),
+                stringResource(R.string.delete_dialog_message, transaction.item, amount),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         },

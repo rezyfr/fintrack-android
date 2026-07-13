@@ -1,0 +1,14 @@
+{
+  "id": "add-transaction-date",
+  "capability": "add-transaction-form",
+  "role": "user",
+  "want": "to set a transaction date when adding a transaction manually",
+  "soThat": "I can record transactions that happened on a past date",
+  "acceptance": [
+    "the Add Transaction screen shows a date field that defaults to today",
+    "tapping the date field opens a date picker dialog",
+    "selecting a date from the picker updates the date field to the chosen date",
+    "the submitted transaction uses the selected date, not the current date",
+    "the submit button is labelled Submit"
+  ]
+}
