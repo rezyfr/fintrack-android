@@ -24,6 +24,7 @@ import com.fidriyanto.banktracker.ui.balances.BalancesScreen
 import com.fidriyanto.banktracker.ui.budget.BudgetScreen
 import com.fidriyanto.banktracker.ui.budgetglance.BudgetGlanceScreen
 import com.fidriyanto.banktracker.ui.cards.CardsScreen
+import com.fidriyanto.banktracker.ui.common.SegmentedToggle
 import com.fidriyanto.banktracker.ui.dashboard.DashboardScreen
 import com.fidriyanto.banktracker.ui.feed.FeedScreen
 import com.fidriyanto.banktracker.ui.home.HomeScreen
@@ -102,11 +103,12 @@ private fun BudgetTab() {
     var sub by rememberSaveable { mutableStateOf(0) }
     val labels = listOf("Budget", "Cards", "Installments")
     Column(Modifier.fillMaxSize()) {
-        TabRow(selectedTabIndex = sub) {
-            labels.forEachIndexed { i, label ->
-                Tab(selected = sub == i, onClick = { sub = i }, text = { Text(label) })
-            }
-        }
+        SegmentedToggle(
+            options = labels,
+            selectedIndex = sub,
+            onSelect = { sub = it },
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+        )
         when (sub) {
             0 -> BudgetGlanceScreen()
             1 -> CardsScreen()
@@ -121,11 +123,12 @@ private fun AccountsTab() {
     var sub by rememberSaveable { mutableStateOf(0) }
     val labels = listOf("Balances", "Settings")
     Column(Modifier.fillMaxSize()) {
-        TabRow(selectedTabIndex = sub) {
-            labels.forEachIndexed { i, label ->
-                Tab(selected = sub == i, onClick = { sub = i }, text = { Text(label) })
-            }
-        }
+        SegmentedToggle(
+            options = labels,
+            selectedIndex = sub,
+            onSelect = { sub = it },
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+        )
         when (sub) {
             0 -> BalancesScreen()
             else -> SettingsScreen()
