@@ -1,0 +1,8 @@
+{
+  "id": "android-transactions-view",
+  "title": "Android Transactions View",
+  "status": "In Progress",
+  "owners": ["fidriyantoriz@social.plus"],
+  "stories": ["transactions-list-calendar-toggle"],
+  "flows": ["transactions-list-calendar-toggle-flow"]
+}

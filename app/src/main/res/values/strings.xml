@@ -162,4 +162,9 @@
     <string name="budget_empty">No flexible budget lines for this currency</string>
     <string name="budget_error">Could not load budget</string>
     <string name="home_budget">Budget</string>
+    <string name="feed_calendar_empty">No transactions</string>
+    <string name="feed_cycle_range">%1$s – %2$s</string>
+    <string name="feed_tab_list">List</string>
+    <string name="feed_tab_calendar">Calendar</string>
+    <string name="feed_filters">Filters</string>
 </resources>

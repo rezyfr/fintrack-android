@@ -1,13 +1,16 @@
 package com.fidriyanto.banktracker.ui.feed
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
@@ -74,7 +77,10 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
     var amountMinText   by remember { mutableStateOf("") }
     var amountMaxText   by remember { mutableStateOf("") }
     var showAdvanced    by remember { mutableStateOf(false) }
+    var mode            by remember { mutableStateOf("list") }
+    var showFilters     by remember { mutableStateOf(false) }
     val hasAdvancedFilters = amountMin != null || amountMax != null || dateFrom != null || dateTo != null
+    val activeFilterCount = listOfNotNull(monthFilter, walletFilter, typeFilter, categoryFilter).size + (if (searchQuery.isNotEmpty()) 1 else 0) + (if (hasAdvancedFilters) 1 else 0)
 
     val pullState = rememberPullToRefreshState()
     LaunchedEffect(pullState.isRefreshing) {
@@ -139,9 +145,48 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
                 color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 10.dp)
             )
 
+            // ac: transactions-list-calendar-toggle — List/Calendar segmented toggle + a Filters button
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 2.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Row(
+                    modifier = Modifier.clip(RoundedCornerShape(999.dp)).background(MaterialTheme.colorScheme.surfaceContainer),
+                ) {
+                    listOf("list" to stringResource(R.string.feed_tab_list), "calendar" to stringResource(R.string.feed_tab_calendar)).forEach { (m, label) ->
+                        val on = mode == m
+                        Text(
+                            label,
+                            color = if (on) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontWeight = FontWeight.SemiBold, fontSize = 13.sp,
+                            modifier = Modifier.clip(RoundedCornerShape(999.dp))
+                                .background(if (on) MaterialTheme.colorScheme.primary else androidx.compose.ui.graphics.Color.Transparent)
+                                .clickable { mode = m }
+                                .padding(horizontal = 18.dp, vertical = 7.dp),
+                        )
+                    }
+                }
+                val filterLabel = if (activeFilterCount > 0) stringResource(R.string.feed_filters) + " ($activeFilterCount)" else stringResource(R.string.feed_filters)
+                Surface(color = MaterialTheme.colorScheme.surfaceContainer, shape = RoundedCornerShape(999.dp)) {
+                    Text(
+                        filterLabel,
+                        color = if (activeFilterCount > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.SemiBold, fontSize = 13.sp,
+                        modifier = Modifier.clip(RoundedCornerShape(999.dp)).clickable { showFilters = true }
+                            .padding(horizontal = 16.dp, vertical = 7.dp),
+                    )
+                }
+            }
+            Spacer(Modifier.height(6.dp))
+
+            // ac: transactions-list-calendar-toggle — filters open in a bottom sheet, not stacked above the list
+            if (showFilters) {
+                ModalBottomSheet(onDismissRequest = { showFilters = false }) {
+                    Column(Modifier.verticalScroll(rememberScrollState()).padding(bottom = 24.dp)) {
             // ac: search-transactions-by-text — a search text field is shown above the transaction list filters
             OutlinedTextField(
                 value = searchQuery,
@@ -310,6 +355,9 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
                     }
                 }
             }
+                    }
+                }
+            }
 
             Spacer(Modifier.height(8.dp))
 
@@ -395,6 +443,9 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
             }
 
             // Content
+            if (mode == "calendar") {
+                FeedCalendar(uiState.items)
+            } else {
             when {
                 uiState.isLoading && uiState.items.isEmpty() -> {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -469,6 +520,7 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
                         }
                     }
                 }
+            }
             }
         }
 

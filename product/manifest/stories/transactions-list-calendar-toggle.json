@@ -1,7 +1,10 @@
 {
-  "feature": "android_transactions_view",
-  "storyId": "transactions-list-calendar-toggle",
-  "acceptanceCriteria": [
+  "id": "transactions-list-calendar-toggle",
+  "capability": "android-transactions-view",
+  "role": "user",
+  "want": "the Transactions tab to switch between a list and a calendar, with filters tucked into a sheet",
+  "soThat": "the screen is a clean list by default and I can still see spending laid out by day",
+  "acceptance": [
     "the Transactions tab has a List and Calendar segmented toggle at the top",
     "the filters (search, period, wallet, type, category, advanced) open in a bottom sheet rather than stacking above the list",
     "the Calendar view lays the period's transactions on a weekday-aligned grid showing each day's spending total",

@@ -1,0 +1,13 @@
+{
+  "id": "transactions-list-calendar-toggle-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the Transactions tab and taps the Calendar toggle" },
+    {
+      "actor": "app",
+      "action": "lays the loaded transactions on a weekday-aligned grid with per-day spending totals",
+      "story": "transactions-list-calendar-toggle",
+      "requires": "FeedScreen"
+    },
+    { "actor": "user", "action": "taps a day to see that day's transactions, or opens the filter sheet" }
+  ]
+}

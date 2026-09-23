@@ -24,3 +24,34 @@ object PayCycle {
         return (next.toEpochDay() - today.toEpochDay()).toInt()
     }
 }
+
+// A weekday-aligned month grid (Sunday-first) for the pay cycle containing [anyIso], padded to
+// whole weeks. Each cell carries its date and whether it falls inside the cycle.
+object CalendarGrid {
+    data class Cell(val iso: String, val inCycle: Boolean)
+
+    fun weeksForCycle(range: PayCycle.Range): List<List<Cell>> {
+        val iso = java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
+        val inCycle = HashSet<String>()
+        run {
+            var d = range.start
+            while (!d.isAfter(range.end)) { inCycle.add(d.format(iso)); d = d.plusDays(1) }
+        }
+        // back to the Sunday on/before the start (DayOfWeek: Mon=1..Sun=7)
+        var gridStart = range.start
+        while (gridStart.dayOfWeek.value != 7) gridStart = gridStart.minusDays(1)
+        var gridEnd = range.end
+        while (gridEnd.dayOfWeek.value != 6) gridEnd = gridEnd.plusDays(1)
+        val weeks = ArrayList<List<Cell>>()
+        var week = ArrayList<Cell>()
+        var d = gridStart
+        while (!d.isAfter(gridEnd)) {
+            val s = d.format(iso)
+            week.add(Cell(s, inCycle.contains(s)))
+            if (week.size == 7) { weeks.add(week); week = ArrayList() }
+            d = d.plusDays(1)
+        }
+        if (week.isNotEmpty()) weeks.add(week)
+        return weeks
+    }
+}
