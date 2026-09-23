@@ -7,11 +7,12 @@ function authHeaders() {
   };
 }
 
-export async function getTransactions({ tab = null, wallet = null, txType = null, month = null, category = null, search = null, amountMin = null, amountMax = null, dateFrom = null, dateTo = null } = {}) {
+export async function getTransactions({ tab = null, wallet = null, txType = null, month = null, category = null, search = null, amountMin = null, amountMax = null, dateFrom = null, dateTo = null, limit = 200 } = {}) {
   const url = import.meta.env.VITE_SUPABASE_URL;
   const params = new URLSearchParams();
-  params.append('order', 'date.desc');
-  params.append('limit', '200');
+  params.append('order', 'date.desc,id.desc');
+  // ac: track-cc-transactions-as-debt — callers needing full wallet history (not just the last 200) can raise this
+  params.append('limit', String(limit));
   if (tab) params.append('tab', `eq.${tab}`);
   if (wallet) {
     // ac: transfer-in-wallet-view — also fetch transfers where this wallet is the destination
@@ -69,17 +70,6 @@ export async function updateTransaction(id, patch) {
     body: JSON.stringify(patch),
   });
   if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
-}
-
-export async function getMonthlyOverview(months) {
-  const url = import.meta.env.VITE_SUPABASE_URL;
-  const res = await fetch(`${url}/rest/v1/rpc/get_monthly_overview`, {
-    method: 'POST',
-    headers: authHeaders(),
-    body: JSON.stringify({ p_months: months }),
-  });
-  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
-  return res.json();
 }
 
 export async function deleteTransaction(id) {
@@ -177,12 +167,56 @@ export async function setInstallmentExcluded(id, excluded) {
   if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
 }
 
-export async function addTransactions(rows) {
+
+// ac: budget-cycle-target-vs-actual — budget lines drive both the target series and the match rules
+// used to attribute a transaction to a line.
+export async function getBudgetLines() {
   const url = import.meta.env.VITE_SUPABASE_URL;
-  const res = await fetch(`${url}/rest/v1/transactions`, {
-    method: 'POST',
-    headers: { ...authHeaders(), Prefer: 'return=minimal' },
-    body: JSON.stringify(rows),
+  const res = await fetch(`${url}/rest/v1/budget_lines?select=*&active=eq.true&order=sort_order.asc`, {
+    headers: authHeaders(),
   });
   if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+  return res.json();
+}
+
+// ac: budget-line-target-editing — PATCH a single line's target
+export async function updateBudgetLineTarget(id, target) {
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const res = await fetch(`${url}/rest/v1/budget_lines?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { ...authHeaders(), Prefer: 'return=minimal' },
+    body: JSON.stringify({ target }),
+  });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+}
+
+// ac: budget-cycle-target-vs-actual — budget lines are denominated in THB or IDR but a line's
+// transactions can post on a wallet in the other currency (Bangkok spend on an IDR credit card).
+// The rate is derived from the user's own recent cross-currency transfers rather than hardcoded,
+// so it tracks what they actually got, and falls back only when no such transfer exists.
+export async function getRecentFxRate() {
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const res = await fetch(
+    `${url}/rest/v1/transactions?select=amount,to_amount&tx_type=eq.transfer&wallet=eq.BBL&to_amount=not.is.null&order=date.desc&limit=10`,
+    { headers: authHeaders() },
+  );
+  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+  const rows = await res.json();
+  const rates = rows
+    .map(r => Number(r.to_amount) / Number(r.amount))
+    .filter(v => Number.isFinite(v) && v > 100 && v < 1000)
+    .sort((a, b) => a - b);
+  if (rates.length === 0) return null;
+  return rates[Math.floor(rates.length / 2)];
+}
+
+// ac: card-statement-due-and-minimum — per-card billing config (cutoff day, due day, minimum rule).
+// Replaces the hardcoded cutoff map in the Card Debt view.
+export async function getCardBilling() {
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const res = await fetch(`${url}/rest/v1/card_billing?select=*`, {
+    headers: authHeaders(),
+  });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+  return res.json();
 }

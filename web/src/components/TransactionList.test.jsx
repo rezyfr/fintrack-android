@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import TransactionList from './TransactionList';
@@ -20,8 +20,14 @@ const MOCK_ROWS = [
   },
 ];
 
+const MOCK_BUDGET_LINES = [
+  { id: 5, name: 'Mom' },
+  { id: 6, name: 'Dad' },
+];
+
 beforeEach(() => {
   api.getTransactions.mockResolvedValue(MOCK_ROWS);
+  api.getBudgetLines.mockResolvedValue(MOCK_BUDGET_LINES);
 });
 
 afterEach(() => {
@@ -88,4 +94,41 @@ it('applies a batch category update to selected rows', async () => {
   expect(api.updateTransactionsCategory).toHaveBeenCalledWith([1], 'Groceries');
   const matches = await screen.findAllByText('Groceries');
   expect(matches.some(el => el.className.includes('chip'))).toBe(true);
+});
+
+// ac: assign-transaction-budget-line
+it('shows Auto for a row with no budget line assigned', async () => {
+  render(<TransactionList />);
+  expect(await screen.findByText('Auto')).toBeInTheDocument();
+});
+
+// ac: assign-transaction-budget-line
+it('assigns a transaction to a budget line from the Budget cell', async () => {
+  const user = userEvent.setup();
+  api.updateTransaction.mockResolvedValue();
+  render(<TransactionList />);
+
+  const cell = await screen.findByText('Auto');
+  const td = cell.closest('td');
+  await user.dblClick(cell);
+  await user.selectOptions(within(td).getByRole('combobox'), '6');
+
+  expect(api.updateTransaction).toHaveBeenCalledWith(1, { budget_line_id: 6 });
+  expect(await screen.findByText('Dad')).toBeInTheDocument();
+});
+
+// ac: assign-transaction-budget-line
+it('clears a budget line assignment back to Auto', async () => {
+  const user = userEvent.setup();
+  api.getTransactions.mockResolvedValue([{ ...MOCK_ROWS[0], budget_line_id: 6 }]);
+  api.updateTransaction.mockResolvedValue();
+  render(<TransactionList />);
+
+  const cell = await screen.findByText('Dad');
+  const td = cell.closest('td');
+  await user.dblClick(cell);
+  await user.selectOptions(within(td).getByRole('combobox'), '');
+
+  expect(api.updateTransaction).toHaveBeenCalledWith(1, { budget_line_id: null });
+  expect(await screen.findByText('Auto')).toBeInTheDocument();
 });

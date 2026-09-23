@@ -4,8 +4,10 @@ import TransactionList from './components/TransactionList';
 import AddTransactionForm from './components/AddTransactionForm';
 import WalletBalances from './components/WalletBalances';
 import Insights from './components/Insights';
-import ImportPdf from './components/ImportPdf';
 import Installments from './components/Installments';
+import CardDebt from './components/CardDebt';
+import Budget from './components/Budget';
+import Calendar from './components/Calendar';
 
 export default function App() {
   const [activeView, setActiveView] = useState('list');
@@ -23,8 +25,10 @@ export default function App() {
       {activeView === 'balances' && <WalletBalances />}
       {activeView === 'add'      && <AddTransactionForm />}
       {activeView === 'insights' && <Insights />}
-      {activeView === 'import'        && <ImportPdf />}
       {activeView === 'installments'  && <Installments />}
+      {activeView === 'card-debt'     && <CardDebt />}
+      {activeView === 'budget'        && <Budget />}
+      {activeView === 'calendar'      && <Calendar />}
     </>
   );
 }

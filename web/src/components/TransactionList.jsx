@@ -1,10 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { getTransactions, deleteTransactions, updateTransaction, updateTransactionsCategory } from '../api/supabase';
-import { WALLETS, EXPENSE_CATEGORIES, INCOME_CATEGORIES, categoriesFor } from '../constants/transaction';
-
-function walletCurrency(walletId) {
-  return WALLETS.find(w => w.id === walletId)?.currency ?? 'IDR';
-}
+import { getTransactions, deleteTransactions, updateTransaction, updateTransactionsCategory, getBudgetLines } from '../api/supabase';
+import { WALLETS, EXPENSE_CATEGORIES, INCOME_CATEGORIES, categoriesFor, walletCurrency } from '../constants/transaction';
 import EditTransactionModal from './EditTransactionModal';
 import MonthNav from './MonthNav';
 
@@ -157,6 +153,7 @@ function SkeletonRows() {
       <td><span className="skeleton" style={{ width: 100 }} /></td>
       <td style={{ textAlign: 'right' }}><span className="skeleton" style={{ width: 70 }} /></td>
       <td><span className="skeleton" style={{ width: 80 }} /></td>
+      <td><span className="skeleton" style={{ width: 70 }} /></td>
       <td><span className="skeleton" style={{ width: 60 }} /></td>
       <td><span className="skeleton" style={{ width: 90 }} /></td>
       <td />
@@ -180,6 +177,8 @@ export default function TransactionList() {
   const [loading, setLoading]     = useState(false);
   const [error, setError]         = useState(null);
   const [editingRow, setEditingRow] = useState(null);
+  // ac: assign-transaction-budget-line — active budget lines, fetched once for the Budget cell's dropdown
+  const [budgetLines, setBudgetLines] = useState([]);
 
   // Batch selection state
   const [selected, setSelected]       = useState(new Set());
@@ -192,6 +191,11 @@ export default function TransactionList() {
   const [editing, setEditing] = useState(null); // { rowId, field }
 
   const selectAllRef = useRef(null);
+
+  // ac: assign-transaction-budget-line — the Budget cell's dropdown lists every active line
+  useEffect(() => {
+    getBudgetLines().then(setBudgetLines).catch(() => {});
+  }, []);
 
   function startEdit(row, field) {
     setEditing({ rowId: row.id, field });
@@ -206,8 +210,12 @@ export default function TransactionList() {
     const original = rows.find(r => r.id === rowId);
     if (!original) { setEditing(null); return; }
     setEditing(null);
-    const coerced = field === 'amount' ? Number(value) : value;
-    if (String(original[field] ?? '') === String(coerced)) return;
+    // ac: assign-transaction-budget-line — the Auto option commits an empty string, which clears
+    // the override back to null rather than being stored as the literal text "Auto"
+    const coerced = field === 'amount' ? Number(value)
+      : field === 'budget_line_id' ? (value === '' ? null : Number(value))
+      : value;
+    if (String(original[field] ?? '') === String(coerced ?? '')) return;
     const snapshot = rows.slice();
     // ac: inline-cell-edit — changes applied optimistically; row reverts if API call fails
     setRows(prev => prev.map(r => r.id === rowId ? { ...r, [field]: coerced } : r));
@@ -502,6 +510,8 @@ export default function TransactionList() {
               <th>Item</th>
               <th className="align-right">Amount</th>
               <th>Category</th>
+              {/* ac: assign-transaction-budget-line — a Budget column sits next to Category */}
+              <th>Budget</th>
               <th>Wallet</th>
               <th>Note</th>
               <th />
@@ -512,7 +522,7 @@ export default function TransactionList() {
 
             {!loading && error && (
               <tr>
-                <td colSpan={8}>
+                <td colSpan={9}>
                   <div className="table-state">
                     <div className="table-state-icon">⚠</div>
                     <div className="table-state-title">Failed to load</div>
@@ -524,7 +534,7 @@ export default function TransactionList() {
 
             {!loading && !error && rows.length === 0 && (
               <tr>
-                <td colSpan={8}>
+                <td colSpan={9}>
                   <div className="table-state">
                     <div className="table-state-icon">◎</div>
                     <div className="table-state-title">No transactions</div>
@@ -579,6 +589,28 @@ export default function TransactionList() {
                           {row.category}
                         </span>
                       )
+                  }
+                </td>
+                <td>
+                  {/* ac: assign-transaction-budget-line — double-click opens a dropdown of active lines plus Auto */}
+                  {isEditing(row.id, 'budget_line_id')
+                    ? <SelectCell
+                        initialValue={row.budget_line_id ?? ''}
+                        options={[{ value: '', label: 'Auto' }, ...budgetLines.map(l => ({ value: String(l.id), label: l.name }))]}
+                        onCommit={commitEdit}
+                        onCancel={cancelEdit}
+                      />
+                    : (() => {
+                        const assigned = budgetLines.find(l => l.id === row.budget_line_id);
+                        return (
+                          <span
+                            className={`tx-budget editable${assigned ? '' : ' tx-budget-auto'}`}
+                            onDoubleClick={() => startEdit(row, 'budget_line_id')}
+                          >
+                            {assigned ? assigned.name : 'Auto'}
+                          </span>
+                        );
+                      })()
                   }
                 </td>
                 <td>

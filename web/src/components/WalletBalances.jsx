@@ -116,10 +116,13 @@ export default function WalletBalances() {
   if (balLoading) return <div className="table-state"><div className="table-state-title">Loading…</div></div>;
   if (error)      return <div className="table-state"><div className="table-state-desc error" role="alert">{error}</div></div>;
 
-  const idrAssets = balances.filter(w => w.currency === 'IDR' && w.type !== 'credit');
-  const idrCC     = balances.filter(w => w.currency === 'IDR' && w.type === 'credit');
-  const thbNet    = balances.filter(w => w.currency === 'THB').reduce((s, w) => s + w.balance, 0);
-  const idrNet    = idrAssets.reduce((s, w) => s + w.balance, 0);
+  // ac: balances-assets-only-summary — the wallet grid lists only non-credit wallets; card debt is read on the Card Debt tab
+  const wallets   = balances.filter(w => w.type !== 'credit');
+  const thbNet    = wallets.filter(w => w.currency === 'THB').reduce((s, w) => s + w.balance, 0);
+  // ac: balances-assets-only-summary — IDR Net counts spendable cash only, so investments are out as well as credit cards
+  const idrNet    = wallets
+    .filter(w => w.currency === 'IDR' && w.type !== 'investment')
+    .reduce((s, w) => s + w.balance, 0);
 
   return (
     <div className="page">
@@ -128,13 +131,10 @@ export default function WalletBalances() {
       </div>
 
       <div className="wallet-grid">
-        {balances.map(w => (
-          <div key={w.id} className={`wallet-card${w.type === 'credit' ? ' wallet-card--cc' : ''}`}>
+        {wallets.map(w => (
+          <div key={w.id} className="wallet-card">
             <div className="wallet-name">{w.name}</div>
-            <div className={`wallet-balance${w.type === 'credit' ? ' liability' : ''}`}>
-              {FMT[w.currency](w.balance)}
-            </div>
-            {w.type === 'credit' && <div className="wallet-label">owed</div>}
+            <div className="wallet-balance">{FMT[w.currency](w.balance)}</div>
           </div>
         ))}
       </div>
@@ -175,7 +175,8 @@ export default function WalletBalances() {
               </tr>
             </thead>
             <tbody>
-              {recon.map(row => (
+              {/* ac: balances-assets-only-summary — Reconciliation covers the same non-credit wallets as the grid above */}
+              {recon.filter(row => row.wallet_type !== 'credit').map(row => (
                 <ReconciliationRow key={row.wallet_id} row={row} onSave={handleSave} />
               ))}
             </tbody>

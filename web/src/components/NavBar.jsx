@@ -58,17 +58,31 @@ export default function NavBar({ activeView, onNavigate, darkMode, onToggleTheme
           </button>
           <button
             className="nav-btn"
-            onClick={() => onNavigate('import')}
-            aria-current={activeView === 'import' ? 'page' : undefined}
-          >
-            Import
-          </button>
-          <button
-            className="nav-btn"
             onClick={() => onNavigate('installments')}
             aria-current={activeView === 'installments' ? 'page' : undefined}
           >
             Installments
+          </button>
+          <button
+            className="nav-btn"
+            onClick={() => onNavigate('card-debt')}
+            aria-current={activeView === 'card-debt' ? 'page' : undefined}
+          >
+            Card Debt
+          </button>
+          <button
+            className="nav-btn"
+            onClick={() => onNavigate('budget')}
+            aria-current={activeView === 'budget' ? 'page' : undefined}
+          >
+            Budget
+          </button>
+          <button
+            className="nav-btn"
+            onClick={() => onNavigate('calendar')}
+            aria-current={activeView === 'calendar' ? 'page' : undefined}
+          >
+            Calendar
           </button>
         </div>
         <button

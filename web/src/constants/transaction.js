@@ -24,9 +24,6 @@ export const INCOME_CATEGORIES = [
   'Salary', 'Freelance', 'Business', 'Dividends', 'Rental', 'Bonus', 'Gift', 'Other',
 ];
 
-// Kept for backward compatibility (ImportPdf + tests)
-export const CATEGORIES = EXPENSE_CATEGORIES;
-
 export function categoriesFor(txType) {
   if (txType === 'income') return INCOME_CATEGORIES;
   if (txType === 'transfer') return ['Transfer'];
@@ -37,6 +34,10 @@ export function categoriesFor(txType) {
 
 export function currencySymbol(walletId) {
   return WALLETS.find(w => w.id === walletId)?.currency === 'THB' ? '฿' : 'Rp';
+}
+
+export function walletCurrency(walletId) {
+  return WALLETS.find(w => w.id === walletId)?.currency ?? 'IDR';
 }
 
 export function deriveTab(walletId, txType) {
