@@ -2,14 +2,17 @@ package com.fidriyanto.banktracker.ui.feed
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -19,8 +22,27 @@ import com.fidriyanto.banktracker.R
 import com.fidriyanto.banktracker.data.model.TransactionStatus
 import com.fidriyanto.banktracker.domain.model.TransactionUiModel
 import com.fidriyanto.banktracker.ui.theme.LocalAppColors
+import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Locale
+
+private val avatarPalette = listOf(
+    0xFF0F5D4C, 0xFF2155C4, 0xFF9A6B12, 0xFFB23A2E, 0xFF6D4BC4, 0xFF0F9B76, 0xFFC43062,
+)
+
+@Composable
+private fun CategoryAvatar(category: String) {
+    val idx = (category.hashCode().let { if (it < 0) -it else it }) % avatarPalette.size
+    val base = Color(avatarPalette[idx])
+    val initial = category.trim().firstOrNull()?.uppercase() ?: "?"
+    Box(
+        modifier = Modifier.size(38.dp).clip(CircleShape).background(base.copy(alpha = 0.16f)),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(initial, color = base, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+    }
+}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -60,9 +82,12 @@ fun TransactionCard(
         else                     -> "-"
     }
     val amountStr     = if (isThb) {
-        if (transaction.amount % 1.0 == 0.0) transaction.amount.toInt().toString() else transaction.amount.toString()
+        NumberFormat.getNumberInstance(Locale.US).apply {
+            minimumFractionDigits = if (transaction.amount % 1.0 == 0.0) 0 else 2
+            maximumFractionDigits = 2
+        }.format(transaction.amount)
     } else {
-        transaction.amount.toLong().toString()
+        NumberFormat.getNumberInstance(Locale.US).format(transaction.amount.toLong())
     }
     val amountDisplay = "$sign$symbol$amountStr"
 
@@ -88,6 +113,8 @@ fun TransactionCard(
             modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            CategoryAvatar(transaction.category)
+            Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Text(transaction.item, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface)
                 Text(stringResource(R.string.feed_category_date, transaction.category, dateStr), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -99,7 +126,9 @@ fun TransactionCard(
                     else                     -> appColors.red
                 }
                 Text(amountDisplay, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = amountColor)
-                Text(badgeText, fontSize = 11.sp, color = badgeColor)
+                if (transaction.status != TransactionStatus.SYNCED) {
+                    Text(badgeText, fontSize = 11.sp, color = badgeColor)
+                }
                 transaction.wallet?.let { w ->
                     Text(
                         when (w) {

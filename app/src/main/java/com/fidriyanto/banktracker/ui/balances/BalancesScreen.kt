@@ -115,16 +115,16 @@ private fun WalletBalanceCard(wallet: WalletBalanceDto) {
         ),
     ) {
         Column(Modifier.padding(16.dp)) {
-            Text(wallet.name, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(wallet.name, fontSize = 13.sp, color = if (isCredit) MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(Modifier.height(4.dp))
             Text(
                 formatBalance(wallet.currency, wallet.balance),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = if (isCredit) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
+                color = if (isCredit) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onSurface,
             )
             if (isCredit) {
-                Text(stringResource(R.string.balances_owed), fontSize = 11.sp, color = MaterialTheme.colorScheme.error)
+                Text(stringResource(R.string.balances_owed), fontSize = 11.sp, color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.8f))
             }
         }
     }

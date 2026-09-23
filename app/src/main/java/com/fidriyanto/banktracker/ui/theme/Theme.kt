@@ -35,6 +35,8 @@ private val DarkColors = darkColorScheme(
     surfaceContainerHigh = Color(0xFF202B24),
     surfaceContainerHighest = Color(0xFF26332C),
     error = DarkError,
+    errorContainer = Color(0xFF3A241F),
+    onErrorContainer = Color(0xFFE88A7C),
 )
 
 // ac: light-pine-theme — both schemes define the full token set so text stays legible on either ground
@@ -62,6 +64,8 @@ private val LightColors = lightColorScheme(
     surfaceContainerHigh = Color(0xFFE9EDE8),
     surfaceContainerHighest = Color(0xFFE3E8E2),
     error = LightError,
+    errorContainer = Color(0xFFF6E4E0),
+    onErrorContainer = Color(0xFFB23A2E),
 )
 
 val LocalIsDarkTheme = compositionLocalOf { false }
