@@ -43,7 +43,7 @@ class TransactionFetchDataSourceImpl @Inject constructor(
             amountMax?.let { "lte.$it" },
         ).ifEmpty { null }
         val dtos = service.fetchTransactions(
-            order         = "date.desc",
+            order         = "date.desc,id.desc",
             limit         = 200,
             dateFilters   = dateFilters,
             wallet        = wallet?.let { "eq.$it" },

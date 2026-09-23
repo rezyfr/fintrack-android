@@ -54,8 +54,9 @@ object NotificationParser {
             .toLocalDate()
 
         // ac: bca-expense-notification — myBCA notifications whose body matches 'You spent IDR x at [Category]' are parsed
-        if ("mybca" in title.lowercase() || "my bca" in title.lowercase()) {
-            val bcaMatch = bcaAmountRegex.find(text) ?: return null
+        // The body, not the title, decides: myBCA posts these under titles such as "Financial Diary".
+        val bcaMatch = bcaAmountRegex.find(text)
+        if (bcaMatch != null) {
             val amount = bcaMatch.groupValues[1].replace(",", "").toDoubleOrNull() ?: return null
             val rawCategory = bcaMatch.groupValues[2].trim()
             // ac: bca-expense-notification — the item field is set to the BCA category text
@@ -69,6 +70,9 @@ object NotificationParser {
                 category = mapBcaCategory(rawCategory),
             )
         }
+
+        // A myBCA notification without a spend line is not a BBL transaction; never fall through.
+        if ("mybca" in title.lowercase() || "my bca" in title.lowercase()) return null
 
         // BBL / Bangkok Bank path
         val amountMatch = bblAmountRegex.find(text) ?: return null

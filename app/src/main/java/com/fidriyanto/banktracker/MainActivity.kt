@@ -22,7 +22,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         val prefs = getPreferences(MODE_PRIVATE)
         setContent {
-            var darkTheme by remember { mutableStateOf(prefs.getBoolean("dark_theme", true)) }
+            // ac: light-pine-theme — fresh install defaults to light; the toggle still persists a choice
+            var darkTheme by remember { mutableStateOf(prefs.getBoolean("dark_theme", false)) }
             CompositionLocalProvider(
                 LocalIsDarkTheme provides darkTheme,
                 LocalThemeToggle provides {
