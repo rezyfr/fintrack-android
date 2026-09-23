@@ -148,4 +148,16 @@
     <string name="home_recent_meta">%1$s · %2$s</string>
     <string name="home_recent_empty">No activity yet this cycle</string>
     <string name="home_min_due">Min %1$s · due %2$s</string>
+    <string name="budget_remaining">Remaining budget</string>
+    <string name="budget_of_total">of %1$s</string>
+    <string name="budget_days_left">%1$d days left</string>
+    <string name="budget_safe">You can spend %1$s/day</string>
+    <string name="budget_over_total">Over budget by %1$s</string>
+    <string name="budget_line_remaining">%1$s left</string>
+    <string name="budget_line_perday">%1$s/day</string>
+    <string name="budget_line_of">of %1$s</string>
+    <string name="budget_percent">%1$d%%</string>
+    <string name="budget_empty">No flexible budget lines for this currency</string>
+    <string name="budget_error">Could not load budget</string>
+    <string name="home_budget">Budget</string>
 </resources>

@@ -22,6 +22,7 @@ import androidx.navigation.compose.*
 import com.fidriyanto.banktracker.ui.add.AddScreen
 import com.fidriyanto.banktracker.ui.balances.BalancesScreen
 import com.fidriyanto.banktracker.ui.budget.BudgetScreen
+import com.fidriyanto.banktracker.ui.budgetglance.BudgetGlanceScreen
 import com.fidriyanto.banktracker.ui.cards.CardsScreen
 import com.fidriyanto.banktracker.ui.dashboard.DashboardScreen
 import com.fidriyanto.banktracker.ui.feed.FeedScreen
@@ -107,7 +108,7 @@ private fun BudgetTab() {
             }
         }
         when (sub) {
-            0 -> BudgetScreen()
+            0 -> BudgetGlanceScreen()
             1 -> CardsScreen()
             else -> InstallmentsScreen()
         }

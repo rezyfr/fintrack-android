@@ -1,7 +1,10 @@
 {
-  "feature": "android_budget_glance",
-  "storyId": "android-budget-daily-allowance",
-  "acceptanceCriteria": [
+  "id": "android-budget-daily-allowance",
+  "capability": "android-budget-glance",
+  "role": "user",
+  "want": "a budget view and a Home card that show what I have left to spend and a safe daily allowance",
+  "soThat": "I know how much I can spend per day for the rest of the cycle, not just a running total",
+  "acceptance": [
     "the Budget tab shows, for the selected currency, the flexible lines' total budget, total spent, and remaining, with a safe daily allowance of remaining divided by the days left in the pay cycle",
     "each flexible line shows its spent-versus-target progress, its remaining amount, and a per-day remaining figure",
     "the Home screen shows a compact budget card with the remaining amount, the daily allowance, and the top few lines",

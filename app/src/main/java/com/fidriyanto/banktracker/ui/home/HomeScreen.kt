@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -17,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fidriyanto.banktracker.R
+import com.fidriyanto.banktracker.domain.usecase.BudgetGlance
 import com.fidriyanto.banktracker.domain.model.CardStatement
 import com.fidriyanto.banktracker.domain.model.TransactionUiModel
 import com.fidriyanto.banktracker.ui.theme.LocalAppColors
@@ -78,6 +80,14 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
             }
         }
 
+        // ac: home-cycle-overview — a compact budget card with remaining, daily allowance, top lines
+        s.budget?.let { b ->
+            if (b.lines.isNotEmpty()) {
+                SectionLabel(stringResource(R.string.home_budget))
+                BudgetCard(b, app.red)
+            }
+        }
+
         // ac: home-cycle-overview — each credit card's minimum payment and due date
         // Cards due
         if (s.cards.isNotEmpty()) {
@@ -94,6 +104,42 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
                     Text(stringResource(R.string.home_recent_empty), color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(16.dp))
                 } else {
                     s.recent.forEachIndexed { i, tx -> RecentRow(tx, app.red, app.green, showDivider = i < s.recent.lastIndex) }
+                }
+            }
+        }
+    }
+}
+
+// ac: android-budget-daily-allowance — Home compact budget card: remaining, daily allowance, top lines
+@Composable private fun BudgetCard(b: BudgetGlance, red: Color) {
+    val over = b.totalSpent > b.totalTarget
+    Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(16.dp), tonalElevation = 1.dp, modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Bottom) {
+                Column {
+                    Text(stringResource(R.string.budget_remaining), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(rp(b.remaining), fontSize = 22.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                }
+                Text(
+                    if (over) stringResource(R.string.budget_over_total, rp(b.totalSpent - b.totalTarget))
+                    else stringResource(R.string.budget_safe, rp(b.dailyAllowance)),
+                    fontSize = 12.sp, fontWeight = FontWeight.SemiBold,
+                    color = if (over) red else MaterialTheme.colorScheme.primary,
+                )
+            }
+            b.lines.take(3).forEach { ls ->
+                Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(ls.line.name, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface)
+                        Text(stringResource(R.string.budget_line_remaining, rp(ls.remaining)), fontSize = 12.sp,
+                            color = if (ls.isOver) red else MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    LinearProgressIndicator(
+                        progress = { ls.progress },
+                        color = if (ls.isOver) red else MaterialTheme.colorScheme.primary,
+                        trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                        modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(999.dp)),
+                    )
                 }
             }
         }

@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.fidriyanto.banktracker.data.repository.TransactionRepository
 import com.fidriyanto.banktracker.domain.model.CardStatement
 import com.fidriyanto.banktracker.domain.model.TransactionUiModel
+import com.fidriyanto.banktracker.domain.usecase.BudgetGlance
+import com.fidriyanto.banktracker.domain.usecase.GetBudgetGlanceUseCase
 import com.fidriyanto.banktracker.domain.usecase.GetCardStatementsUseCase
 import com.fidriyanto.banktracker.domain.usecase.PayCycle
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,12 +26,14 @@ data class HomeUiState(
     val net: Double = 0.0,
     val cards: List<CardStatement> = emptyList(),
     val recent: List<TransactionUiModel> = emptyList(),
+    val budget: BudgetGlance? = null,
 )
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val transactionRepository: TransactionRepository,
     private val getCardStatements: GetCardStatementsUseCase,
+    private val getBudgetGlance: GetBudgetGlanceUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(HomeUiState())
     val state: StateFlow<HomeUiState> = _state.asStateFlow()
@@ -55,6 +59,7 @@ class HomeViewModel @Inject constructor(
                 .sortedByDescending { it.dateIso }
                 .take(5)
             val cards = getCardStatements.getStatements().getOrElse { emptyList() }
+            val budget = getBudgetGlance.getGlance("IDR").getOrNull()
             _state.value = HomeUiState(
                 loading = false,
                 cycleFromIso = cycle.fromIso,
@@ -65,6 +70,7 @@ class HomeViewModel @Inject constructor(
                 net = income - expenses,
                 cards = cards,
                 recent = recent,
+                budget = budget,
             )
         }
     }
