@@ -21,9 +21,10 @@ data class HomeUiState(
     val cycleFromIso: String = "",
     val cycleToIso: String = "",
     val daysToPayday: Int = 0,
-    val income: Double = 0.0,
-    val expenses: Double = 0.0,
-    val net: Double = 0.0,
+    val thbIncome: Double = 0.0,
+    val thbExpenses: Double = 0.0,
+    val idrIncome: Double = 0.0,
+    val idrExpenses: Double = 0.0,
     val cards: List<CardStatement> = emptyList(),
     val recent: List<TransactionUiModel> = emptyList(),
     val budget: BudgetGlance? = null,
@@ -50,10 +51,16 @@ class HomeViewModel @Inject constructor(
             val rows = transactionRepository
                 .fetch(month = null, wallet = null, txType = null, dateFrom = cycle.fromIso, dateTo = cycle.toIso)
                 .getOrElse { emptyList() }
-            // ac: home-cycle-overview — cycle income, spending and net (IDR, self-transfers excluded)
-            val idr = rows.filter { it.wallet in idrWallets && (it.txType == "income" || it.txType == "expense") }
-            val income = idr.filter { it.txType == "income" }.sumOf { it.amount }
-            val expenses = idr.filter { it.txType == "expense" }.sumOf { it.amount }
+            // ac: home-cycle-overview — cycle income and spending per currency (self-transfers excluded).
+            // Salary is THB (Bangkok Bank); Indonesian spend sits on the IDR wallets. Keeping them
+            // separate avoids blending a THB salary into an IDR total.
+            fun sum(thb: Boolean, type: String) = rows
+                .filter { (it.wallet == "BBL") == thb && it.wallet != null && it.txType == type }
+                .sumOf { it.amount }
+            val thbIncome = sum(thb = true, type = "income")
+            val thbExpenses = sum(thb = true, type = "expense")
+            val idrIncome = rows.filter { it.wallet in idrWallets && it.txType == "income" }.sumOf { it.amount }
+            val idrExpenses = rows.filter { it.wallet in idrWallets && it.txType == "expense" }.sumOf { it.amount }
             val recent = rows
                 .filter { it.txType == "income" || it.txType == "expense" }
                 .sortedByDescending { it.dateIso }
@@ -65,9 +72,10 @@ class HomeViewModel @Inject constructor(
                 cycleFromIso = cycle.fromIso,
                 cycleToIso = cycle.toIso,
                 daysToPayday = PayCycle.daysToPayday(),
-                income = income,
-                expenses = expenses,
-                net = income - expenses,
+                thbIncome = thbIncome,
+                thbExpenses = thbExpenses,
+                idrIncome = idrIncome,
+                idrExpenses = idrExpenses,
                 cards = cards,
                 recent = recent,
                 budget = budget,

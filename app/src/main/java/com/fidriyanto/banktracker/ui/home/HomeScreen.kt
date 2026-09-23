@@ -29,6 +29,10 @@ import java.util.Locale
 import kotlin.math.roundToLong
 
 private fun rp(a: Double) = "Rp ${NumberFormat.getNumberInstance(Locale.US).format(kotlin.math.abs(a).roundToLong())}"
+private fun thb(a: Double): String {
+    val n = NumberFormat.getNumberInstance(Locale.US).apply { minimumFractionDigits = 0; maximumFractionDigits = 0 }.format(kotlin.math.abs(a).roundToLong())
+    return "฿$n"
+}
 private fun walletName(w: String) = when (w) {
     "MANDIRI_CC" -> "Mandiri CC"; "BCA_CC" -> "BCA CC"; else -> w
 }
@@ -68,15 +72,13 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
             return@Column
         }
 
-        // Hero: net this cycle
+        // Hero: net this cycle, split by currency (salary is THB; Indonesia spend is IDR)
         Surface(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(20.dp), modifier = Modifier.fillMaxWidth()) {
-            Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(stringResource(R.string.home_net_this_cycle), color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f), fontSize = 13.sp)
-                Text((if (s.net >= 0) "+" else "-") + rp(s.net), color = MaterialTheme.colorScheme.onPrimary, fontSize = 32.sp, fontWeight = FontWeight.Bold)
-                Row(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-                    HeroStat(stringResource(R.string.home_income), rp(s.income))
-                    HeroStat(stringResource(R.string.home_spent), rp(s.expenses))
-                }
+                HeroCurrency(stringResource(R.string.home_cycle_thb), s.thbIncome, s.thbExpenses, ::thb)
+                HorizontalDivider(color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.15f))
+                HeroCurrency(stringResource(R.string.home_cycle_idr), s.idrIncome, s.idrExpenses, ::rp)
             }
         }
 
@@ -142,6 +144,20 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable private fun HeroCurrency(label: String, income: Double, expenses: Double, fmt: (Double) -> String) {
+    val net = income - expenses
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Bottom) {
+            Text(label, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f), fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+            Text((if (net >= 0) "+" else "-") + fmt(net), color = MaterialTheme.colorScheme.onPrimary, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        }
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+            HeroStat(stringResource(R.string.home_income), fmt(income))
+            HeroStat(stringResource(R.string.home_spent), fmt(expenses))
         }
     }
 }
