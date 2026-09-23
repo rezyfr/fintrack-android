@@ -1,0 +1,13 @@
+{
+  "id": "four-tab-nav-with-add-fab-flow",
+  "steps": [
+    { "actor": "user", "action": "launches the Android app" },
+    {
+      "actor": "app",
+      "action": "shows the Home tab with the four-tab bottom bar and a central Add button",
+      "story": "four-tab-nav-with-add-fab",
+      "requires": "AppNavigation"
+    },
+    { "actor": "user", "action": "taps the central Add button to record a transaction" }
+  ]
+}

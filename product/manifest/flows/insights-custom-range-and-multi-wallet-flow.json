@@ -1,0 +1,19 @@
+{
+  "id": "insights-custom-range-and-multi-wallet-flow",
+  "steps": [
+    { "actor": "user", "action": "selects the Custom period preset on the Insights page" },
+    {
+      "actor": "app",
+      "action": "shows day-precise From and To date inputs in place of whole-month selection",
+      "story": "insights-custom-range-and-multi-wallet",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "picks a From and To date, and toggles on one or more wallets in the wallet filter" },
+    {
+      "actor": "app",
+      "action": "refetches and shows combined income/expense/category totals for just the selected wallets and date range, split by currency",
+      "story": "insights-custom-range-and-multi-wallet",
+      "noNavigation": true
+    }
+  ]
+}

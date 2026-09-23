@@ -1,0 +1,12 @@
+{
+  "id": "budget-line-target-editing",
+  "capability": "budget-cycle-tracking",
+  "role": "user",
+  "want": "to edit a budget line's target and see what I have historically spent on it",
+  "soThat": "I can set a number that is actually achievable rather than guessing",
+  "acceptance": [
+    "a budget line's target can be edited inline and the new value persists to Supabase",
+    "each target shows the observed minimum, median and maximum from recent pay cycles as a recommended range",
+    "a budget line with no matching history says so instead of showing a misleading zero range"
+  ]
+}

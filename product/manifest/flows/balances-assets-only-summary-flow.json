@@ -1,0 +1,18 @@
+{
+  "id": "balances-assets-only-summary-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the Balances tab in the web app" },
+    {
+      "actor": "app",
+      "action": "renders a wallet card for each non-credit wallet and a Reconciliation row for each of the same wallets",
+      "story": "balances-assets-only-summary",
+      "noNavigation": true
+    },
+    {
+      "actor": "app",
+      "action": "shows IDR Net as the sum of IDR wallets that are neither credit cards nor investments",
+      "story": "balances-assets-only-summary",
+      "noNavigation": true
+    }
+  ]
+}

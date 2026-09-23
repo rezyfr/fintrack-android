@@ -1,0 +1,19 @@
+{
+  "id": "insights-show-income-and-transfers-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the Insights page with any period, date range, or wallet filter active" },
+    {
+      "actor": "app",
+      "action": "shows Transfer In and Transfer Out totals for each currency section, alongside Income and Expenses",
+      "story": "insights-show-income-and-transfers",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "clicks the Transfer In or Transfer Out total" },
+    {
+      "actor": "app",
+      "action": "expands it to show the transfer transactions behind that total",
+      "story": "insights-show-income-and-transfers",
+      "noNavigation": true
+    }
+  ]
+}

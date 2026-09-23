@@ -1,0 +1,13 @@
+{
+  "id": "light-pine-theme-flow",
+  "steps": [
+    { "actor": "user", "action": "launches the app for the first time" },
+    {
+      "actor": "app",
+      "action": "renders every screen in the light pine palette from the shared theme tokens",
+      "story": "light-pine-theme",
+      "requires": "BankTrackerTheme"
+    },
+    { "actor": "user", "action": "toggles dark mode in Settings and the whole app switches palette" }
+  ]
+}

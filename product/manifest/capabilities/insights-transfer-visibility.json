@@ -1,0 +1,8 @@
+{
+  "id": "insights-transfer-visibility",
+  "title": "Insights Transfer Visibility",
+  "status": "Approved",
+  "owners": ["fidriyantoriz@social.plus"],
+  "stories": ["insights-show-income-and-transfers"],
+  "flows": ["insights-show-income-and-transfers-flow"]
+}

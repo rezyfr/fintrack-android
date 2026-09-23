@@ -1,0 +1,19 @@
+{
+  "id": "retire-pdf-import-tab-flow",
+  "steps": [
+    { "actor": "user", "action": "looks for a way to import a statement PDF in the web app" },
+    {
+      "actor": "app",
+      "action": "offers no Import tab or upload screen, leaving only the Transactions, Balances, Add, Insights, Installments and Card Debt tabs",
+      "story": "retire-pdf-import-tab",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "runs scripts/parse_bank_statement.mjs against the statement instead" },
+    {
+      "actor": "app",
+      "action": "parses it with the same exported text parsers the web app used and reconciles the rows against Supabase",
+      "story": "retire-pdf-import-tab",
+      "noNavigation": true
+    }
+  ]
+}

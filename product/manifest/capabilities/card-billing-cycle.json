@@ -1,0 +1,8 @@
+{
+  "id": "card-billing-cycle",
+  "title": "Card Billing Cycle",
+  "status": "Approved",
+  "owners": ["fidriyantoriz@social.plus"],
+  "stories": ["card-statement-due-and-minimum"],
+  "flows": ["card-statement-due-and-minimum-flow"]
+}

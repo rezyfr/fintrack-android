@@ -1,0 +1,12 @@
+{
+  "id": "budget-line-visibility-flow",
+  "steps": [
+    { "actor": "user", "action": "taps a budget line's toggle in the legend" },
+    {
+      "actor": "app",
+      "action": "drops or restores that line's target and actual series and rescales the chart to the visible lines",
+      "story": "budget-line-visibility",
+      "noNavigation": true
+    }
+  ]
+}

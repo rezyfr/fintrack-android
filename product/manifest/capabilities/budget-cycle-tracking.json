@@ -1,0 +1,8 @@
+{
+  "id": "budget-cycle-tracking",
+  "title": "Budget Cycle Tracking",
+  "status": "Approved",
+  "owners": ["fidriyantoriz@social.plus"],
+  "stories": ["budget-cycle-target-vs-actual", "budget-line-visibility", "budget-line-target-editing", "assign-transaction-budget-line"],
+  "flows": ["budget-cycle-target-vs-actual-flow", "budget-line-visibility-flow", "budget-line-target-editing-flow", "assign-transaction-budget-line-flow"]
+}

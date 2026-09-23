@@ -1,0 +1,13 @@
+{
+  "id": "assign-transaction-budget-line",
+  "capability": "budget-cycle-tracking",
+  "role": "user",
+  "want": "to manually set which budget line a transaction on the Transaction List counts toward",
+  "soThat": "a transaction the automatic wallet, category, and pattern rules get wrong still ends up on the right line without me editing that line's pattern",
+  "acceptance": [
+    "each transaction row in the Transaction List has a Budget cell showing its assigned line or Auto",
+    "double-clicking the Budget cell opens a dropdown of every active budget line plus an Auto option, and choosing one persists to Supabase",
+    "a transaction with a manual budget line assignment counts toward that line on the Budget chart instead of whatever line the automatic rules would have picked",
+    "choosing Auto clears the manual assignment and returns the transaction to automatic matching"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "balances-assets-only-summary",
+  "capability": "wallet-balances-view",
+  "role": "user",
+  "want": "the web Balances tab to show only the accounts that hold my own money, and IDR Net to count only spendable cash",
+  "soThat": "the tab answers what I can spend right now, with card debt read on the Card Debt tab and long-term investments kept out of the figure",
+  "acceptance": [
+    "the wallet grid on the web Balances tab lists only non-credit wallets",
+    "the Reconciliation table on the web Balances tab lists only non-credit wallets",
+    "IDR Net sums only IDR wallets that are neither credit cards nor investments"
+  ]
+}

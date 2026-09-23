@@ -1,0 +1,8 @@
+{
+  "id": "insights-advanced-filters",
+  "title": "Insights Advanced Filters",
+  "status": "Approved",
+  "owners": ["fidriyantoriz@social.plus"],
+  "stories": ["insights-custom-range-and-multi-wallet", "insights-pay-cycle-periods"],
+  "flows": ["insights-custom-range-and-multi-wallet-flow", "insights-pay-cycle-periods-flow"]
+}

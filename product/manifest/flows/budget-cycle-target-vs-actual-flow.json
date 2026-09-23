@@ -1,0 +1,13 @@
+{
+  "id": "budget-cycle-target-vs-actual-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the Budget tab in the web app" },
+    {
+      "actor": "app",
+      "action": "resolves the current 26th-to-25th pay cycle, loads the budget lines and the cycle's transactions, and plots target against cumulative actual for each line",
+      "story": "budget-cycle-target-vs-actual",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "reads where the actual series sits against its target part-way through the cycle" }
+  ]
+}

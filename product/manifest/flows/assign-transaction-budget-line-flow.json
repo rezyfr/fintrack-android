@@ -1,0 +1,19 @@
+{
+  "id": "assign-transaction-budget-line-flow",
+  "steps": [
+    { "actor": "user", "action": "double-clicks the Budget cell for a transaction row in the Transaction List" },
+    {
+      "actor": "app",
+      "action": "opens a dropdown listing every active budget line plus Auto, pre-selected to the transaction's current assignment",
+      "story": "assign-transaction-budget-line",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "selects a budget line, or Auto to clear the override" },
+    {
+      "actor": "app",
+      "action": "persists the choice to the transaction's budget_line_id in Supabase and updates the Budget cell",
+      "story": "assign-transaction-budget-line",
+      "noNavigation": true
+    }
+  ]
+}

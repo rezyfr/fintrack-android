@@ -1,0 +1,13 @@
+{
+  "id": "insights-pay-cycle-periods",
+  "capability": "insights-advanced-filters",
+  "role": "user",
+  "want": "the Insights month presets to run from the 26th to the 25th",
+  "soThat": "each period matches my salary cycle, since I am paid on the 26th, instead of splitting one cycle across two calendar months",
+  "acceptance": [
+    "the This Month preset covers the 26th of the previous calendar month through the 25th of the current one",
+    "the Last Month preset covers the pay cycle before that, and Last 3 Months covers the three most recent cycles as one range",
+    "Insights opens on the current pay cycle with no interaction",
+    "each preset shows the date range it resolves to"
+  ]
+}

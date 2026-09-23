@@ -1,0 +1,13 @@
+{
+  "id": "four-tab-nav-with-add-fab",
+  "capability": "mobile-navigation-revamp",
+  "role": "user",
+  "want": "the Android app organised into four bottom tabs with a central Add button",
+  "soThat": "the most-used actions are reachable in one tap instead of hunting through seven flat tabs",
+  "acceptance": [
+    "the Android bottom navigation has exactly four tabs: Home, Transactions, Budget, and Accounts",
+    "adding a transaction is a central floating button rather than a bottom-navigation tab",
+    "the Budget tab reaches both the budget and installments views, and the Accounts tab reaches both balances and settings",
+    "Home is the destination shown when the app launches"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "id": "pay-cycle-calendar",
+  "title": "Pay Cycle Calendar",
+  "status": "Approved",
+  "owners": ["fidriyantoriz@social.plus"],
+  "stories": ["cycle-calendar-daily-totals"],
+  "flows": ["cycle-calendar-daily-totals-flow"]
+}

@@ -3,6 +3,6 @@
   "title": "Wallet Balances View",
   "status": "Approved",
   "owners": ["frotylatz@gmail.com"],
-  "stories": ["view-wallet-balances"],
-  "flows": ["view-wallet-balances-flow"]
+  "stories": ["view-wallet-balances", "balances-assets-only-summary"],
+  "flows": ["view-wallet-balances-flow", "balances-assets-only-summary-flow"]
 }

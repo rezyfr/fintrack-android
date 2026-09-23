@@ -1,0 +1,8 @@
+{
+  "id": "pdf-import-retirement",
+  "title": "PDF Import Retirement",
+  "status": "Approved",
+  "owners": ["fidriyantoriz@social.plus"],
+  "stories": ["retire-pdf-import-tab"],
+  "flows": ["retire-pdf-import-tab-flow"]
+}

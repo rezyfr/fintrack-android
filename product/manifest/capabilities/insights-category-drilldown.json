@@ -1,0 +1,8 @@
+{
+  "id": "insights-category-drilldown",
+  "title": "Insights Category Drilldown",
+  "status": "Approved",
+  "owners": ["fidriyantoriz@social.plus"],
+  "stories": ["expand-insights-category-to-transactions"],
+  "flows": ["expand-insights-category-to-transactions-flow"]
+}

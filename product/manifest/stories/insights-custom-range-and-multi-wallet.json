@@ -1,0 +1,14 @@
+{
+  "id": "insights-custom-range-and-multi-wallet",
+  "capability": "insights-advanced-filters",
+  "role": "user",
+  "want": "to set a day-precise custom date range on Insights and filter it by more than one wallet at once",
+  "soThat": "I can see a combined spending report for a non-calendar cycle (e.g. a salary month running 26th to 25th) across the wallets I actually use, such as my main Bangkok Bank account plus occasional Mandiri CC spending",
+  "acceptance": [
+    "the Custom period preset shows day-precise From and To date inputs instead of whole-month selection",
+    "the wallet filter allows selecting more than one wallet at once, in addition to a single wallet or All wallets",
+    "when multiple wallets are selected, income/expenses/category totals combine across just those wallets, split by currency",
+    "the custom date range and the wallet selection combine with each other and both persist when the other changes",
+    "selecting no wallets behaves the same as All wallets"
+  ]
+}

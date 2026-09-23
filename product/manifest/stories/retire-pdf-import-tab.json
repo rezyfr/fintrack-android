@@ -1,0 +1,11 @@
+{
+  "id": "retire-pdf-import-tab",
+  "capability": "pdf-import-retirement",
+  "role": "user",
+  "want": "the Import tab gone from the web app",
+  "soThat": "statement imports run only through scripts/parse_bank_statement.mjs, which reconciles against what is already recorded instead of inserting a browser-parsed batch blind",
+  "acceptance": [
+    "the web app has no Import tab, navigation button, or upload screen",
+    "the statement text parsers stay exported for scripts/parse_bank_statement.mjs, with no browser-only PDF entry point left behind"
+  ]
+}

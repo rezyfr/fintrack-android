@@ -1,0 +1,8 @@
+{
+  "id": "cc-debt-tracking",
+  "title": "Credit Card Debt Tracking",
+  "status": "Approved",
+  "owners": ["fidriyantoriz@social.plus"],
+  "stories": ["track-cc-transactions-as-debt"],
+  "flows": ["track-cc-transactions-as-debt-flow"]
+}

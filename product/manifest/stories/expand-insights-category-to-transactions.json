@@ -1,0 +1,14 @@
+{
+  "id": "expand-insights-category-to-transactions",
+  "capability": "insights-category-drilldown",
+  "role": "user",
+  "want": "to click a category in the Spending Breakdown to see the transactions that make up its total",
+  "soThat": "I can understand what's actually driving a category's spending without leaving the Insights page",
+  "acceptance": [
+    "clicking a category row in the Spending Breakdown expands it to show the transactions contributing to that category's total",
+    "the expanded transaction list respects the currently active period, custom date range, and wallet selection",
+    "clicking an expanded category row again collapses it",
+    "only one category's transaction list is expanded at a time",
+    "changing the period, date range, or wallet selection while a category is expanded refreshes the expanded list to match"
+  ]
+}

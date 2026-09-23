@@ -1,0 +1,12 @@
+{
+  "id": "track-cc-transactions-as-debt-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the Card Debt page and selects Mandiri Credit Card or BCA Credit Card" },
+    {
+      "actor": "app",
+      "action": "lists every charge on that card with a Paid, Partially Paid, or Unpaid status, computed by settling payments and refunds against charges oldest-first, and shows the total unpaid balance",
+      "story": "track-cc-transactions-as-debt",
+      "noNavigation": true
+    }
+  ]
+}

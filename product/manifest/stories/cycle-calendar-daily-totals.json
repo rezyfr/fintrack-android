@@ -1,0 +1,14 @@
+{
+  "id": "cycle-calendar-daily-totals",
+  "capability": "pay-cycle-calendar",
+  "role": "user",
+  "want": "a calendar grid of one pay cycle showing what I spent each day",
+  "soThat": "I can see which days were heavy and open a single day's transactions, instead of scrolling one long list",
+  "acceptance": [
+    "the Calendar tab shows the current pay cycle as a weekday-aligned grid, each in-cycle day cell showing that day's spending total",
+    "selecting a day lists that day's transactions",
+    "Previous and Next move the grid one pay cycle at a time, and the header shows the cycle's date range",
+    "a currency toggle switches the grid and the cycle totals between THB and IDR",
+    "days outside the selected pay cycle are shown dimmed and are excluded from the cycle totals"
+  ]
+}

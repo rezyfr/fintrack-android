@@ -1,7 +1,10 @@
 {
-  "feature": "mobile_visual_refresh",
-  "storyId": "light-pine-theme",
-  "acceptanceCriteria": [
+  "id": "light-pine-theme",
+  "capability": "mobile-visual-refresh",
+  "role": "user",
+  "want": "the Android app in a fresh light pine visual direction",
+  "soThat": "the app feels considered and calm rather than just functional",
+  "acceptance": [
     "the app's colour palette uses a warm paper background with a deep pine primary accent, replacing the gold-on-near-black scheme",
     "a fresh install opens in the light theme, and the existing dark-mode toggle still switches between light and dark",
     "both light and dark themes define the full token set so text stays legible on either background"

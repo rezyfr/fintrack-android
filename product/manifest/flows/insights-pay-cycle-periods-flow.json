@@ -1,0 +1,19 @@
+{
+  "id": "insights-pay-cycle-periods-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the Insights tab in the web app" },
+    {
+      "actor": "app",
+      "action": "resolves the default period to the current 26th-to-25th pay cycle and loads its totals",
+      "story": "insights-pay-cycle-periods",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "taps the Last Month or Last 3 Months preset" },
+    {
+      "actor": "app",
+      "action": "reloads the totals for that many pay cycles back and shows the resolved date range",
+      "story": "insights-pay-cycle-periods",
+      "noNavigation": true
+    }
+  ]
+}

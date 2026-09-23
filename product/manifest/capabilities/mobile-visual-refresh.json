@@ -1,0 +1,8 @@
+{
+  "id": "mobile-visual-refresh",
+  "title": "Mobile Visual Refresh",
+  "status": "In Progress",
+  "owners": ["fidriyantoriz@social.plus"],
+  "stories": ["light-pine-theme"],
+  "flows": ["light-pine-theme-flow"]
+}
