@@ -136,4 +136,16 @@
     <string name="cards_installment_note">Includes %1$s of installments billed in full, plus %2$s%% of the rest</string>
     <string name="cards_empty">No card billing records found</string>
     <string name="cards_error">Could not load cards</string>
+    <string name="home_greeting">Overview</string>
+    <string name="home_cycle_range">%1$s - %2$s</string>
+    <string name="home_payday_in">Payday in %1$d days</string>
+    <string name="home_payday_today">Payday today</string>
+    <string name="home_net_this_cycle">Net this cycle</string>
+    <string name="home_income">Income</string>
+    <string name="home_spent">Spent</string>
+    <string name="home_cards_due">Cards due</string>
+    <string name="home_recent">Recent activity</string>
+    <string name="home_recent_meta">%1$s · %2$s</string>
+    <string name="home_recent_empty">No activity yet this cycle</string>
+    <string name="home_min_due">Min %1$s · due %2$s</string>
 </resources>

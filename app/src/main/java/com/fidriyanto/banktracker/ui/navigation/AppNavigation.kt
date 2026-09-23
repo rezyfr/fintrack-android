@@ -25,6 +25,7 @@ import com.fidriyanto.banktracker.ui.budget.BudgetScreen
 import com.fidriyanto.banktracker.ui.cards.CardsScreen
 import com.fidriyanto.banktracker.ui.dashboard.DashboardScreen
 import com.fidriyanto.banktracker.ui.feed.FeedScreen
+import com.fidriyanto.banktracker.ui.home.HomeScreen
 import com.fidriyanto.banktracker.ui.installments.InstallmentsScreen
 import com.fidriyanto.banktracker.ui.settings.SettingsScreen
 
@@ -83,7 +84,8 @@ fun AppNavigation() {
         Box(Modifier.padding(padding).padding(bottom = 48.dp)) {
             // ac: four-tab-nav-with-add-fab — Home is the start destination shown on launch
             NavHost(navController, startDestination = Tab.Home.route) {
-                composable(Tab.Home.route) { DashboardScreen() }
+                // ac: home-cycle-overview — the Home tab renders the overview as the launch screen
+                composable(Tab.Home.route) { HomeScreen() }
                 composable(Tab.Transactions.route) { FeedScreen() }
                 composable(Tab.Budget.route) { BudgetTab() }
                 composable(Tab.Accounts.route) { AccountsTab() }

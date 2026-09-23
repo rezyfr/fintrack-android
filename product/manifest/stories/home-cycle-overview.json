@@ -1,7 +1,10 @@
 {
-  "feature": "mobile_home_screen",
-  "storyId": "home-cycle-overview",
-  "acceptanceCriteria": [
+  "id": "home-cycle-overview",
+  "capability": "mobile-home-screen",
+  "role": "user",
+  "want": "a Home screen that summarises the current pay cycle at a glance",
+  "soThat": "I see where I stand the moment I open the app instead of reading a chart",
+  "acceptance": [
     "Home shows the current pay cycle's income, spending, and net, with the number of days until the next payday",
     "Home shows each credit card's minimum payment and due date",
     "Home lists the most recent transactions in the cycle",

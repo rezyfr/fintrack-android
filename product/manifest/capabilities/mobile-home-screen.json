@@ -1,0 +1,8 @@
+{
+  "id": "mobile-home-screen",
+  "title": "Mobile Home Screen",
+  "status": "In Progress",
+  "owners": ["fidriyantoriz@social.plus"],
+  "stories": ["home-cycle-overview"],
+  "flows": ["home-cycle-overview-flow"]
+}
