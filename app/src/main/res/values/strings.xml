@@ -125,4 +125,15 @@
     <string name="installments_increment_step">+1 Step</string>
     <string name="installments_excluded">Excluded</string>
     <string name="installments_include">Include</string>
+    <string name="cards_title">Cards</string>
+    <string name="cards_statement_closed">Statement closed %1$s</string>
+    <string name="cards_balance">Balance owed</string>
+    <string name="cards_minimum">Minimum payment</string>
+    <string name="cards_due">Payment due</string>
+    <string name="cards_due_in">Due in %1$d days</string>
+    <string name="cards_due_today">Due today</string>
+    <string name="cards_overdue">Overdue by %1$d days</string>
+    <string name="cards_installment_note">Includes %1$s of installments billed in full, plus %2$s%% of the rest</string>
+    <string name="cards_empty">No card billing records found</string>
+    <string name="cards_error">Could not load cards</string>
 </resources>

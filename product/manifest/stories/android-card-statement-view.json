@@ -1,7 +1,10 @@
 {
-  "feature": "android_card_billing",
-  "storyId": "android-card-statement-view",
-  "acceptanceCriteria": [
+  "id": "android-card-statement-view",
+  "capability": "android-card-billing",
+  "role": "user",
+  "want": "a Cards view in the Android app showing each credit card's statement balance, due date, and minimum payment",
+  "soThat": "I have the same card billing detail on my phone as on the web app",
+  "acceptance": [
     "the Budget tab has a Cards view listing each credit card's statement balance, payment due date, and minimum payment",
     "the minimum payment uses the card's stored rule: a percentage of the balance, plus installments in full for a card that bills them that way",
     "the due date is the card's due day in the first month after the statement closes",

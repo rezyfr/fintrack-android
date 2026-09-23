@@ -1,0 +1,8 @@
+{
+  "id": "android-card-billing",
+  "title": "Android Card Billing",
+  "status": "In Progress",
+  "owners": ["fidriyantoriz@social.plus"],
+  "stories": ["android-card-statement-view"],
+  "flows": ["android-card-statement-view-flow"]
+}

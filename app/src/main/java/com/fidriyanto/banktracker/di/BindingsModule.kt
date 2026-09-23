@@ -15,9 +15,13 @@ import com.fidriyanto.banktracker.data.datasource.TransactionLocalDataSourceImpl
 import com.fidriyanto.banktracker.data.datasource.TransactionSyncDataSource
 import com.fidriyanto.banktracker.data.datasource.TransactionSyncDataSourceImpl
 import com.fidriyanto.banktracker.data.datasource.remote.BudgetRemoteDataSource
+import com.fidriyanto.banktracker.data.datasource.remote.CardBillingRemoteDataSource
+import com.fidriyanto.banktracker.data.datasource.remote.CardBillingRemoteDataSourceImpl
 import com.fidriyanto.banktracker.data.datasource.remote.BudgetRemoteDataSourceImpl
 import com.fidriyanto.banktracker.data.repository.BudgetRepository
 import com.fidriyanto.banktracker.data.repository.BudgetRepositoryImpl
+import com.fidriyanto.banktracker.data.repository.CardBillingRepository
+import com.fidriyanto.banktracker.data.repository.CardBillingRepositoryImpl
 import com.fidriyanto.banktracker.data.repository.DashboardRepository
 import com.fidriyanto.banktracker.data.repository.DashboardRepositoryImpl
 import com.fidriyanto.banktracker.data.repository.MerchantHistoryRepository
@@ -54,4 +58,10 @@ abstract class BindingsModule {
     @Binds @Singleton abstract fun bindWalletBalanceRepository(impl: WalletBalanceRepositoryImpl): WalletBalanceRepository
     @Binds @Singleton abstract fun bindInstallmentDataSource(impl: InstallmentDataSourceImpl): InstallmentDataSource
     @Binds @Singleton abstract fun bindInstallmentRepository(impl: InstallmentRepositoryImpl): InstallmentRepository
+
+    @Binds @Singleton
+    abstract fun bindCardBillingRemoteDataSource(impl: CardBillingRemoteDataSourceImpl): CardBillingRemoteDataSource
+
+    @Binds @Singleton
+    abstract fun bindCardBillingRepository(impl: CardBillingRepositoryImpl): CardBillingRepository
 }
