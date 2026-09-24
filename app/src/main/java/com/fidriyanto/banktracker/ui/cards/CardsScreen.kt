@@ -19,6 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.fidriyanto.banktracker.R
 import com.fidriyanto.banktracker.domain.model.CardStatement
+import com.fidriyanto.banktracker.ui.theme.Fraunces
 import com.fidriyanto.banktracker.ui.theme.LocalAppColors
 import java.text.NumberFormat
 import java.time.LocalDate
@@ -66,7 +67,7 @@ private fun StatementCard(s: CardStatement) {
     ) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text(walletName(s.wallet), fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurface)
+                Text(walletName(s.wallet), fontFamily = Fraunces, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurface)
                 DuePill(s.daysUntilDue)
             }
             Text(stringResource(R.string.cards_statement_closed, prettyDate(s.cutoffIso)), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)

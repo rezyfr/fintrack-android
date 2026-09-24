@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fidriyanto.banktracker.R
+import com.fidriyanto.banktracker.ui.theme.Fraunces
 import com.fidriyanto.banktracker.domain.model.TransactionUiModel
 import com.fidriyanto.banktracker.ui.theme.LocalAppColors
 
@@ -142,8 +143,9 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
         Column(Modifier.fillMaxSize()) {
             Text(
                 "Transactions",
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
+                fontFamily = Fraunces,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 22.sp,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 10.dp)
             )

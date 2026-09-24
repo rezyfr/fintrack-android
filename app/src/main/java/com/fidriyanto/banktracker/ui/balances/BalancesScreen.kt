@@ -21,6 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fidriyanto.banktracker.R
 import com.fidriyanto.banktracker.data.datasource.remote.dto.ReconciliationRowDto
 import com.fidriyanto.banktracker.data.datasource.remote.dto.WalletBalanceDto
+import com.fidriyanto.banktracker.ui.theme.Fraunces
 import com.fidriyanto.banktracker.ui.theme.LocalAppColors
 import java.text.NumberFormat
 import java.util.Locale
@@ -52,8 +53,9 @@ fun BalancesScreen(viewModel: BalancesViewModel = hiltViewModel()) {
         ) {
             Text(
                 "Balances",
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
+                fontFamily = Fraunces,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 22.sp,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.padding(vertical = 16.dp),
             )
@@ -119,8 +121,9 @@ private fun WalletBalanceCard(wallet: WalletBalanceDto) {
             Spacer(Modifier.height(4.dp))
             Text(
                 formatBalance(wallet.currency, wallet.balance),
+                fontFamily = Fraunces,
                 fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = if (isCredit) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onSurface,
             )
             if (isCredit) {

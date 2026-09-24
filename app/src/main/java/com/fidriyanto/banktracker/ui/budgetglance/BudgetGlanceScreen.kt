@@ -24,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fidriyanto.banktracker.R
 import com.fidriyanto.banktracker.domain.model.BudgetLineSpend
+import com.fidriyanto.banktracker.ui.theme.Fraunces
 import com.fidriyanto.banktracker.ui.theme.LocalAppColors
 import java.text.NumberFormat
 import java.util.Locale
@@ -80,7 +81,7 @@ private fun GlanceBody(g: com.fidriyanto.banktracker.domain.usecase.BudgetGlance
     Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(20.dp), tonalElevation = 1.dp, modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text(stringResource(R.string.budget_remaining), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
-            Text(money(g.currency, g.remaining), fontSize = 30.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+            Text(money(g.currency, g.remaining), fontFamily = Fraunces, fontSize = 30.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
             Text(stringResource(R.string.budget_of_total, money(g.currency, g.totalTarget)), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
             Spacer(Modifier.height(6.dp))
             Ring(fraction = if (g.totalTarget > 0) (g.totalSpent / g.totalTarget).toFloat() else 0f,
@@ -115,7 +116,7 @@ private fun Ring(fraction: Float, over: Boolean, color: Color, track: Color, red
             drawArc(color = if (over) red else color, startAngle = -90f, sweepAngle = 360f * fraction.coerceIn(0f, 1f), useCenter = false,
                 topLeft = androidx.compose.ui.geometry.Offset(inset, inset), size = arcSize, style = Stroke(stroke, cap = StrokeCap.Round))
         }
-        Text(stringResource(R.string.budget_percent, pct.toInt()), fontSize = 28.sp, fontWeight = FontWeight.Bold, color = if (over) red else color)
+        Text(stringResource(R.string.budget_percent, pct.toInt()), fontFamily = Fraunces, fontSize = 28.sp, fontWeight = FontWeight.SemiBold, color = if (over) red else color)
     }
 }
 

@@ -23,6 +23,7 @@ import com.fidriyanto.banktracker.R
 import com.fidriyanto.banktracker.domain.usecase.BudgetGlance
 import com.fidriyanto.banktracker.domain.model.CardStatement
 import com.fidriyanto.banktracker.domain.model.TransactionUiModel
+import com.fidriyanto.banktracker.ui.theme.Fraunces
 import com.fidriyanto.banktracker.ui.theme.LocalAppColors
 import java.text.NumberFormat
 import java.time.LocalDate
@@ -53,7 +54,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
         // Header
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             Column {
-                Text(stringResource(R.string.home_greeting), fontSize = 22.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+                Text(stringResource(R.string.home_greeting), fontFamily = Fraunces, fontSize = 24.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onBackground)
                 if (s.cycleFromIso.isNotEmpty()) {
                     Text(stringResource(R.string.home_cycle_range, shortDate(s.cycleFromIso), shortDate(s.cycleToIso)),
                         fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -118,7 +119,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Bottom) {
                 Column {
                     Text(stringResource(R.string.budget_remaining), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text(rp(b.remaining), fontSize = 22.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                    Text(rp(b.remaining), fontFamily = Fraunces, fontSize = 22.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
                 }
                 Text(
                     if (over) stringResource(R.string.budget_over_total, rp(b.totalSpent - b.totalTarget))
@@ -184,7 +185,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
     val net = income - expenses
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Text(label, color = onPine.copy(alpha = 0.85f), fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-        Text((if (net >= 0) "+" else "-") + fmt(net), color = onPine, fontSize = 26.sp, fontWeight = FontWeight.Bold)
+        Text((if (net >= 0) "+" else "-") + fmt(net), color = onPine, fontFamily = Fraunces, fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
         Row(horizontalArrangement = Arrangement.spacedBy(20.dp), modifier = Modifier.padding(top = 2.dp)) {
             HeroStat(stringResource(R.string.home_income), fmt(income), onPine)
             HeroStat(stringResource(R.string.home_spent), fmt(expenses), onPine)
@@ -237,7 +238,7 @@ private fun paydayDateLabel(toIso: String): String = runCatching {
     Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(16.dp), tonalElevation = 1.dp, modifier = modifier) {
         Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text(walletName(c.wallet), fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface)
-            Text(rp(c.minimum), fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+            Text(rp(c.minimum), fontFamily = Fraunces, fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
             Text(stringResource(R.string.home_min_due_short, shortDate(c.dueIso)), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Surface(color = pillColor.copy(alpha = 0.14f), shape = RoundedCornerShape(999.dp)) {
                 Text(pillText, color = pillColor, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 9.dp, vertical = 3.dp))
