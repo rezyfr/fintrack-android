@@ -100,7 +100,12 @@ fun BalancesScreen(viewModel: BalancesViewModel = hiltViewModel()) {
             }
         }
 
-        PullToRefreshContainer(pullState, Modifier.align(Alignment.TopCenter))
+        // Only draw the refresh indicator during an active pull or refresh. At rest it parks above
+        // the content top, which here lands inside the Balances/Settings toggle and looks like a
+        // stray circle.
+        if (pullState.isRefreshing || pullState.progress > 0f) {
+            PullToRefreshContainer(pullState, Modifier.align(Alignment.TopCenter))
+        }
     }
 }
 

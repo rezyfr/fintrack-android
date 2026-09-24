@@ -6,10 +6,13 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Savings
 import androidx.compose.material.icons.outlined.SwapVert
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -70,11 +73,17 @@ fun AppNavigation() {
         },
         // ac: four-tab-nav-with-add-fab — Add is a central floating button, not a tab
         floatingActionButton = {
-            // Solid pine primary with a light glyph, matching the approved direction.
+            // Solid pine with a light glyph and a 4dp surface ring, matching the mockup FAB: a
+            // rounded square that reads as floating above the nav bar.
+            val fabShape = RoundedCornerShape(18.dp)
             FloatingActionButton(
                 onClick = { navController.navigate(ADD_ROUTE) { launchSingleTop = true } },
+                shape = fabShape,
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier
+                    .size(60.dp)
+                    .border(4.dp, MaterialTheme.colorScheme.surface, fabShape),
             ) {
                 Icon(Icons.Outlined.Add, contentDescription = "Add transaction")
             }
