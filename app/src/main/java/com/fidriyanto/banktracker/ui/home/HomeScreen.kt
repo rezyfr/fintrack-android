@@ -1,7 +1,9 @@
 package com.fidriyanto.banktracker.ui.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -72,15 +74,8 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
             return@Column
         }
 
-        // Hero: net this cycle, split by currency (salary is THB; Indonesia spend is IDR)
-        Surface(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(20.dp), modifier = Modifier.fillMaxWidth()) {
-            Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text(stringResource(R.string.home_net_this_cycle), color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f), fontSize = 13.sp)
-                HeroCurrency(stringResource(R.string.home_cycle_thb), s.thbIncome, s.thbExpenses, ::thb)
-                HorizontalDivider(color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.15f))
-                HeroCurrency(stringResource(R.string.home_cycle_idr), s.idrIncome, s.idrExpenses, ::rp)
-            }
-        }
+        // Hero: cycle summary, split by currency, styled like the mockup
+        Hero(s)
 
         // ac: home-cycle-overview — a compact budget card with remaining, daily allowance, top lines
         s.budget?.let { b ->
@@ -91,10 +86,13 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
         }
 
         // ac: home-cycle-overview — each credit card's minimum payment and due date
-        // Cards due
+        // Cards due (two-column compact cards)
         if (s.cards.isNotEmpty()) {
             SectionLabel(stringResource(R.string.home_cards_due))
-            s.cards.forEach { CardDueRow(it, app.red, app.warning) }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                s.cards.forEach { CardDueCard(it, Modifier.weight(1f), app.red, app.warning) }
+                if (s.cards.size == 1) Spacer(Modifier.weight(1f))
+            }
         }
 
         // ac: home-cycle-overview — the most recent transactions in the cycle
@@ -148,43 +146,101 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
     }
 }
 
-@Composable private fun HeroCurrency(label: String, income: Double, expenses: Double, fmt: (Double) -> String) {
-    val net = income - expenses
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Bottom) {
-            Text(label, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f), fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-            Text((if (net >= 0) "+" else "-") + fmt(net), color = MaterialTheme.colorScheme.onPrimary, fontSize = 22.sp, fontWeight = FontWeight.Bold)
-        }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-            HeroStat(stringResource(R.string.home_income), fmt(income))
-            HeroStat(stringResource(R.string.home_spent), fmt(expenses))
+@Composable private fun Hero(s: HomeUiState) {
+    val onPine = MaterialTheme.colorScheme.onPrimary
+    Box(
+        Modifier.fillMaxWidth().clip(RoundedCornerShape(22.dp)).background(MaterialTheme.colorScheme.primary),
+    ) {
+        // Soft highlight in the top-right corner, the card's only "empty" space.
+        Box(Modifier.align(Alignment.TopEnd).offset(x = 44.dp, y = (-44).dp).size(150.dp).clip(CircleShape).background(onPine.copy(alpha = 0.07f)))
+        Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Text(stringResource(R.string.home_net_this_cycle), color = onPine.copy(alpha = 0.85f), fontSize = 13.sp)
+                Text(
+                    if (s.daysToPayday == 0) stringResource(R.string.home_payday_today) else stringResource(R.string.home_payday_in, s.daysToPayday),
+                    color = onPine, fontSize = 12.sp, fontWeight = FontWeight.SemiBold,
+                )
+            }
+            HeroCurrency(stringResource(R.string.home_cycle_thb), s.thbIncome, s.thbExpenses, ::thb, onPine)
+            HorizontalDivider(color = onPine.copy(alpha = 0.15f))
+            HeroCurrency(stringResource(R.string.home_cycle_idr), s.idrIncome, s.idrExpenses, ::rp, onPine)
+            // cycle-elapsed bar + foot
+            val frac = cycleElapsed(s.cycleFromIso, s.cycleToIso)
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Box(Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(999.dp)).background(onPine.copy(alpha = 0.18f))) {
+                    Box(Modifier.fillMaxWidth(frac).height(6.dp).clip(RoundedCornerShape(999.dp)).background(onPine))
+                }
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(cycleDaysLabel(s.cycleFromIso, s.cycleToIso), color = onPine.copy(alpha = 0.8f), fontSize = 11.sp)
+                    Text(paydayDateLabel(s.cycleToIso), color = onPine.copy(alpha = 0.8f), fontSize = 11.sp)
+                }
+            }
         }
     }
 }
 
-@Composable private fun HeroStat(label: String, value: String) {
-    Column {
-        Text(label, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f), fontSize = 11.sp)
-        Text(value, color = MaterialTheme.colorScheme.onPrimary, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+@Composable private fun HeroCurrency(label: String, income: Double, expenses: Double, fmt: (Double) -> String, onPine: Color) {
+    val net = income - expenses
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(label, color = onPine.copy(alpha = 0.85f), fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+        Text((if (net >= 0) "+" else "-") + fmt(net), color = onPine, fontSize = 26.sp, fontWeight = FontWeight.Bold)
+        Row(horizontalArrangement = Arrangement.spacedBy(20.dp), modifier = Modifier.padding(top = 2.dp)) {
+            HeroStat(stringResource(R.string.home_income), fmt(income), onPine)
+            HeroStat(stringResource(R.string.home_spent), fmt(expenses), onPine)
+        }
     }
 }
+
+@Composable private fun HeroStat(label: String, value: String, onPine: Color) {
+    Column {
+        Text(label, color = onPine.copy(alpha = 0.75f), fontSize = 11.sp)
+        Text(value, color = onPine, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+    }
+}
+
+private fun cycleSpan(fromIso: String, toIso: String): Triple<Long, Long, Long> {
+    val from = runCatching { LocalDate.parse(fromIso) }.getOrNull()
+    val to = runCatching { LocalDate.parse(toIso) }.getOrNull()
+    if (from == null || to == null) return Triple(0, 1, 1)
+    val today = LocalDate.now()
+    val total = (to.toEpochDay() - from.toEpochDay()) + 1
+    val elapsed = (today.toEpochDay() - from.toEpochDay()) + 1
+    return Triple(elapsed.coerceIn(0, total), total, total)
+}
+
+private fun cycleElapsed(fromIso: String, toIso: String): Float {
+    val (elapsed, total, _) = cycleSpan(fromIso, toIso)
+    return if (total > 0) (elapsed.toFloat() / total).coerceIn(0f, 1f) else 0f
+}
+
+private fun cycleDaysLabel(fromIso: String, toIso: String): String {
+    val (elapsed, total, _) = cycleSpan(fromIso, toIso)
+    return "$elapsed of $total days"
+}
+
+private fun paydayDateLabel(toIso: String): String = runCatching {
+    "Payday " + LocalDate.parse(toIso).plusDays(1).format(DateTimeFormatter.ofPattern("d MMM", java.util.Locale.US))
+}.getOrDefault("")
 
 @Composable private fun SectionLabel(text: String) {
     Text(text, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(bottom = 2.dp))
 }
 
-@Composable private fun CardDueRow(c: CardStatement, red: Color, warning: Color) {
+@Composable private fun CardDueCard(c: CardStatement, modifier: Modifier, red: Color, warning: Color) {
     val pillColor = when { c.daysUntilDue < 0 -> red; c.daysUntilDue <= 3 -> warning; else -> MaterialTheme.colorScheme.primary }
-    Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(14.dp), tonalElevation = 1.dp, modifier = Modifier.fillMaxWidth()) {
-        Row(Modifier.padding(14.dp).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            Column {
-                Text(walletName(c.wallet), fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface)
-                Text(stringResource(R.string.home_min_due, rp(c.minimum), shortDate(c.dueIso)), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    val pillText = when {
+        c.daysUntilDue < 0 -> stringResource(R.string.home_due_late, -c.daysUntilDue)
+        c.daysUntilDue == 0 -> stringResource(R.string.home_payday_today)
+        else -> stringResource(R.string.home_due_in, c.daysUntilDue)
+    }
+    Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(16.dp), tonalElevation = 1.dp, modifier = modifier) {
+        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(walletName(c.wallet), fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface)
+            Text(rp(c.minimum), fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+            Text(stringResource(R.string.home_min_due_short, shortDate(c.dueIso)), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Surface(color = pillColor.copy(alpha = 0.14f), shape = RoundedCornerShape(999.dp)) {
+                Text(pillText, color = pillColor, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 9.dp, vertical = 3.dp))
             }
-            Text(
-                if (c.daysUntilDue < 0) "${-c.daysUntilDue}d late" else "${c.daysUntilDue}d",
-                color = pillColor, fontSize = 12.sp, fontWeight = FontWeight.Bold,
-            )
         }
     }
 }
