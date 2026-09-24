@@ -10,6 +10,8 @@ data class AppColors(
     val blue: Color,
     val warning: Color,
     val progressTrack: Color,
+    val heroBg: Color,
+    val heroOn: Color,
 )
 
 // gold is demoted to a small "saved / kept" accent; green = income, red = expense (clay).
@@ -20,6 +22,8 @@ internal val DarkAppColors = AppColors(
     blue = Color(0xFF6B9EEE),
     warning = Color(0xFFD9B256),
     progressTrack = Color(0xFF26332C),
+    heroBg = Color(0xFF0F5D4C),
+    heroOn = Color(0xFFF3FAF6),
 )
 
 internal val LightAppColors = AppColors(
@@ -29,6 +33,8 @@ internal val LightAppColors = AppColors(
     blue = Color(0xFF2155C4),
     warning = Color(0xFF9A6B12),
     progressTrack = Color(0xFFDDE3DE),
+    heroBg = Color(0xFF0F5D4C),
+    heroOn = Color(0xFFF3FAF6),
 )
 
 val LocalAppColors = staticCompositionLocalOf { LightAppColors }

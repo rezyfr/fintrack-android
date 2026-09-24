@@ -147,9 +147,10 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
 }
 
 @Composable private fun Hero(s: HomeUiState) {
-    val onPine = MaterialTheme.colorScheme.onPrimary
+    val hero = LocalAppColors.current
+    val onPine = hero.heroOn
     Box(
-        Modifier.fillMaxWidth().clip(RoundedCornerShape(22.dp)).background(MaterialTheme.colorScheme.primary),
+        Modifier.fillMaxWidth().clip(RoundedCornerShape(22.dp)).background(hero.heroBg),
     ) {
         // Soft highlight in the top-right corner, the card's only "empty" space.
         Box(Modifier.align(Alignment.TopEnd).offset(x = 44.dp, y = (-44).dp).size(150.dp).clip(CircleShape).background(onPine.copy(alpha = 0.07f)))
