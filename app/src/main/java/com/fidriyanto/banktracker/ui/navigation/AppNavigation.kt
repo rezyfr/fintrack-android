@@ -10,6 +10,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -83,7 +84,12 @@ fun AppNavigation() {
                 shape = fabShape,
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
+                // Push the button down so its centre sits on the top edge of the navigation bar,
+                // straddling it, instead of floating in a row of its own above the bar. The default
+                // centre FAB slot leaves a 16dp gap above the bar; adding half the button height
+                // (30dp) to that lands the centre on the bar's top edge.
                 modifier = Modifier
+                    .offset(y = 46.dp)
                     .size(60.dp)
                     .border(4.dp, MaterialTheme.colorScheme.surface, fabShape),
             ) {
@@ -94,7 +100,7 @@ fun AppNavigation() {
     ) { padding ->
         // Consume the Scaffold insets, then add extra bottom room so scrolling content clears the
         // centre floating button, which overlaps the top edge of the navigation bar.
-        Box(Modifier.padding(padding).padding(bottom = 88.dp)) {
+        Box(Modifier.padding(padding).padding(bottom = 40.dp)) {
             // ac: four-tab-nav-with-add-fab — Home is the start destination shown on launch
             NavHost(navController, startDestination = Tab.Home.route) {
                 // ac: home-cycle-overview — the Home tab renders the overview as the launch screen
