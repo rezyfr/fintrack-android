@@ -147,8 +147,8 @@
     <string name="home_net_this_cycle">Net this cycle</string>
     <string name="home_cycle_thb">Thailand</string>
     <string name="home_cycle_idr">Indonesia</string>
-    <string name="home_income">Income</string>
-    <string name="home_spent">Spent</string>
+    <string name="home_income">Money in</string>
+    <string name="home_spent">Money out</string>
     <string name="home_cards_due">Cards due</string>
     <string name="home_recent">Recent activity</string>
     <string name="home_recent_meta">%1$s · %2$s</string>

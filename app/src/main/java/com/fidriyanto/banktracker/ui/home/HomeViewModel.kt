@@ -21,10 +21,10 @@ data class HomeUiState(
     val cycleFromIso: String = "",
     val cycleToIso: String = "",
     val daysToPayday: Int = 0,
-    val thbIncome: Double = 0.0,
-    val thbExpenses: Double = 0.0,
-    val idrIncome: Double = 0.0,
-    val idrExpenses: Double = 0.0,
+    val thbIn: Double = 0.0,
+    val thbOut: Double = 0.0,
+    val idrIn: Double = 0.0,
+    val idrOut: Double = 0.0,
     val cards: List<CardStatement> = emptyList(),
     val recent: List<TransactionUiModel> = emptyList(),
     val budget: BudgetGlance? = null,
@@ -39,9 +39,6 @@ class HomeViewModel @Inject constructor(
     private val _state = MutableStateFlow(HomeUiState())
     val state: StateFlow<HomeUiState> = _state.asStateFlow()
 
-    // IDR is the home currency for the cycle summary; Bangkok Bank (THB) is excluded here.
-    private val idrWallets = setOf("BCA", "BCA_CC", "MANDIRI", "MANDIRI_CC", "INVESTMENT")
-
     init { load() }
 
     fun load() {
@@ -51,16 +48,29 @@ class HomeViewModel @Inject constructor(
             val rows = transactionRepository
                 .fetch(month = null, wallet = null, txType = null, dateFrom = cycle.fromIso, dateTo = cycle.toIso)
                 .getOrElse { emptyList() }
-            // ac: home-cycle-overview — cycle income and spending per currency (self-transfers excluded).
-            // Salary is THB (Bangkok Bank); Indonesian spend sits on the IDR wallets. Keeping them
-            // separate avoids blending a THB salary into an IDR total.
-            fun sum(thb: Boolean, type: String) = rows
-                .filter { (it.wallet == "BBL") == thb && it.wallet != null && it.txType == type }
-                .sumOf { it.amount }
-            val thbIncome = sum(thb = true, type = "income")
-            val thbExpenses = sum(thb = true, type = "expense")
-            val idrIncome = rows.filter { it.wallet in idrWallets && it.txType == "income" }.sumOf { it.amount }
-            val idrExpenses = rows.filter { it.wallet in idrWallets && it.txType == "expense" }.sumOf { it.amount }
+            // ac: home-cycle-overview — money in/out per currency = income/expense plus cross-currency
+            // transfers (received amount for the destination). Same-currency transfers cancel out, so
+            // they are ignored. This makes each currency's net match its real balance change: a THB
+            // salary moved to IDR leaves THB ~0 and lands on the IDR side.
+            fun curOf(w: String?) = if (w == "BBL") "THB" else "IDR"
+            fun moneyIn(cur: String) = rows.filter { it.wallet != null }.sumOf { r ->
+                when {
+                    r.txType == "income" && curOf(r.wallet) == cur -> r.amount
+                    r.txType == "transfer" && r.toWallet != null && curOf(r.toWallet) == cur && curOf(r.wallet) != cur -> r.toAmount ?: r.amount
+                    else -> 0.0
+                }
+            }
+            fun moneyOut(cur: String) = rows.filter { it.wallet != null }.sumOf { r ->
+                when {
+                    r.txType == "expense" && curOf(r.wallet) == cur -> r.amount
+                    r.txType == "transfer" && r.toWallet != null && curOf(r.wallet) == cur && curOf(r.toWallet) != cur -> r.amount
+                    else -> 0.0
+                }
+            }
+            val thbIn = moneyIn("THB")
+            val thbOut = moneyOut("THB")
+            val idrIn = moneyIn("IDR")
+            val idrOut = moneyOut("IDR")
             val recent = rows
                 .filter { it.txType == "income" || it.txType == "expense" }
                 .sortedByDescending { it.dateIso }
@@ -72,10 +82,10 @@ class HomeViewModel @Inject constructor(
                 cycleFromIso = cycle.fromIso,
                 cycleToIso = cycle.toIso,
                 daysToPayday = PayCycle.daysToPayday(),
-                thbIncome = thbIncome,
-                thbExpenses = thbExpenses,
-                idrIncome = idrIncome,
-                idrExpenses = idrExpenses,
+                thbIn = thbIn,
+                thbOut = thbOut,
+                idrIn = idrIn,
+                idrOut = idrOut,
                 cards = cards,
                 recent = recent,
                 budget = budget,

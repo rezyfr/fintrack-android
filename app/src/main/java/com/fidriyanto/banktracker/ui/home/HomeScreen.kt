@@ -163,9 +163,9 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
                     color = onPine, fontSize = 12.sp, fontWeight = FontWeight.SemiBold,
                 )
             }
-            HeroCurrency(stringResource(R.string.home_cycle_thb), s.thbIncome, s.thbExpenses, ::thb, onPine)
+            HeroCurrency(stringResource(R.string.home_cycle_thb), s.thbIn, s.thbOut, ::thb, onPine)
             HorizontalDivider(color = onPine.copy(alpha = 0.15f))
-            HeroCurrency(stringResource(R.string.home_cycle_idr), s.idrIncome, s.idrExpenses, ::rp, onPine)
+            HeroCurrency(stringResource(R.string.home_cycle_idr), s.idrIn, s.idrOut, ::rp, onPine)
             // cycle-elapsed bar + foot
             val frac = cycleElapsed(s.cycleFromIso, s.cycleToIso)
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
