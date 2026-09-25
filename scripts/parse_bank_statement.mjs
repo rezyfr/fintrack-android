@@ -70,7 +70,8 @@ import { detectFormat, parseBcaCc, parseBcaSavings, parseMandiriCc, parseMandiri
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '..');
 
-const CC_PDF_PASSWORD = process.env.BCA_CC_PDF_PASSWORD || '***REMOVED-PASSWORD***';
+// Password comes from the environment. Never hardcode the bank statement password here.
+const CC_PDF_PASSWORD = process.env.BCA_CC_PDF_PASSWORD || '';
 const BCA_PAYMENT_ITEM_PREFIX = 'PEMBAYARAN';
 const BCA_CC_PAYMENT_ITEM_MARKER = 'KARTU KREDIT';
 const CC_WALLETS = new Set(['BCA_CC', 'MANDIRI_CC']);
