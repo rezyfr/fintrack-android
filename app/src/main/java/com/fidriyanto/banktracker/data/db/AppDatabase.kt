@@ -13,7 +13,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
         MonthlyOverviewEntity::class,
         MonthlyBudgetEntity::class
     ],
-    version = 8
+    version = 9
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -107,6 +107,12 @@ abstract class AppDatabase : RoomDatabase() {
                 """)
                 db.execSQL("DROP TABLE transactions")
                 db.execSQL("ALTER TABLE transactions_new RENAME TO transactions")
+            }
+        }
+
+        val MIGRATION_8_9 = object : Migration(8, 9) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE transactions ADD COLUMN subcategory TEXT")
             }
         }
     }

@@ -72,6 +72,7 @@ class TransactionRepositoryImpl @Inject constructor(
             wallet   = entity.wallet,
             txType   = entity.txType,
             toWallet = entity.toWallet,
+            subcategory = entity.subcategory,
         )
         return syncDataSource.sync(entry).also { result ->
             val newStatus = if (result.isSuccess) TransactionStatus.SYNCED else TransactionStatus.SYNC_FAILED
@@ -90,7 +91,8 @@ class TransactionRepositoryImpl @Inject constructor(
             dateIso  = entry.date.toString(),
             referenceNo = "",
             tab      = entry.tab,
-            status   = TransactionStatus.PENDING_SYNC
+            status   = TransactionStatus.PENDING_SYNC,
+            subcategory = entry.subcategory,
         )
         val id = localDataSource.insert(entity)
         return syncTransaction(id)
@@ -117,6 +119,7 @@ class TransactionRepositoryImpl @Inject constructor(
                 wallet   = edit.wallet,
                 txType   = edit.txType,
                 toWallet = edit.toWallet,
+                subcategory = edit.subcategory,
             )
         )
         return syncDataSource.update(remoteId, edit).onFailure {

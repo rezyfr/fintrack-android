@@ -10,5 +10,6 @@ data class TransactionUiModel(
     val dateIso: String,
     val wallet: String?,
     val txType: String,
-    val status: TransactionStatus
+    val status: TransactionStatus,
+    val subcategory: String? = null,
 )

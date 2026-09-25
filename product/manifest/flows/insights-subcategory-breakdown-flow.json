@@ -1,0 +1,13 @@
+{
+  "id": "insights-subcategory-breakdown-flow",
+  "steps": [
+    { "actor": "user", "action": "opens Insights and selects a category" },
+    {
+      "actor": "app",
+      "action": "breaks that category's spending down by subcategory, grouping unset ones as None",
+      "story": "insights-subcategory-breakdown",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "reviews the per-subcategory amounts" }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "add-transaction-subcategory",
+  "capability": "transaction-subcategory",
+  "role": "user",
+  "want": "to tag a transaction with an optional subcategory under its category",
+  "soThat": "I can see finer detail than the top-level category, such as Ride-hailing under Transport",
+  "acceptance": [
+    "the Add and Edit transaction forms show a subcategory dropdown filtered by the selected category",
+    "the subcategory is optional and defaults to none",
+    "a saved transaction stores its subcategory on both web and Android"
+  ]
+}

@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fidriyanto.banktracker.R
+import com.fidriyanto.banktracker.ui.common.subcategoriesFor
 import com.fidriyanto.banktracker.ui.theme.LocalAppColors
 import java.time.Instant
 import java.time.ZoneOffset
@@ -105,7 +106,7 @@ fun AddScreen(
         // Tx type picker
         ToggleRow(stringResource(R.string.add_tx_type_label), TxType.entries.map { it.displayName }, state.txType.displayName) { name ->
             val picked = TxType.entries.first { it.displayName == name }
-            viewModel.update { copy(txType = picked, toWallet = null, category = categoriesFor(picked).first()) }
+            viewModel.update { copy(txType = picked, toWallet = null, category = categoriesFor(picked).first(), subcategory = null) }
         }
 
         // To-wallet picker (only for transfers)
@@ -177,8 +178,37 @@ fun AddScreen(
                 categoriesFor(state.txType).forEach { cat ->
                     DropdownMenuItem(
                         text = { Text(cat) },
-                        onClick = { viewModel.update { copy(category = cat) }; expanded = false }
+                        // Reset the subcategory whenever the category changes; it may not apply anymore.
+                        onClick = { viewModel.update { copy(category = cat, subcategory = null) }; expanded = false }
                     )
+                }
+            }
+        }
+
+        // ac: add-transaction-subcategory — optional subcategory dropdown, shown only when the
+        // selected category has subcategories; "None" clears it.
+        val subOptions = subcategoriesFor(state.category)
+        if (subOptions.isNotEmpty()) {
+            var subExpanded by remember { mutableStateOf(false) }
+            val noneLabel = stringResource(R.string.subcategory_none)
+            ExposedDropdownMenuBox(expanded = subExpanded, onExpandedChange = { subExpanded = it }) {
+                OutlinedTextField(
+                    value = state.subcategory ?: noneLabel, onValueChange = {},
+                    readOnly = true, label = { Text(stringResource(R.string.add_subcategory_label)) },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(subExpanded) },
+                    modifier = Modifier.fillMaxWidth().menuAnchor()
+                )
+                ExposedDropdownMenu(expanded = subExpanded, onDismissRequest = { subExpanded = false }) {
+                    DropdownMenuItem(
+                        text = { Text(noneLabel) },
+                        onClick = { viewModel.update { copy(subcategory = null) }; subExpanded = false }
+                    )
+                    subOptions.forEach { sub ->
+                        DropdownMenuItem(
+                            text = { Text(sub) },
+                            onClick = { viewModel.update { copy(subcategory = sub) }; subExpanded = false }
+                        )
+                    }
                 }
             }
         }

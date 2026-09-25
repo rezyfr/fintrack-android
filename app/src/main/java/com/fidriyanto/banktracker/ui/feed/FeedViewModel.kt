@@ -22,6 +22,8 @@ class FeedViewModel @Inject constructor(
     private val _walletFilter   = MutableStateFlow<String?>(null)
     private val _typeFilter     = MutableStateFlow<String?>(null)
     private val _categoryFilter = MutableStateFlow<String?>(null)
+    // ac: filter-transactions-by-subcategory — subcategory filter applied client-side
+    private val _subcategoryFilter = MutableStateFlow<String?>(null)
     // ac: search-transactions-by-text — search query state
     private val _searchQuery    = MutableStateFlow("")
     // ac: advanced-transaction-filters — amount range and date range state
@@ -37,6 +39,7 @@ class FeedViewModel @Inject constructor(
     val walletFilter   = _walletFilter.asStateFlow()
     val typeFilter     = _typeFilter.asStateFlow()
     val categoryFilter = _categoryFilter.asStateFlow()
+    val subcategoryFilter = _subcategoryFilter.asStateFlow()
     val searchQuery    = _searchQuery.asStateFlow()
     val amountMin      = _amountMin.asStateFlow()
     val amountMax      = _amountMax.asStateFlow()
@@ -50,13 +53,17 @@ class FeedViewModel @Inject constructor(
 
     // ac: search-transactions-by-text — search filter combines with other filters
     val uiState: StateFlow<FeedUiState> = combine(
-        transactionRepository.observePending(), _remoteItems, _isLoading, _error, _searchQuery
-    ) { pending, remote, loading, error, query ->
+        transactionRepository.observePending(), _remoteItems, _isLoading, _error,
+        combine(_searchQuery, _subcategoryFilter) { q, s -> q to s }
+    ) { pending, remote, loading, error, filters ->
+        val (query, subcategory) = filters
         val pendingKeys = pending.map { "${it.item}|${it.amount}|${it.dateIso}" }.toSet()
         val deduped = remote.filter { r -> "${r.item}|${r.amount}|${r.dateIso}" !in pendingKeys }
         val merged = pending + deduped
         // ac: search-transactions-by-text — filters whose item contains the query
-        val filtered = if (query.isBlank()) merged else merged.filter { tx -> tx.item.contains(query, ignoreCase = true) }
+        val bySearch = if (query.isBlank()) merged else merged.filter { tx -> tx.item.contains(query, ignoreCase = true) }
+        // ac: filter-transactions-by-subcategory — keep only transactions with the chosen subcategory
+        val filtered = if (subcategory == null) bySearch else bySearch.filter { it.subcategory == subcategory }
         FeedUiState(items = filtered, isLoading = loading, error = error)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FeedUiState(isLoading = true))
 
@@ -78,6 +85,8 @@ class FeedViewModel @Inject constructor(
     fun setType(type: String?)         { _typeFilter.value = type }
     // ac: filter-transactions-by-category — null clears the filter
     fun setCategory(category: String?) { _categoryFilter.value = category }
+    // ac: filter-transactions-by-subcategory — null clears the subcategory filter
+    fun setSubcategory(subcategory: String?) { _subcategoryFilter.value = subcategory }
     // ac: search-transactions-by-text — clearing the search field restores the unfiltered list
     fun setSearchQuery(query: String)  { _searchQuery.value = query }
     // ac: advanced-transaction-filters
@@ -148,7 +157,7 @@ class FeedViewModel @Inject constructor(
         result.onSuccess {
             merchantHistoryRepository.save(edit.item)
             _remoteItems.value = _remoteItems.value.map { tx ->
-                if (tx.id == id) tx.copy(item = edit.item, category = edit.category, amount = edit.amount, dateIso = edit.dateIso, wallet = edit.wallet, txType = edit.txType) else tx
+                if (tx.id == id) tx.copy(item = edit.item, category = edit.category, amount = edit.amount, dateIso = edit.dateIso, wallet = edit.wallet, txType = edit.txType, subcategory = edit.subcategory) else tx
             }
         }
         result.onFailure { _editFailures.emit(EditFailureEvent(id, edit)) }

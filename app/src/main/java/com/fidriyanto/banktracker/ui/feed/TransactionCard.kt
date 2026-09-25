@@ -117,7 +117,10 @@ fun TransactionCard(
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Text(transaction.item, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface)
-                Text(stringResource(R.string.feed_category_date, transaction.category, dateStr), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                // ac: add-transaction-subcategory — show the subcategory next to the category when set
+                val categoryLabel = transaction.subcategory?.takeIf { it.isNotBlank() }
+                    ?.let { "${transaction.category} · $it" } ?: transaction.category
+                Text(stringResource(R.string.feed_category_date, categoryLabel, dateStr), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Column(horizontalAlignment = Alignment.End) {
                 val amountColor = when (transaction.txType) {

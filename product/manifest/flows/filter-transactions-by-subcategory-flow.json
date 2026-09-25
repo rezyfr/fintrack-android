@@ -1,0 +1,13 @@
+{
+  "id": "filter-transactions-by-subcategory-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the Transactions filters" },
+    {
+      "actor": "app",
+      "action": "offers a subcategory filter and shows only matching transactions",
+      "story": "filter-transactions-by-subcategory",
+      "requires": "FeedScreen"
+    },
+    { "actor": "user", "action": "selects a subcategory to narrow the list" }
+  ]
+}

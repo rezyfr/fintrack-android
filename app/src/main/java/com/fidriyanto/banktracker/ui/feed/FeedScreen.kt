@@ -31,6 +31,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fidriyanto.banktracker.R
+import com.fidriyanto.banktracker.ui.common.ALL_SUBCATEGORIES
+import com.fidriyanto.banktracker.ui.common.subcategoriesFor
 import com.fidriyanto.banktracker.ui.theme.Fraunces
 import com.fidriyanto.banktracker.domain.model.TransactionUiModel
 import com.fidriyanto.banktracker.ui.theme.LocalAppColors
@@ -69,6 +71,7 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
     val walletFilter    by viewModel.walletFilter.collectAsStateWithLifecycle()
     val typeFilter      by viewModel.typeFilter.collectAsStateWithLifecycle()
     val categoryFilter  by viewModel.categoryFilter.collectAsStateWithLifecycle()
+    val subcategoryFilter by viewModel.subcategoryFilter.collectAsStateWithLifecycle()
     val searchQuery     by viewModel.searchQuery.collectAsStateWithLifecycle()
     val merchantHistory by viewModel.merchantHistory.collectAsStateWithLifecycle()
     // ac: advanced-transaction-filters
@@ -82,7 +85,7 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
     var mode            by remember { mutableStateOf("list") }
     var showFilters     by remember { mutableStateOf(false) }
     val hasAdvancedFilters = amountMin != null || amountMax != null || dateFrom != null || dateTo != null
-    val activeFilterCount = listOfNotNull(monthFilter, walletFilter, typeFilter, categoryFilter).size + (if (searchQuery.isNotEmpty()) 1 else 0) + (if (hasAdvancedFilters) 1 else 0)
+    val activeFilterCount = listOfNotNull(monthFilter, walletFilter, typeFilter, categoryFilter, subcategoryFilter).size + (if (searchQuery.isNotEmpty()) 1 else 0) + (if (hasAdvancedFilters) 1 else 0)
 
     val pullState = rememberPullToRefreshState()
     LaunchedEffect(pullState.isRefreshing) {
@@ -282,6 +285,36 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
                         selected = categoryFilter == cat,
                         onClick = { viewModel.setCategory(cat) },
                         label = { Text(cat, fontSize = 12.sp) }
+                    )
+                }
+            }
+
+            // ac: filter-transactions-by-subcategory — subcategory chips; scoped to the chosen
+            // category's subcategories when one is selected, otherwise all subcategories.
+            val subcategoryOptions = categoryFilter?.let { subcategoriesFor(it) }?.takeIf { it.isNotEmpty() } ?: ALL_SUBCATEGORIES
+            Spacer(Modifier.height(4.dp))
+            Text(
+                stringResource(R.string.feed_filter_subcategory),
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 12.dp),
+            )
+            Row(
+                modifier = Modifier
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                FilterChip(
+                    selected = subcategoryFilter == null,
+                    onClick = { viewModel.setSubcategory(null) },
+                    label = { Text(stringResource(R.string.feed_filter_all), fontSize = 12.sp) }
+                )
+                subcategoryOptions.forEach { sub ->
+                    FilterChip(
+                        selected = subcategoryFilter == sub,
+                        onClick = { viewModel.setSubcategory(sub) },
+                        label = { Text(sub, fontSize = 12.sp) }
                     )
                 }
             }

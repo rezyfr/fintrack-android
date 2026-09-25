@@ -40,6 +40,7 @@ data class AddFormState(
     val amount: String    = "",
     val description: String = "",
     val category: String  = "Other",
+    val subcategory: String? = null,
     val date: LocalDate   = LocalDate.now(),
     val isLoading: Boolean  = false,
     val successMessage: String? = null,
@@ -106,7 +107,9 @@ class AddViewModel @Inject constructor(
             category = s.category,
             wallet   = s.wallet.id,
             txType   = s.txType.id,
-            toWallet = if (s.txType == TxType.TRANSFER) s.toWallet?.id else null
+            toWallet = if (s.txType == TxType.TRANSFER) s.toWallet?.id else null,
+            // ac: add-transaction-subcategory — the submitted transaction stores the chosen subcategory
+            subcategory = s.subcategory,
         )
         val result = transactionRepository.insertManual(entry)
         if (result.isSuccess) merchantHistoryRepository.save(s.description)

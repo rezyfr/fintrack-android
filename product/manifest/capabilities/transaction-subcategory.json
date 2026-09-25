@@ -1,0 +1,8 @@
+{
+  "id": "transaction-subcategory",
+  "title": "Transaction Subcategory",
+  "status": "In Progress",
+  "owners": ["fidriyantoriz@social.plus"],
+  "stories": ["add-transaction-subcategory", "filter-transactions-by-subcategory", "insights-subcategory-breakdown"],
+  "flows": ["add-transaction-subcategory-flow", "filter-transactions-by-subcategory-flow", "insights-subcategory-breakdown-flow"]
+}

@@ -36,11 +36,14 @@
     <string name="add_tx_type_label">Type</string>
     <string name="merchant_suggestions_header">Recent</string>
     <string name="add_category_label">Category</string>
+    <string name="add_subcategory_label">Subcategory</string>
+    <string name="subcategory_none">None</string>
     <string name="add_date_label">Date</string>
     <string name="add_submit_button">Submit</string>
 
     <!-- Feed screen / TransactionCard -->
     <string name="feed_filter_all">All</string>
+    <string name="feed_filter_subcategory">Subcategory</string>
     <string name="feed_search_placeholder">Search transactions</string>
     <string name="feed_category_date">%1$s · %2$s</string>
     <string name="feed_card_description_label">Description</string>

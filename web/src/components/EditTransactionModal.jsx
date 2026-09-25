@@ -2,7 +2,7 @@
 // ac: edit-transfer-target-amount — the wallet reconciliation and wallet balances credit the destination wallet with to_amount when set, otherwise with amount (see supabase/2026-05-31_to_amount.sql)
 import { useState } from 'react';
 import { updateTransaction, deleteTransaction } from '../api/supabase';
-import { WALLETS, TX_TYPES, categoriesFor, deriveTab, currencySymbol } from '../constants/transaction';
+import { WALLETS, TX_TYPES, categoriesFor, subcategoriesFor, deriveTab, currencySymbol } from '../constants/transaction';
 import { useMerchantHistory } from '../hooks/useMerchantHistory';
 import MerchantInput from './MerchantInput';
 
@@ -23,6 +23,7 @@ export default function EditTransactionModal({ row, onClose, onSaved, onDeleted 
     item:     row.item      ?? '',
     amount:   String(row.amount ?? ''),
     category: row.category  ?? 'Other',
+    subcategory: row.subcategory ?? '',
     date:     row.date      ?? '',
     note:     row.note      ?? '',
     wallet:   row.wallet    ?? 'BBL',
@@ -38,7 +39,9 @@ export default function EditTransactionModal({ row, onClose, onSaved, onDeleted 
   function handleChange(e) {
     const { name, value } = e.target;
     if (name === 'txType') {
-      setForm((f) => ({ ...f, txType: value, category: categoriesFor(value)[0] }));
+      setForm((f) => ({ ...f, txType: value, category: categoriesFor(value)[0], subcategory: '' }));
+    } else if (name === 'category') {
+      setForm((f) => ({ ...f, category: value, subcategory: '' }));
     } else {
       setForm((f) => ({ ...f, [name]: value }));
     }
@@ -54,6 +57,7 @@ export default function EditTransactionModal({ row, onClose, onSaved, onDeleted 
         item:      form.item,
         amount:    Number(form.amount),
         category:  form.category,
+        subcategory: subcategoriesFor(form.category).length ? (form.subcategory || null) : null,
         date:      form.date,
         note:      form.note || null,
         wallet:    form.wallet,
@@ -216,6 +220,21 @@ export default function EditTransactionModal({ row, onClose, onSaved, onDeleted 
                   {categoriesFor(form.txType).map((c) => <option key={c}>{c}</option>)}
                 </select>
               </div>
+
+              {/* ac: add-transaction-subcategory — optional subcategory in the edit modal */}
+              {subcategoriesFor(form.category).length > 0 && (
+                <div className="form-group">
+                  <label className="form-label" htmlFor="edit-subcategory">Subcategory</label>
+                  <select
+                    className="form-select"
+                    id="edit-subcategory" name="subcategory"
+                    value={form.subcategory} onChange={handleChange}
+                  >
+                    <option value="">None</option>
+                    {subcategoriesFor(form.category).map((s) => <option key={s}>{s}</option>)}
+                  </select>
+                </div>
+              )}
 
               <div className="form-group full">
                 <label className="form-label" htmlFor="edit-note">Note</label>

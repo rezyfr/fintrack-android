@@ -1,0 +1,11 @@
+{
+  "id": "filter-transactions-by-subcategory",
+  "capability": "transaction-subcategory",
+  "role": "user",
+  "want": "to filter the transactions list by subcategory",
+  "soThat": "I can review only the transactions in one subcategory",
+  "acceptance": [
+    "the transactions list can filter by subcategory",
+    "selecting a subcategory shows only transactions with that subcategory"
+  ]
+}

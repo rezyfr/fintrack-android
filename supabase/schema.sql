@@ -13,6 +13,7 @@ create table transactions (
     tx_type     text not null,
     to_wallet   text,
     to_amount   numeric,
+    subcategory text,
     budget_line_id bigint
 );
 

@@ -1,9 +1,9 @@
 {
-  "feature": "mobile_navigation_revamp",
-  "storyId": "four-tab-nav-with-add-fab",
+  "feature": "transaction_subcategory",
+  "storyId": "add-transaction-subcategory",
   "acceptanceCriteria": [
-    "tapping the central Add button opens the add-transaction form in a bottom sheet, not a separate screen",
-    "the bottom navigation stays interactive while the add bottom sheet is closed",
-    "saving from the add bottom sheet closes it and returns to the current tab"
+    "the Add and Edit transaction forms show a subcategory dropdown filtered by the selected category",
+    "the subcategory is optional and defaults to none",
+    "a saved transaction stores its subcategory on both web and Android"
   ]
 }

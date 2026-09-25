@@ -127,8 +127,27 @@ function TransactionDetail({ currency, loading, error, rows }) {
   if (loading) return <div className="breakdown-detail-state">Loading…</div>;
   if (error) return <div className="breakdown-detail-state breakdown-detail-error">{error}</div>;
   if (rows.length === 0) return <div className="breakdown-detail-state">No transactions found.</div>;
+  // ac: insights-subcategory-breakdown — group the category's transactions by subcategory (None when unset)
+  const subTotals = rows.reduce((acc, r) => {
+    const key = r.subcategory && r.subcategory.trim() ? r.subcategory : 'None';
+    acc[key] = (acc[key] || 0) + Number(r.amount || 0);
+    return acc;
+  }, {});
+  const subRows = Object.entries(subTotals).sort((a, b) => b[1] - a[1]);
+  const showSubBreakdown = subRows.length > 1;
   return (
     <div className="breakdown-detail">
+      {/* ac: insights-subcategory-breakdown — per-subcategory subtotals shown above the transactions */}
+      {showSubBreakdown && (
+        <div className="breakdown-subcats">
+          {subRows.map(([label, amount]) => (
+            <div key={label} className="breakdown-subcat-row">
+              <span className="breakdown-subcat-label">{label}</span>
+              <span className="breakdown-subcat-value">{fmt(amount, currency)}</span>
+            </div>
+          ))}
+        </div>
+      )}
       {rows.map(r => (
         <div key={r.id} className="breakdown-detail-row">
           <span className="breakdown-detail-date">{formatDate(r.date)}</span>

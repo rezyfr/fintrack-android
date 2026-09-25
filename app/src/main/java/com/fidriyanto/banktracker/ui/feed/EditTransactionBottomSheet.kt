@@ -33,6 +33,7 @@ import com.fidriyanto.banktracker.ui.add.MerchantSuggestionDropdown
 import com.fidriyanto.banktracker.ui.add.TxType
 import com.fidriyanto.banktracker.ui.add.Wallet
 import com.fidriyanto.banktracker.ui.add.categoriesFor
+import com.fidriyanto.banktracker.ui.common.subcategoriesFor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,6 +49,7 @@ fun EditTransactionBottomSheet(
     var amount by remember { mutableStateOf(formatAmountForEdit(transaction.amount)) }
     var item by remember { mutableStateOf(transaction.item) }
     var category by remember { mutableStateOf(transaction.category) }
+    var subcategory by remember { mutableStateOf(transaction.subcategory) }
     var date by remember { mutableStateOf(transaction.dateIso) }
     var wallet by remember { mutableStateOf(transaction.wallet?.let { id -> Wallet.entries.firstOrNull { it.id == id } } ?: Wallet.entries.first()) }
     var txType by remember { mutableStateOf(TxType.entries.firstOrNull { it.id == transaction.txType } ?: TxType.entries.first()) }
@@ -134,8 +136,43 @@ fun EditTransactionBottomSheet(
                     categoriesFor(txType).forEach { cat ->
                         DropdownMenuItem(
                             text = { Text(cat) },
-                            onClick = { category = cat; categoryExpanded = false },
+                            onClick = { category = cat; subcategory = null; categoryExpanded = false },
                         )
+                    }
+                }
+            }
+
+            // ac: add-transaction-subcategory — optional subcategory dropdown in the edit sheet
+            val editSubOptions = subcategoriesFor(category)
+            if (editSubOptions.isNotEmpty()) {
+                var subExpanded by remember { mutableStateOf(false) }
+                val noneLabel = stringResource(R.string.subcategory_none)
+                ExposedDropdownMenuBox(
+                    expanded = subExpanded,
+                    onExpandedChange = { subExpanded = it },
+                ) {
+                    OutlinedTextField(
+                        value = subcategory ?: noneLabel,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text(stringResource(R.string.add_subcategory_label)) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(subExpanded) },
+                        modifier = Modifier.fillMaxWidth().menuAnchor(),
+                    )
+                    ExposedDropdownMenu(
+                        expanded = subExpanded,
+                        onDismissRequest = { subExpanded = false },
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(noneLabel) },
+                            onClick = { subcategory = null; subExpanded = false },
+                        )
+                        editSubOptions.forEach { sub ->
+                            DropdownMenuItem(
+                                text = { Text(sub) },
+                                onClick = { subcategory = sub; subExpanded = false },
+                            )
+                        }
                     }
                 }
             }
@@ -251,6 +288,8 @@ fun EditTransactionBottomSheet(
                             txType   = txType.id,
                             toWallet = if (txType == TxType.TRANSFER) toWallet?.id else null,
                             toAmount = if (isCrossCurrency) toAmount.toDoubleOrNull() else null,
+                            // ac: add-transaction-subcategory — persist the edited subcategory
+                            subcategory = if (subcategoriesFor(category).isEmpty()) null else subcategory,
                         )
                     )
                 },

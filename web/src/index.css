@@ -1700,3 +1700,27 @@ input[type="month"] { color-scheme: dark; }
   .cal-cell { min-height: 50px; padding: 4px; }
   .cal-exp { font-size: 10px; }
 }
+
+/* ac: add-transaction-subcategory — muted sub-label under the category chip */
+.tx-subcategory {
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+/* ac: insights-subcategory-breakdown — per-subcategory subtotals above a category's transactions */
+.breakdown-subcats {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 0;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--line, rgba(255,255,255,0.08));
+}
+.breakdown-subcat-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+.breakdown-subcat-label { color: var(--text-2); }
+.breakdown-subcat-value { font-variant-numeric: tabular-nums; color: var(--text); }

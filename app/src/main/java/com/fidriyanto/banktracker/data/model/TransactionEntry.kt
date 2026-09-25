@@ -11,5 +11,6 @@ data class TransactionEntry(
     val note: String? = null,
     val wallet: String? = null,
     val txType: String = "expense",
-    val toWallet: String? = null
+    val toWallet: String? = null,
+    val subcategory: String? = null,
 )

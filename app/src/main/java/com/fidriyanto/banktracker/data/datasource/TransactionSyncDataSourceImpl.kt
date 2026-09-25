@@ -41,6 +41,7 @@ class TransactionSyncDataSourceImpl @Inject constructor(
             txType   = edit.txType,
             toWallet = edit.toWallet,
             toAmount = edit.toAmount,
+            subcategory = edit.subcategory,
         )
         Log.d("TransactionSyncDS", "PATCH transactions: id=$id item=${edit.item}")
         val response = service.updateTransaction("eq.$id", body)

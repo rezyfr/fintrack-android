@@ -18,5 +18,6 @@ data class TransactionEntity(
     val createdAt: Long = System.currentTimeMillis(),
     val wallet: String? = null,
     val txType: String = "expense",
-    val toWallet: String? = null
+    val toWallet: String? = null,
+    val subcategory: String? = null
 )

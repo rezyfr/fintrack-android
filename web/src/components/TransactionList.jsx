@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { getTransactions, deleteTransactions, updateTransaction, updateTransactionsCategory, getBudgetLines } from '../api/supabase';
-import { WALLETS, EXPENSE_CATEGORIES, INCOME_CATEGORIES, categoriesFor, walletCurrency } from '../constants/transaction';
+import { WALLETS, EXPENSE_CATEGORIES, INCOME_CATEGORIES, categoriesFor, subcategoriesFor, ALL_SUBCATEGORIES, walletCurrency } from '../constants/transaction';
 import EditTransactionModal from './EditTransactionModal';
 import MonthNav from './MonthNav';
 
@@ -167,6 +167,8 @@ export default function TransactionList() {
   const [month,     setMonth]     = useState(currentMonth());
   // ac: filter-transactions-by-category — a category selector is shown in the transaction list filter row
   const [category,  setCategory]  = useState('');
+  // ac: filter-transactions-by-subcategory — subcategory filter for the transactions list
+  const [subcategory, setSubcategory] = useState('');
   // ac: advanced-transaction-filters — search, amount range, and date range state
   const [search,    setSearch]    = useState('');
   const [amountMin, setAmountMin] = useState('');
@@ -323,6 +325,8 @@ export default function TransactionList() {
 
   const stats = computeStats(rows);
   const anySelected = selected.size > 0;
+  // ac: filter-transactions-by-subcategory — narrow the displayed rows to the chosen subcategory
+  const shownRows = subcategory ? rows.filter((r) => r.subcategory === subcategory) : rows;
 
   return (
     <div className="page">
@@ -380,11 +384,22 @@ export default function TransactionList() {
             aria-label="Category"
             className="filter-select"
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={(e) => { setCategory(e.target.value); setSubcategory(''); }}
           >
             {CATEGORY_OPTIONS.map(({ value, label }) => (
               <option key={value} value={value}>{label}</option>
             ))}
+          </select>
+          {/* ac: filter-transactions-by-subcategory — subcategory selector, scoped to the chosen category when one is picked */}
+          <select
+            aria-label="Subcategory"
+            className="filter-select"
+            value={subcategory}
+            onChange={(e) => setSubcategory(e.target.value)}
+          >
+            <option value="">All subcategories</option>
+            {(category && subcategoriesFor(category).length ? subcategoriesFor(category) : ALL_SUBCATEGORIES)
+              .map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
           <MonthNav value={month} onChange={(v) => { setMonth(v); setDateFrom(''); setDateTo(''); }} />
         </div>
@@ -532,7 +547,7 @@ export default function TransactionList() {
               </tr>
             )}
 
-            {!loading && !error && rows.length === 0 && (
+            {!loading && !error && shownRows.length === 0 && (
               <tr>
                 <td colSpan={9}>
                   <div className="table-state">
@@ -544,7 +559,7 @@ export default function TransactionList() {
               </tr>
             )}
 
-            {!loading && !error && rows.map((row) => (
+            {!loading && !error && shownRows.map((row) => (
               <tr key={row.id} className={selected.has(row.id) ? 'row-selected' : ''}>
                 <td>
                   <input
@@ -590,6 +605,10 @@ export default function TransactionList() {
                         </span>
                       )
                   }
+                  {/* ac: add-transaction-subcategory — show the subcategory beneath the category chip */}
+                  {!row._is_transfer_in && row.subcategory && (
+                    <div className="tx-subcategory">{row.subcategory}</div>
+                  )}
                 </td>
                 <td>
                   {/* ac: assign-transaction-budget-line — double-click opens a dropdown of active lines plus Auto */}

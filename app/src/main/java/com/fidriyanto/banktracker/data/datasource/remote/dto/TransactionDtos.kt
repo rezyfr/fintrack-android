@@ -11,7 +11,9 @@ data class TransactionDto(
     @SerializedName("tab")       val tab: String?,
     @SerializedName("wallet")    val wallet: String?,
     @SerializedName("tx_type")   val txType: String?,
-    @SerializedName("to_wallet") val toWallet: String?
+    @SerializedName("to_wallet") val toWallet: String?,
+    // ac: add-transaction-subcategory — optional subcategory read back from Supabase
+    @SerializedName("subcategory") val subcategory: String? = null
 )
 
 data class TransactionInsertDto(
@@ -23,7 +25,8 @@ data class TransactionInsertDto(
     @SerializedName("note")      val note: String?,
     @SerializedName("wallet")    val wallet: String?,
     @SerializedName("tx_type")   val txType: String,
-    @SerializedName("to_wallet") val toWallet: String?
+    @SerializedName("to_wallet") val toWallet: String?,
+    @SerializedName("subcategory") val subcategory: String? = null
 )
 
 data class TransactionPatchDto(
@@ -35,6 +38,7 @@ data class TransactionPatchDto(
     @SerializedName("tx_type")   val txType: String,
     @SerializedName("to_wallet") val toWallet: String?,
     @SerializedName("to_amount") val toAmount: Double?,
+    @SerializedName("subcategory") val subcategory: String? = null,
 )
 
 // ac: batch-edit-transaction-category — partial patch so a batch category update never touches other fields

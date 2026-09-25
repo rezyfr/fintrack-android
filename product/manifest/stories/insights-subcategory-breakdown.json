@@ -1,0 +1,11 @@
+{
+  "id": "insights-subcategory-breakdown",
+  "capability": "transaction-subcategory",
+  "role": "user",
+  "want": "Insights to break a category's spending down by subcategory",
+  "soThat": "I can see which subcategories drive a category's total",
+  "acceptance": [
+    "Insights breaks a selected category's spending down by subcategory",
+    "transactions with no subcategory are grouped as None in the breakdown"
+  ]
+}

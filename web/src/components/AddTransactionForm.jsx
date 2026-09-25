@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { addTransaction } from '../api/supabase';
-import { WALLETS, TX_TYPES, categoriesFor, deriveTab, currencySymbol } from '../constants/transaction';
+import { WALLETS, TX_TYPES, categoriesFor, subcategoriesFor, deriveTab, currencySymbol } from '../constants/transaction';
 import { useMerchantHistory } from '../hooks/useMerchantHistory';
 import MerchantInput from './MerchantInput';
 
@@ -11,6 +11,7 @@ function today() {
 const EMPTY = {
   item: '', amount: '',
   category: 'Food & Drink',
+  subcategory: '',
   wallet: 'BBL', txType: 'expense', toWallet: '', date: '', note: '',
 };
 
@@ -24,7 +25,10 @@ export default function AddTransactionForm() {
   function handleChange(e) {
     const { name, value } = e.target;
     if (name === 'txType') {
-      setForm((f) => ({ ...f, txType: value, category: categoriesFor(value)[0] }));
+      setForm((f) => ({ ...f, txType: value, category: categoriesFor(value)[0], subcategory: '' }));
+    } else if (name === 'category') {
+      // Reset subcategory when the category changes; it may not apply anymore.
+      setForm((f) => ({ ...f, category: value, subcategory: '' }));
     } else {
       setForm((f) => ({ ...f, [name]: value }));
     }
@@ -40,6 +44,7 @@ export default function AddTransactionForm() {
         item:      form.item,
         amount:    Number(form.amount),
         category:  form.category,
+        subcategory: form.subcategory || undefined,
         date:      form.date,
         note:      form.note || undefined,
         wallet:    form.wallet,
@@ -164,6 +169,21 @@ export default function AddTransactionForm() {
                 {categoriesFor(form.txType).map((c) => <option key={c}>{c}</option>)}
               </select>
             </div>
+
+            {/* ac: add-transaction-subcategory — optional subcategory, shown only when the category has any */}
+            {subcategoriesFor(form.category).length > 0 && (
+              <div className="form-group">
+                <label className="form-label" htmlFor="subcategory">Subcategory</label>
+                <select
+                  className="form-select"
+                  id="subcategory" name="subcategory"
+                  value={form.subcategory} onChange={handleChange}
+                >
+                  <option value="">None</option>
+                  {subcategoriesFor(form.category).map((s) => <option key={s}>{s}</option>)}
+                </select>
+              </div>
+            )}
 
             <div className="form-group full">
               <label className="form-label" htmlFor="note">Note</label>

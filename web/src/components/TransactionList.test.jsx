@@ -114,7 +114,8 @@ it('assigns a transaction to a budget line from the Budget cell', async () => {
   await user.selectOptions(within(td).getByRole('combobox'), '6');
 
   expect(api.updateTransaction).toHaveBeenCalledWith(1, { budget_line_id: 6 });
-  expect(await screen.findByText('Dad')).toBeInTheDocument();
+  // scope to the budget cell; "Dad" also exists as a subcategory <option>
+  expect(await screen.findByText('Dad', { selector: '.tx-budget' })).toBeInTheDocument();
 });
 
 // ac: assign-transaction-budget-line
@@ -124,7 +125,7 @@ it('clears a budget line assignment back to Auto', async () => {
   api.updateTransaction.mockResolvedValue();
   render(<TransactionList />);
 
-  const cell = await screen.findByText('Dad');
+  const cell = await screen.findByText('Dad', { selector: '.tx-budget' });
   const td = cell.closest('td');
   await user.dblClick(cell);
   await user.selectOptions(within(td).getByRole('combobox'), '');

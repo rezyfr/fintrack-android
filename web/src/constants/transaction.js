@@ -31,6 +31,30 @@ export function categoriesFor(txType) {
   return EXPENSE_CATEGORIES;
 }
 
+// ac: add-transaction-subcategory — fixed subcategory lists per category. Categories not listed
+// here (for example Groceries) have no subcategories. Subcategory is always optional.
+export const SUBCATEGORIES = {
+  'Transport':          ['Ride-hailing', 'Fuel', 'Toll', 'E-money'],
+  'Food & Drink':       ['Restaurant', 'Cafe / coffee', 'Food delivery', 'Snacks'],
+  'Bills':              ['Rent', 'Electricity', 'Water', 'Internet', 'Mobile / telco', 'Insurance'],
+  'Subscriptions':      ['Streaming', 'Music', 'Software / cloud'],
+  'Family':             ['Mom', 'Dad', 'Wife', 'Kids', 'Household'],
+  'Health & Wellbeing': ['Gym / fitness', 'Pharmacy', 'Doctor / medical', 'Sports gear'],
+  'Shopping':           ['Clothing', 'Electronics', 'Home', 'Personal care'],
+  'Travel':             ['Flights', 'Hotels', 'Local transport', 'Activities'],
+  'Entertainment':      ['Movies', 'Games', 'Events', 'Hobbies'],
+  'Gifts':              ['Family', 'Friends', 'Charity'],
+  'Business':           ['Supplies', 'Services', 'Fees'],
+};
+
+// ac: add-transaction-subcategory — subcategories available for a category, empty when it has none
+export function subcategoriesFor(category) {
+  return SUBCATEGORIES[category] || [];
+}
+
+// All distinct subcategories, for the transactions filter dropdown.
+export const ALL_SUBCATEGORIES = [...new Set(Object.values(SUBCATEGORIES).flat())].sort();
+
 
 export function currencySymbol(walletId) {
   return WALLETS.find(w => w.id === walletId)?.currency === 'THB' ? '฿' : 'Rp';
