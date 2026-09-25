@@ -1,8 +1,9 @@
 {
-  "feature": "mobile_navigation_revamp",
-  "storyId": "four-tab-nav-with-add-fab",
+  "feature": "add_transaction_form",
+  "storyId": "transfer-uses-transfer-category",
   "acceptanceCriteria": [
-    "the Budget tab reaches the budget, cards, installments, and insights views",
-    "the Insights sub-tab renders the spending dashboard (category donut and transport breakdown)"
+    "a transfer transaction is saved with the category Transfer, matching the web app and the database convention",
+    "the Transactions category filter offers Transfer, matching the saved value",
+    "the review notification for a transfer shows the Transfer category"
   ]
 }

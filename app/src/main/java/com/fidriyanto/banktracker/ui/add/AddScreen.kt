@@ -29,7 +29,8 @@ internal fun categoriesFor(txType: TxType): List<String> = when (txType) {
         "Health & Wellbeing", "Family", "Other", "Shopping", "Transport", "Travel", "Business", "Gifts"
     )
     TxType.INCOME     -> listOf("Salary", "Freelance", "Business", "Dividends", "Rental", "Bonus", "Gift", "Other")
-    TxType.TRANSFER   -> listOf("Transfer Out")
+    // ac: transfer-uses-transfer-category — transfers use the category "Transfer", matching web and the DB
+    TxType.TRANSFER   -> listOf("Transfer")
     TxType.INVESTMENT -> listOf("Investment", "Dividends", "Other")
 }
 

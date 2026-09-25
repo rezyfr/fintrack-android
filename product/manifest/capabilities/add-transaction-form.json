@@ -3,6 +3,6 @@
   "title": "Add Transaction Form",
   "status": "Approved",
   "owners": ["frotylatz@gmail.com"],
-  "stories": ["add-transaction-date"],
-  "flows": ["add-transaction-date-flow"]
+  "stories": ["add-transaction-date", "transfer-uses-transfer-category"],
+  "flows": ["add-transaction-date-flow", "transfer-uses-transfer-category-flow"]
 }

@@ -56,7 +56,8 @@ private val TYPE_OPTIONS = listOf(
 private val CATEGORY_OPTIONS: List<String> = listOf(
     "Bills", "Bonus", "Business", "Dividends", "Entertainment", "Food & Drink",
     "Freelance", "Gift", "Gifts", "Groceries", "Health & Wellbeing", "Investment",
-    "Other", "Rental", "Salary", "Shopping", "Subscriptions", "Transfer Out",
+    // ac: transfer-uses-transfer-category — filter offers "Transfer", the value transfers are saved with
+    "Other", "Rental", "Salary", "Shopping", "Subscriptions", "Transfer",
     "Transport", "Travel",
 )
 
