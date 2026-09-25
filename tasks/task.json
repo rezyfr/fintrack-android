@@ -1,10 +1,8 @@
 {
-  "feature": "android_transactions_view",
-  "storyId": "transactions-list-calendar-toggle",
+  "feature": "mobile_navigation_revamp",
+  "storyId": "four-tab-nav-with-add-fab",
   "acceptanceCriteria": [
-    "the Transactions tab has a List and Calendar segmented toggle at the top",
-    "the filters (search, period, wallet, type, category, advanced) open in a bottom sheet rather than stacking above the list",
-    "the Calendar view lays the period's transactions on a weekday-aligned grid showing each day's spending total",
-    "selecting a day in the Calendar view lists that day's transactions"
+    "the Budget tab reaches the budget, cards, installments, and insights views",
+    "the Insights sub-tab renders the spending dashboard (category donut and transport breakdown)"
   ]
 }

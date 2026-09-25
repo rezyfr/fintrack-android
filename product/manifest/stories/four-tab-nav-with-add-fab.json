@@ -7,7 +7,8 @@
   "acceptance": [
     "the Android bottom navigation has exactly four tabs: Home, Transactions, Budget, and Accounts",
     "adding a transaction is a central floating button rather than a bottom-navigation tab",
-    "the Budget tab reaches both the budget and installments views, and the Accounts tab reaches both balances and settings",
-    "Home is the destination shown when the app launches"
+    "the Budget tab reaches the budget, cards, installments, and insights views, and the Accounts tab reaches both balances and settings",
+    "Home is the destination shown when the app launches",
+    "the Budget tab's Insights view shows the spending dashboard with the category donut and transport-by-provider breakdown"
   ]
 }

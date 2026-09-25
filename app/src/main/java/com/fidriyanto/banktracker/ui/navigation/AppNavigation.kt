@@ -110,7 +110,7 @@ fun AppNavigation() {
 @Composable
 private fun BudgetTab() {
     var sub by rememberSaveable { mutableStateOf(0) }
-    val labels = listOf("Budget", "Cards", "Installments")
+    val labels = listOf("Budget", "Cards", "Installments", "Insights")
     Column(Modifier.fillMaxSize()) {
         SegmentedToggle(
             options = labels,
@@ -121,7 +121,9 @@ private fun BudgetTab() {
         when (sub) {
             0 -> BudgetGlanceScreen()
             1 -> CardsScreen()
-            else -> InstallmentsScreen()
+            2 -> InstallmentsScreen()
+            // ac: four-tab-nav-with-add-fab — the Insights view surfaces the spending dashboard
+            else -> DashboardScreen()
         }
     }
 }
