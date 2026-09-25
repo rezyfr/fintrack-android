@@ -76,7 +76,7 @@ Totals: **33** capability/-ies, **47** story/-ies, **47** flow(s).
 | `insights-filter-by-wallet` | `insights-wallet-filter` | user | to filter Insights by a specific wallet | 5 | 8/5 |
 | `insights-pay-cycle-periods` | `insights-advanced-filters` | user | the Insights month presets to run from the 26th to the 25th | 4 | 0/4 |
 | `insights-show-income-and-transfers` | `insights-transfer-visibility` | user | to see transfer activity (like a Mandiri CC payment) on the Insights page witho… | 5 | 0/5 |
-| `insights-subcategory-breakdown` | `transaction-subcategory` | user | Insights to break a category's spending down by subcategory | 2 | 0/2 |
+| `insights-subcategory-breakdown` | `transaction-subcategory` | user | Insights to break a category's spending down by subcategory | 2 | 7/2 |
 | `installment-name-edit` | `installment-tracking` | user | to rename an installment and see consistent wallet labels everywhere | 4 | 13/4 |
 | `installment-overview` | `installment-tracking` | user | to see all my active credit card installments in one place | 5 | 8/5 |
 | `installment-step-controls` | `installment-tracking` |  |  | 5 | 5/5 |
@@ -182,7 +182,7 @@ Number of `// ac: <story-id>` annotations found across `app/src/**.kt`. Each sto
 | `insights-filter-by-wallet` | `insights_wallet_filter` | 8/5 (OK) |
 | `insights-pay-cycle-periods` | `insights_advanced_filters` | 0/4 (missing 4) |
 | `insights-show-income-and-transfers` | `insights_transfer_visibility` | 0/5 (missing 5) |
-| `insights-subcategory-breakdown` | `transaction_subcategory` | 0/2 (missing 2) |
+| `insights-subcategory-breakdown` | `transaction_subcategory` | 7/2 (OK) |
 | `installment-name-edit` | `installment_tracking` | 13/4 (OK) |
 | `installment-overview` | `installment_tracking` | 8/5 (OK) |
 | `installment-step-controls` | `installment_tracking` | 5/5 (OK) |

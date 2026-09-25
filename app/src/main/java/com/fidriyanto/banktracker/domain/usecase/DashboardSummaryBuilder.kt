@@ -5,6 +5,25 @@ import com.fidriyanto.banktracker.domain.model.CurrencySummary
 import com.fidriyanto.banktracker.domain.model.MerchantRow
 import com.fidriyanto.banktracker.domain.model.MerchantTotal
 import com.fidriyanto.banktracker.domain.model.MonthlyOverviewSummary
+import com.fidriyanto.banktracker.domain.model.TransactionUiModel
+
+// ac: insights-subcategory-breakdown — group a period's expense transactions by category, then by
+// subcategory within each category. Unset subcategories are grouped under "None". Only categories
+// with more than one distinct subcategory group are kept, since a single group adds no detail.
+internal fun buildSubcategoryBreakdown(transactions: List<TransactionUiModel>): Map<String, List<CategoryRow>> {
+    return transactions.filter { it.txType == "expense" && it.amount > 0.0 }
+        .groupBy { it.category }
+        .mapValues { (_, txs) ->
+            val total = txs.sumOf { it.amount }
+            txs.groupBy { it.subcategory?.takeIf { s -> s.isNotBlank() } ?: "None" }
+                .map { (sub, group) ->
+                    val amt = group.sumOf { it.amount }
+                    CategoryRow(sub, amt, if (total > 0.0) (amt / total).toFloat() else 0f)
+                }
+                .sortedByDescending { it.amount }
+        }
+        .filterValues { it.size > 1 }
+}
 
 internal fun buildTransportBreakdown(merchants: List<MerchantTotal>, topN: Int = 3): List<MerchantRow> {
     val total = merchants.sumOf { it.amount }

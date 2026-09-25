@@ -1,9 +1,8 @@
 {
   "feature": "transaction_subcategory",
-  "storyId": "add-transaction-subcategory",
+  "storyId": "insights-subcategory-breakdown",
   "acceptanceCriteria": [
-    "the Add and Edit transaction forms show a subcategory dropdown filtered by the selected category",
-    "the subcategory is optional and defaults to none",
-    "a saved transaction stores its subcategory on both web and Android"
+    "Insights breaks a selected category's spending down by subcategory",
+    "transactions with no subcategory are grouped as None in the breakdown"
   ]
 }

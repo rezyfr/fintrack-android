@@ -31,7 +31,9 @@ data class CurrencySummary(
     val totalExpenses: Double,
     val net: Double,
     val categoryBreakdown: List<CategoryRow>,
-    val transportBreakdown: List<MerchantRow> = emptyList()
+    val transportBreakdown: List<MerchantRow> = emptyList(),
+    // ac: insights-subcategory-breakdown — per-category subcategory rows (None for unset)
+    val subcategoryBreakdown: Map<String, List<CategoryRow>> = emptyMap()
 ) {
     fun isEmpty() = totalIncome == 0.0 && totalExpenses == 0.0
 }

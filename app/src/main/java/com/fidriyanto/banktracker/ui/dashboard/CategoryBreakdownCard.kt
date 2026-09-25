@@ -211,9 +211,44 @@ fun CategoryBreakdownCard(
                     currencySymbol = currencySymbol,
                     isSelected = selectedIndex == index
                 )
+                // ac: insights-subcategory-breakdown — the selected category expands into its subcategories
+                if (selectedIndex == index) {
+                    val subs = summary.subcategoryBreakdown[row.category].orEmpty()
+                    if (subs.isNotEmpty()) {
+                        Spacer(Modifier.height(8.dp))
+                        subs.forEach { sub ->
+                            SubcategoryRow(sub, currencySymbol)
+                            Spacer(Modifier.height(6.dp))
+                        }
+                    }
+                }
                 if (index < categories.lastIndex) Spacer(Modifier.height(10.dp))
             }
         }
+    }
+}
+
+// ac: insights-subcategory-breakdown — one indented row per subcategory with amount and percentage
+@Composable
+private fun SubcategoryRow(row: CategoryRow, currencySymbol: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 24.dp, end = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        val meta = "${formatAmount(row.amount, currencySymbol)} · ${(row.percentage * 100).toInt()}%"
+        Text(
+            row.category,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 12.sp,
+        )
+        Text(
+            meta,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 12.sp,
+        )
     }
 }
 

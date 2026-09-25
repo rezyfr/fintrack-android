@@ -13,6 +13,9 @@ private val WALLET_CURRENCIES = mapOf(
     "MANDIRI" to "IDR", "MANDIRI_CC" to "IDR", "INVESTMENT" to "IDR",
 )
 
+// Only BBL is THB; everything else is IDR.
+internal fun walletCurrencyOf(wallet: String?): String = WALLET_CURRENCIES[wallet] ?: "IDR"
+
 // ac: insights-filter-by-wallet — when a single wallet is selected, fetch raw transactions and aggregate
 internal fun observeByWallet(
     transactionRepository: TransactionRepository,
@@ -41,5 +44,6 @@ private fun aggregateTransactions(transactions: List<TransactionUiModel>): Curre
         .toList()
         .sortedByDescending { it.second }
         .map { (cat, amt) -> CategoryRow(cat, amt, if (expenses > 0.0) (amt / expenses).toFloat() else 0f) }
-    return CurrencySummary(income, expenses, income - expenses, catMap)
+    // ac: insights-subcategory-breakdown — the wallet-filtered summary also carries the subcategory breakdown
+    return CurrencySummary(income, expenses, income - expenses, catMap, subcategoryBreakdown = buildSubcategoryBreakdown(transactions))
 }
