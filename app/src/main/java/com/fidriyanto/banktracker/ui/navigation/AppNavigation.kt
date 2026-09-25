@@ -84,6 +84,14 @@ fun AppNavigation() {
                 shape = fabShape,
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
+                // No elevation: the drop shadow reads as a dark blocking block over the content and
+                // navigation bar on the dark theme. The 4dp surface ring provides the separation.
+                elevation = FloatingActionButtonDefaults.elevation(
+                    defaultElevation = 0.dp,
+                    pressedElevation = 0.dp,
+                    focusedElevation = 0.dp,
+                    hoveredElevation = 0.dp,
+                ),
                 // Push the button down so its centre sits on the top edge of the navigation bar,
                 // straddling it, instead of floating in a row of its own above the bar. The default
                 // centre FAB slot leaves a 16dp gap above the bar; adding half the button height
