@@ -2,8 +2,8 @@
   "feature": "mobile_home_screen",
   "storyId": "home-cycle-overview",
   "acceptanceCriteria": [
-    "the Home hero net per currency is money in minus money out, including cross-currency transfers credited by the received amount",
-    "money in is income plus transfers received into that currency; money out is expense plus transfers sent to another currency",
-    "same-currency transfers do not affect the hero totals"
+    "the Home hero net per zone is money in minus money out, including cross-zone transfers credited by the received amount",
+    "Investments are a separate pool: withdrawing from Investments into an IDR account counts as money in on the IDR side",
+    "within-zone transfers do not affect the hero totals"
   ]
 }

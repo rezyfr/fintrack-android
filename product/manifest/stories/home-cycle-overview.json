@@ -6,7 +6,7 @@
   "soThat": "I see where I stand the moment I open the app instead of reading a chart",
   "acceptance": [
     "the Home hero shows each currency's net for the cycle as money in minus money out, including cross-currency transfers credited by the received amount, with the number of days until the next payday",
-    "money in is income plus transfers received into that currency, and money out is expense plus transfers sent to another currency, so same-currency transfers do not affect the totals",
+    "money in is income plus transfers received into that zone, money out is expense plus transfers sent to another zone, and Investments are a separate pool so investment withdrawals into IDR accounts count as money in",
     "Home shows each credit card's minimum payment and due date",
     "Home lists the most recent transactions in the cycle",
     "the Home tab renders this overview as the app's launch screen"

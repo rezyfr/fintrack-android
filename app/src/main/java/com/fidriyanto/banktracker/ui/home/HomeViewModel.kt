@@ -48,11 +48,16 @@ class HomeViewModel @Inject constructor(
             val rows = transactionRepository
                 .fetch(month = null, wallet = null, txType = null, dateFrom = cycle.fromIso, dateTo = cycle.toIso)
                 .getOrElse { emptyList() }
-            // ac: home-cycle-overview — money in/out per currency = income/expense plus cross-currency
-            // transfers (received amount for the destination). Same-currency transfers cancel out, so
-            // they are ignored. This makes each currency's net match its real balance change: a THB
-            // salary moved to IDR leaves THB ~0 and lands on the IDR side.
-            fun curOf(w: String?) = if (w == "BBL") "THB" else "IDR"
+            // ac: home-cycle-overview — money in/out per zone = income/expense plus cross-zone transfers
+            // (received amount for the destination). Within-zone transfers cancel out and are ignored.
+            // Zones: THB (Bangkok Bank), IDR (spending accounts), and Investments as a separate pool —
+            // so withdrawing from Investments into BCA counts as money in on the IDR side, and a THB
+            // salary moved to IDR leaves THB ~0 and lands on IDR.
+            fun curOf(w: String?) = when (w) {
+                "BBL" -> "THB"
+                "INVESTMENT" -> "INV"
+                else -> "IDR"
+            }
             fun moneyIn(cur: String) = rows.filter { it.wallet != null }.sumOf { r ->
                 when {
                     r.txType == "income" && curOf(r.wallet) == cur -> r.amount
