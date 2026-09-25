@@ -19,5 +19,6 @@ data class TransactionEntity(
     val wallet: String? = null,
     val txType: String = "expense",
     val toWallet: String? = null,
-    val subcategory: String? = null
+    val subcategory: String? = null,
+    val toAmount: Double? = null
 )

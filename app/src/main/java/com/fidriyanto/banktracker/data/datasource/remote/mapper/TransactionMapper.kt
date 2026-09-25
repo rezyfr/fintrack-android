@@ -24,6 +24,7 @@ fun TransactionDto.toEntity(): TransactionEntity? = runCatching {
         txType      = txType ?: "expense",
         toWallet    = toWallet,
         subcategory = subcategory,
+        toAmount    = toAmount,
     )
 }.getOrNull()
 
@@ -37,6 +38,8 @@ fun TransactionEntry.toInsertDto() = TransactionInsertDto(
     wallet   = wallet,
     txType   = txType,
     toWallet = toWallet,
+    // ac: add-transfer-target-amount — persist the received amount for cross-currency transfers
+    toAmount = toAmount,
     // ac: add-transaction-subcategory — persist the chosen subcategory to Supabase
     subcategory = subcategory,
 )

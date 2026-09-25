@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { addTransaction } from '../api/supabase';
-import { WALLETS, TX_TYPES, categoriesFor, subcategoriesFor, deriveTab, currencySymbol } from '../constants/transaction';
+import { WALLETS, TX_TYPES, categoriesFor, subcategoriesFor, deriveTab, currencySymbol, walletCurrency } from '../constants/transaction';
 import { useMerchantHistory } from '../hooks/useMerchantHistory';
 import MerchantInput from './MerchantInput';
 
@@ -12,7 +12,7 @@ const EMPTY = {
   item: '', amount: '',
   category: 'Food & Drink',
   subcategory: '',
-  wallet: 'BBL', txType: 'expense', toWallet: '', date: '', note: '',
+  wallet: 'BBL', txType: 'expense', toWallet: '', toAmount: '', date: '', note: '',
 };
 
 export default function AddTransactionForm() {
@@ -50,6 +50,9 @@ export default function AddTransactionForm() {
         wallet:    form.wallet,
         tx_type:   form.txType,
         to_wallet: form.txType === 'transfer' ? form.toWallet : undefined,
+        // ac: add-transfer-target-amount — send the received amount for cross-currency transfers
+        to_amount: (form.txType === 'transfer' && form.toWallet && walletCurrency(form.wallet) !== walletCurrency(form.toWallet) && form.toAmount !== '')
+          ? Number(form.toAmount) : undefined,
         tab:       deriveTab(form.wallet, form.txType),
       };
       await addTransaction(payload);
@@ -156,6 +159,23 @@ export default function AddTransactionForm() {
                     <option key={w.id} value={w.id}>{w.name}</option>
                   ))}
                 </select>
+              </div>
+            )}
+
+            {/* ac: add-transfer-target-amount — received amount shown only when the transfer crosses currencies */}
+            {form.txType === 'transfer' && form.toWallet && walletCurrency(form.wallet) !== walletCurrency(form.toWallet) && (
+              <div className="form-group">
+                <label className="form-label" htmlFor="toAmount">Received amount</label>
+                <div className="amount-wrap">
+                  <span className="amount-symbol">{currencySymbol(form.toWallet)}</span>
+                  <input
+                    className="form-input amount-input"
+                    id="toAmount" name="toAmount" type="number" step="0.01" min="0"
+                    value={form.toAmount} onChange={handleChange}
+                    placeholder="0.00"
+                    required
+                  />
+                </div>
               </div>
             )}
 

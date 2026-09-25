@@ -53,9 +53,11 @@ fun EditTransactionBottomSheet(
     var date by remember { mutableStateOf(transaction.dateIso) }
     var wallet by remember { mutableStateOf(transaction.wallet?.let { id -> Wallet.entries.firstOrNull { it.id == id } } ?: Wallet.entries.first()) }
     var txType by remember { mutableStateOf(TxType.entries.firstOrNull { it.id == transaction.txType } ?: TxType.entries.first()) }
-    var toWallet by remember { mutableStateOf<Wallet?>(null) }
+    // ac: add-transfer-target-amount — preload destination wallet and received amount so editing a
+    // cross-currency transfer keeps them instead of clearing them.
+    var toWallet by remember { mutableStateOf(transaction.toWallet?.let { id -> Wallet.entries.firstOrNull { it.id == id } }) }
     // ac: edit-transfer-target-amount — Received Amount state for cross-currency transfers
-    var toAmount by remember { mutableStateOf("") }
+    var toAmount by remember { mutableStateOf(transaction.toAmount?.let { formatAmountForEdit(it) } ?: "") }
 
     var categoryExpanded by remember { mutableStateOf(false) }
     var walletExpanded by remember { mutableStateOf(false) }

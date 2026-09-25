@@ -12,6 +12,8 @@ data class TransactionDto(
     @SerializedName("wallet")    val wallet: String?,
     @SerializedName("tx_type")   val txType: String?,
     @SerializedName("to_wallet") val toWallet: String?,
+    // ac: add-transfer-target-amount — received amount for cross-currency transfers, read back
+    @SerializedName("to_amount") val toAmount: Double? = null,
     // ac: add-transaction-subcategory — optional subcategory read back from Supabase
     @SerializedName("subcategory") val subcategory: String? = null
 )
@@ -26,6 +28,8 @@ data class TransactionInsertDto(
     @SerializedName("wallet")    val wallet: String?,
     @SerializedName("tx_type")   val txType: String,
     @SerializedName("to_wallet") val toWallet: String?,
+    // ac: add-transfer-target-amount — persist the received amount for cross-currency transfers
+    @SerializedName("to_amount") val toAmount: Double? = null,
     @SerializedName("subcategory") val subcategory: String? = null
 )
 

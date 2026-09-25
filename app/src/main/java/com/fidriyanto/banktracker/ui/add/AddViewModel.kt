@@ -37,6 +37,8 @@ data class AddFormState(
     val wallet: Wallet    = Wallet.BBL,
     val txType: TxType    = TxType.EXPENSE,
     val toWallet: Wallet? = null,
+    // ac: add-transfer-target-amount — received amount for a cross-currency transfer (destination currency)
+    val toAmount: String  = "",
     val amount: String    = "",
     val description: String = "",
     val category: String  = "Other",
@@ -108,6 +110,9 @@ class AddViewModel @Inject constructor(
             wallet   = s.wallet.id,
             txType   = s.txType.id,
             toWallet = if (s.txType == TxType.TRANSFER) s.toWallet?.id else null,
+            // ac: add-transfer-target-amount — store the received amount only for cross-currency transfers
+            toAmount = if (s.txType == TxType.TRANSFER && s.toWallet != null && s.toWallet.currency != s.wallet.currency)
+                s.toAmount.toDoubleOrNull() else null,
             // ac: add-transaction-subcategory — the submitted transaction stores the chosen subcategory
             subcategory = s.subcategory,
         )

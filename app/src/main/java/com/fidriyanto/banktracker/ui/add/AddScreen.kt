@@ -136,6 +136,18 @@ fun AddScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
 
+        // ac: add-transfer-target-amount — for a cross-currency transfer, capture the amount that
+        // lands in the destination wallet so its balance is credited correctly.
+        val dest = state.toWallet
+        if (state.txType == TxType.TRANSFER && dest != null && dest.currency != state.wallet.currency) {
+            OutlinedTextField(
+                value = state.toAmount, onValueChange = { viewModel.update { copy(toAmount = it) } },
+                label = { Text(stringResource(R.string.add_received_amount_label, dest.currency)) },
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+            )
+        }
+
         BoxWithConstraints(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopStart) {
             val dropdownWidth = maxWidth
             OutlinedTextField(

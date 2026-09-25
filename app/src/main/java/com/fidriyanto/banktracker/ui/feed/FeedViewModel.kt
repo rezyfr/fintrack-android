@@ -157,7 +157,7 @@ class FeedViewModel @Inject constructor(
         result.onSuccess {
             merchantHistoryRepository.save(edit.item)
             _remoteItems.value = _remoteItems.value.map { tx ->
-                if (tx.id == id) tx.copy(item = edit.item, category = edit.category, amount = edit.amount, dateIso = edit.dateIso, wallet = edit.wallet, txType = edit.txType, subcategory = edit.subcategory) else tx
+                if (tx.id == id) tx.copy(item = edit.item, category = edit.category, amount = edit.amount, dateIso = edit.dateIso, wallet = edit.wallet, txType = edit.txType, subcategory = edit.subcategory, toWallet = edit.toWallet, toAmount = edit.toAmount) else tx
             }
         }
         result.onFailure { _editFailures.emit(EditFailureEvent(id, edit)) }

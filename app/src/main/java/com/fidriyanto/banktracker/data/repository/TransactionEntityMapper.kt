@@ -8,4 +8,6 @@ internal fun TransactionEntity.toUiModel() = TransactionUiModel(
     amount = amount, dateIso = dateIso, wallet = wallet,
     txType = txType ?: "expense", status = status,
     subcategory = subcategory,
+    toWallet = toWallet,
+    toAmount = toAmount,
 )

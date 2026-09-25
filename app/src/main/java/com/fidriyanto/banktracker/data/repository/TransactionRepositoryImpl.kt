@@ -73,6 +73,7 @@ class TransactionRepositoryImpl @Inject constructor(
             txType   = entity.txType,
             toWallet = entity.toWallet,
             subcategory = entity.subcategory,
+            toAmount = entity.toAmount,
         )
         return syncDataSource.sync(entry).also { result ->
             val newStatus = if (result.isSuccess) TransactionStatus.SYNCED else TransactionStatus.SYNC_FAILED
@@ -84,15 +85,13 @@ class TransactionRepositoryImpl @Inject constructor(
         batchUpdateCategory(ids, category, localDataSource, syncDataSource, ::syncTransaction)
 
     override suspend fun insertManual(entry: TransactionEntry): Result<Unit> {
+        // Carry every field; wallet/txType/toWallet were previously dropped, so manual transfers and
+        // income synced with wallet=null / txType=expense. ac: add-transfer-target-amount
         val entity = TransactionEntity(
-            item     = entry.item,
-            amount   = entry.amount,
-            category = entry.category,
-            dateIso  = entry.date.toString(),
-            referenceNo = "",
-            tab      = entry.tab,
-            status   = TransactionStatus.PENDING_SYNC,
-            subcategory = entry.subcategory,
+            item = entry.item, amount = entry.amount, category = entry.category,
+            dateIso = entry.date.toString(), referenceNo = "", tab = entry.tab,
+            status = TransactionStatus.PENDING_SYNC, wallet = entry.wallet, txType = entry.txType,
+            subcategory = entry.subcategory, toWallet = entry.toWallet, toAmount = entry.toAmount,
         )
         val id = localDataSource.insert(entity)
         return syncTransaction(id)

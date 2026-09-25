@@ -12,4 +12,6 @@ data class TransactionUiModel(
     val txType: String,
     val status: TransactionStatus,
     val subcategory: String? = null,
+    val toWallet: String? = null,
+    val toAmount: Double? = null,
 )

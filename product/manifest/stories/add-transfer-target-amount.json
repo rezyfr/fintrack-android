@@ -1,7 +1,10 @@
 {
-  "feature": "cross_currency_transfers",
-  "storyId": "add-transfer-target-amount",
-  "acceptanceCriteria": [
+  "id": "add-transfer-target-amount",
+  "capability": "cross-currency-transfers",
+  "role": "user",
+  "want": "to record the received amount when I add a cross-currency transfer",
+  "soThat": "the destination wallet is credited with the real amount and its balance is correct",
+  "acceptance": [
     "the Add transaction form shows a received-amount field when the transfer crosses currencies",
     "a cross-currency transfer entered from the Add form stores the entered received amount as to_amount",
     "the destination wallet balance is credited with the received amount, not the source amount"
