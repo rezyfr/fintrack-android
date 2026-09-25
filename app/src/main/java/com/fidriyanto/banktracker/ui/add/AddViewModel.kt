@@ -78,6 +78,12 @@ class AddViewModel @Inject constructor(
 
     fun dismissSuggestions() { _dismissedQuery.value = _state.value.description.trim() }
 
+    // Clear the form back to defaults so the next time the add bottom sheet opens it starts fresh.
+    fun reset() {
+        _state.value = AddFormState()
+        _dismissedQuery.value = null
+    }
+
     fun submit() = viewModelScope.launch {
         val s = _state.value
         val amount = s.amount.toDoubleOrNull() ?: run {

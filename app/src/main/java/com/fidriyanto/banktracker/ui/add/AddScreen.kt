@@ -36,10 +36,21 @@ internal fun categoriesFor(txType: TxType): List<String> = when (txType) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddScreen(viewModel: AddViewModel = hiltViewModel()) {
+fun AddScreen(
+    viewModel: AddViewModel = hiltViewModel(),
+    onSaved: () -> Unit = {},
+) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val merchantSuggestions by viewModel.merchantSuggestions.collectAsStateWithLifecycle()
     val appColors = LocalAppColors.current
+
+    // ac: four-tab-nav-with-add-fab — a successful save closes the add bottom sheet and resets the form
+    LaunchedEffect(state.successMessage) {
+        if (!state.successMessage.isNullOrEmpty()) {
+            onSaved()
+            viewModel.reset()
+        }
+    }
 
     var showDatePicker by remember { mutableStateOf(false) }
     // ac: add-transaction-date — tapping the date field opens a date picker dialog pre-set to the current field value

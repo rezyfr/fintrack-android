@@ -9,6 +9,7 @@
     "adding a transaction is a central floating button rather than a bottom-navigation tab",
     "the Budget tab reaches the budget, cards, installments, and insights views, and the Accounts tab reaches both balances and settings",
     "Home is the destination shown when the app launches",
-    "the Budget tab's Insights view shows the spending dashboard with the category donut and transport-by-provider breakdown"
+    "the Budget tab's Insights view shows the spending dashboard with the category donut and transport-by-provider breakdown",
+    "tapping the central Add button opens the add-transaction form in a modal bottom sheet, and saving it closes the sheet and returns to the current tab"
   ]
 }

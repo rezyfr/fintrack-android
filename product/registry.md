@@ -66,7 +66,7 @@ Totals: **32** capability/-ies, **44** story/-ies, **44** flow(s).
 | `edit-transfer-target-amount` | `cross-currency-transfers` | user | to enter the actual amount received when transferring between wallets of differ… | 5 | 5/5 |
 | `expand-insights-category-to-transactions` | `insights-category-drilldown` | user | to click a category in the Spending Breakdown to see the transactions that make… | 5 | 0/5 |
 | `filter-transactions-by-category` | `transaction-category-filter` | user | to filter the transaction list by category | 5 | 3/5 |
-| `four-tab-nav-with-add-fab` | `mobile-navigation-revamp` | user | the Android app organised into four bottom tabs with a central Add button | 5 | 6/5 |
+| `four-tab-nav-with-add-fab` | `mobile-navigation-revamp` | user | the Android app organised into four bottom tabs with a central Add button | 6 | 9/6 |
 | `home-cycle-overview` | `mobile-home-screen` | user | a Home screen that summarises the current pay cycle at a glance | 4 | 5/4 |
 | `inline-cell-edit` | `transaction-modify` | user | to edit a transaction field directly in the list by double-clicking it | 6 | 0/6 |
 | `insights-custom-range-and-multi-wallet` | `insights-advanced-filters` | user | to set a day-precise custom date range on Insights and filter it by more than o… | 5 | 0/5 |
@@ -166,7 +166,7 @@ Number of `// ac: <story-id>` annotations found across `app/src/**.kt`. Each sto
 | `edit-transfer-target-amount` | `cross_currency_transfers` | 5/5 (OK) |
 | `expand-insights-category-to-transactions` | `insights_category_drilldown` | 0/5 (missing 5) |
 | `filter-transactions-by-category` | `transaction_category_filter` | 3/5 (missing 2) |
-| `four-tab-nav-with-add-fab` | `mobile_navigation_revamp` | 6/5 (OK) |
+| `four-tab-nav-with-add-fab` | `mobile_navigation_revamp` | 9/6 (OK) |
 | `home-cycle-overview` | `mobile_home_screen` | 5/4 (OK) |
 | `inline-cell-edit` | `transaction_modify` | 0/6 (missing 6) |
 | `insights-custom-range-and-multi-wallet` | `insights_advanced_filters` | 0/5 (missing 5) |

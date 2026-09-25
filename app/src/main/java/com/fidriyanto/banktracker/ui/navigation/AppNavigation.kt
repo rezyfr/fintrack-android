@@ -45,11 +45,13 @@ sealed class Tab(val route: String, val label: String, val icon: ImageVector) {
 
 private val tabs = listOf(Tab.Home, Tab.Transactions, Tab.Budget, Tab.Accounts)
 
-private const val ADD_ROUTE = "add"
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
+    // ac: four-tab-nav-with-add-fab — the Add form opens in a bottom sheet, so the tabs stay live
+    var showAdd by remember { mutableStateOf(false) }
+    val addSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -77,7 +79,7 @@ fun AppNavigation() {
             // rounded square that reads as floating above the nav bar.
             val fabShape = RoundedCornerShape(18.dp)
             FloatingActionButton(
-                onClick = { navController.navigate(ADD_ROUTE) { launchSingleTop = true } },
+                onClick = { showAdd = true },
                 shape = fabShape,
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -92,7 +94,7 @@ fun AppNavigation() {
     ) { padding ->
         // Consume the Scaffold insets, then add extra bottom room so scrolling content clears the
         // centre floating button, which overlaps the top edge of the navigation bar.
-        Box(Modifier.padding(padding).padding(bottom = 48.dp)) {
+        Box(Modifier.padding(padding).padding(bottom = 88.dp)) {
             // ac: four-tab-nav-with-add-fab — Home is the start destination shown on launch
             NavHost(navController, startDestination = Tab.Home.route) {
                 // ac: home-cycle-overview — the Home tab renders the overview as the launch screen
@@ -100,7 +102,16 @@ fun AppNavigation() {
                 composable(Tab.Transactions.route) { FeedScreen() }
                 composable(Tab.Budget.route) { BudgetTab() }
                 composable(Tab.Accounts.route) { AccountsTab() }
-                composable(ADD_ROUTE) { AddScreen() }
+            }
+        }
+
+        // ac: four-tab-nav-with-add-fab — the Add button opens the form in a modal bottom sheet
+        if (showAdd) {
+            ModalBottomSheet(
+                onDismissRequest = { showAdd = false },
+                sheetState = addSheetState,
+            ) {
+                AddScreen(onSaved = { showAdd = false })
             }
         }
     }

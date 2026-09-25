@@ -1,9 +1,9 @@
 {
-  "feature": "add_transaction_form",
-  "storyId": "transfer-uses-transfer-category",
+  "feature": "mobile_navigation_revamp",
+  "storyId": "four-tab-nav-with-add-fab",
   "acceptanceCriteria": [
-    "a transfer transaction is saved with the category Transfer, matching the web app and the database convention",
-    "the Transactions category filter offers Transfer, matching the saved value",
-    "the review notification for a transfer shows the Transfer category"
+    "tapping the central Add button opens the add-transaction form in a bottom sheet, not a separate screen",
+    "the bottom navigation stays interactive while the add bottom sheet is closed",
+    "saving from the add bottom sheet closes it and returns to the current tab"
   ]
 }
