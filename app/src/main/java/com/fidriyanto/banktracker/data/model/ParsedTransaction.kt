@@ -10,5 +10,6 @@ data class ParsedTransaction(
     val timestampMs: Long,
     val wallet: String = "BBL",
     val category: String = "Other",
+    val txType: String = "expense",
     val rawFields: Map<String, String> = emptyMap()
 )

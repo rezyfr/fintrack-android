@@ -48,6 +48,21 @@ class NotificationParserTest {
     }
 
     @Test
+    fun `parses myBCA received money as income on BCA`() {
+        val parsed = NotificationParser.parse(
+            "Financial Diary",
+            "You received IDR 25,918,161.00 from PT Gaji Sejahtera at Salary",
+            timestampMs
+        )
+
+        requireNotNull(parsed)
+        assertEquals("PT Gaji Sejahtera", parsed.item)
+        assertEquals(25_918_161.0, parsed.amount, 0.0)
+        assertEquals("BCA", parsed.wallet)
+        assertEquals("income", parsed.txType)
+    }
+
+    @Test
     fun `maps an unrecognised BCA category to Other`() {
         val parsed = NotificationParser.parse(
             "Financial Diary",

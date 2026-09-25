@@ -10,6 +10,8 @@ object NotificationParser {
     private val bblAmountRegex = Regex("""(\d[\d,]*(?:\.\d{1,2})?)(?:THB|฿)""", RegexOption.IGNORE_CASE)
     // ac: bca-expense-notification — myBCA notifications whose body matches 'You spent IDR x at [Category]' are parsed
     private val bcaAmountRegex = Regex("""You spent IDR\s+([\d,]+(?:\.\d{1,2})?)\s+at\s+(.+)""", RegexOption.IGNORE_CASE)
+    // ac: bca-received-notification — myBCA notifications matching 'You received IDR x from Y at [Category]' are income
+    private val bcaReceivedRegex = Regex("""You received IDR\s+([\d,]+(?:\.\d{1,2})?)\s+from\s+(.+?)\s+at\s+(.+)""", RegexOption.IGNORE_CASE)
     private val bangkokZone = ZoneId.of("Asia/Bangkok")
 
     // ac: bca-expense-notification — the BCA category text is mapped to the nearest app category; unrecognised categories default to Other
@@ -71,7 +73,25 @@ object NotificationParser {
             )
         }
 
-        // A myBCA notification without a spend line is not a BBL transaction; never fall through.
+        // ac: bca-received-notification — myBCA 'You received IDR x from Y at [Category]' becomes income on BCA
+        val bcaReceived = bcaReceivedRegex.find(text)
+        if (bcaReceived != null) {
+            val amount = bcaReceived.groupValues[1].replace(",", "").toDoubleOrNull() ?: return null
+            // ac: bca-received-notification — the payer name is used as the item
+            val payer = bcaReceived.groupValues[2].trim()
+            return ParsedTransaction(
+                item     = payer.ifEmpty { "BCA received" },
+                amount   = amount,
+                date     = date,
+                referenceNo = "",
+                timestampMs = timestampMs,
+                wallet   = "BCA",
+                category = "Other",
+                txType   = "income",
+            )
+        }
+
+        // A myBCA notification without a spend/received line is not a BBL transaction; never fall through.
         if ("mybca" in title.lowercase() || "my bca" in title.lowercase()) return null
 
         // BBL / Bangkok Bank path
@@ -95,6 +115,7 @@ object NotificationParser {
         val b = text.lowercase()
         return "mybca" in t || "my bca" in t ||
                "you spent idr" in b ||
+               "you received idr" in b ||
                "bill payment" in t || "ชำระบิล" in t ||
                "e-wallet" in t || "ewallet" in t ||
                "promptpay" in t || "พร้อมเพย์" in t ||

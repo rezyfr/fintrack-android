@@ -1,0 +1,12 @@
+{
+  "id": "bca-received-notification",
+  "capability": "bca-notification-sync",
+  "role": "user",
+  "want": "myBCA received-money notifications to be automatically captured as income transactions",
+  "soThat": "incoming transfers into BCA are tracked and my BCA balance is correct",
+  "acceptance": [
+    "myBCA notifications whose body matches 'You received IDR x from Y at [Category]' are parsed and saved as income transactions",
+    "the wallet is set to BCA and the tab to IDR_INCOME",
+    "the payer name from the notification is used as the item"
+  ]
+}

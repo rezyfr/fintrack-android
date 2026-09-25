@@ -3,6 +3,6 @@
   "title": "BCA Notification Sync",
   "status": "Approved",
   "owners": ["frotylatz@gmail.com"],
-  "stories": ["bca-expense-notification"],
-  "flows": ["bca-expense-notification-flow"]
+  "stories": ["bca-expense-notification", "bca-received-notification"],
+  "flows": ["bca-expense-notification-flow", "bca-received-notification-flow"]
 }

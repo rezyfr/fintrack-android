@@ -1,9 +1,9 @@
 {
-  "feature": "cross_currency_transfers",
-  "storyId": "add-transfer-target-amount",
+  "feature": "bca_notification_sync",
+  "storyId": "bca-received-notification",
   "acceptanceCriteria": [
-    "the Add transaction form shows a received-amount field when the transfer crosses currencies",
-    "a cross-currency transfer entered from the Add form stores the entered received amount as to_amount",
-    "the destination wallet balance is credited with the received amount, not the source amount"
+    "myBCA notifications whose body matches 'You received IDR x from Y at [Category]' are parsed and saved as income transactions",
+    "the wallet is set to BCA and the tab to IDR_INCOME",
+    "the payer name from the notification is used as the item"
   ]
 }
