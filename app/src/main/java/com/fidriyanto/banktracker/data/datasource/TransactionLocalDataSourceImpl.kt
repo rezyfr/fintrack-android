@@ -31,5 +31,5 @@ class TransactionLocalDataSourceImpl @Inject constructor(
     override suspend fun deleteById(id: Long) = transactionDao.deleteById(id)
     override suspend fun markAllSynced() = transactionDao.markAllSynced()
     override suspend fun refExists(key: String) = processedRefDao.exists(key)
-    override suspend fun insertRef(entity: ProcessedRefEntity) = processedRefDao.insert(entity)
+    override suspend fun insertRef(entity: ProcessedRefEntity): Long = processedRefDao.insert(entity)
 }

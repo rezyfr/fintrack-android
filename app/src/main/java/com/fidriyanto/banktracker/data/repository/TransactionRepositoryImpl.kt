@@ -40,8 +40,10 @@ class TransactionRepositoryImpl @Inject constructor(
 
     override suspend fun processNewNotification(parsed: ParsedTransaction): Long? {
         val compositeKey = "${parsed.item}|${parsed.amount}|${parsed.date}|${parsed.timestampMs}"
-        if (localDataSource.refExists(compositeKey) > 0) return null
-        localDataSource.insertRef(ProcessedRefEntity(compositeKey))
+        // Atomic dedup: the ref insert ignores conflicts and returns -1 when the key already exists.
+        // Android often delivers onNotificationPosted more than once; a check-then-insert raced and
+        // recorded the transaction twice. Only the first insert of a key proceeds.
+        if (localDataSource.insertRef(ProcessedRefEntity(compositeKey)) == -1L) return null
         // ac: bca-expense-notification — wallet, tab and tx_type derived from the parsed notification
         val isIncome = parsed.txType == "income"
         val tab = when {

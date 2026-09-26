@@ -19,5 +19,6 @@ interface TransactionLocalDataSource {
     suspend fun deleteById(id: Long)
     suspend fun markAllSynced()
     suspend fun refExists(key: String): Int
-    suspend fun insertRef(entity: ProcessedRefEntity)
+    // Returns the new rowId, or -1 if the key already existed (atomic dedup).
+    suspend fun insertRef(entity: ProcessedRefEntity): Long
 }
