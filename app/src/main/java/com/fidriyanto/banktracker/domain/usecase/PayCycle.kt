@@ -17,9 +17,9 @@ object PayCycle {
         return Range(start.format(iso), end.format(iso), start, end)
     }
 
-    // Days until the next payday (the next 26th on or after today).
+    // Days until the next payday (the next 26th on or after today). On the 26th this is 0 (today).
     fun daysToPayday(today: LocalDate = LocalDate.now()): Int {
-        val next = if (today.dayOfMonth < START_DAY) today.withDayOfMonth(START_DAY)
+        val next = if (today.dayOfMonth <= START_DAY) today.withDayOfMonth(START_DAY)
                    else today.plusMonths(1).withDayOfMonth(START_DAY)
         return (next.toEpochDay() - today.toEpochDay()).toInt()
     }

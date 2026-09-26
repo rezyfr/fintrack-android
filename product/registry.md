@@ -72,7 +72,7 @@ Totals: **33** capability/-ies, **49** story/-ies, **49** flow(s).
 | `filter-transactions-by-category` | `transaction-category-filter` | user | to filter the transaction list by category | 5 | 3/5 |
 | `filter-transactions-by-subcategory` | `transaction-subcategory` | user | to filter the transactions list by subcategory | 2 | 4/2 |
 | `four-tab-nav-with-add-fab` | `mobile-navigation-revamp` | user | the Android app organised into four bottom tabs with a central Add button | 6 | 9/6 |
-| `home-cycle-overview` | `mobile-home-screen` | user | a Home screen that summarises the current pay cycle at a glance | 5 | 5/5 |
+| `home-cycle-overview` | `mobile-home-screen` | user | a Home screen that summarises the current pay cycle at a glance | 5 | 6/5 |
 | `inline-cell-edit` | `transaction-modify` | user | to edit a transaction field directly in the list by double-clicking it | 6 | 0/6 |
 | `insights-custom-range-and-multi-wallet` | `insights-advanced-filters` | user | to set a day-precise custom date range on Insights and filter it by more than o… | 5 | 0/5 |
 | `insights-filter-by-wallet` | `insights-wallet-filter` | user | to filter Insights by a specific wallet | 5 | 8/5 |
@@ -182,7 +182,7 @@ Number of `// ac: <story-id>` annotations found across `app/src/**.kt`. Each sto
 | `filter-transactions-by-category` | `transaction_category_filter` | 3/5 (missing 2) |
 | `filter-transactions-by-subcategory` | `transaction_subcategory` | 4/2 (OK) |
 | `four-tab-nav-with-add-fab` | `mobile_navigation_revamp` | 9/6 (OK) |
-| `home-cycle-overview` | `mobile_home_screen` | 5/5 (OK) |
+| `home-cycle-overview` | `mobile_home_screen` | 6/5 (OK) |
 | `inline-cell-edit` | `transaction_modify` | 0/6 (missing 6) |
 | `insights-custom-range-and-multi-wallet` | `insights_advanced_filters` | 0/5 (missing 5) |
 | `insights-filter-by-wallet` | `insights_wallet_filter` | 8/5 (OK) |

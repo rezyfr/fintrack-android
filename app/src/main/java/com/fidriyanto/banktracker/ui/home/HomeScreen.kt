@@ -18,6 +18,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fidriyanto.banktracker.R
 import com.fidriyanto.banktracker.domain.usecase.BudgetGlance
@@ -46,6 +48,9 @@ private fun shortDate(iso: String) = runCatching {
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
     val s by viewModel.state.collectAsStateWithLifecycle()
+    // ac: home-cycle-overview — recompute the cycle and payday countdown each time the screen resumes,
+    // so the overview rolls into the new cycle when the date changes while the app stays open.
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.load() }
     val app = LocalAppColors.current
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
