@@ -1,0 +1,11 @@
+{
+  "id": "card-due-reflects-payments",
+  "capability": "android-card-billing",
+  "role": "user",
+  "want": "the Home Cards due amount to reflect payments I have made on the statement",
+  "soThat": "after paying a card I see what is actually left to pay, not the running balance with new charges",
+  "acceptance": [
+    "Cards due shows the remaining owed on the current statement: the live balance minus charges made after the cutoff, so payments reduce it",
+    "a card whose current statement is fully paid is hidden from the Home Cards due section"
+  ]
+}

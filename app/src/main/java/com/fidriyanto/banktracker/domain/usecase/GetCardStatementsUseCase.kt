@@ -27,11 +27,18 @@ class GetCardStatementsUseCase @Inject constructor(
             val cutoffIso = cutoff.format(DateTimeFormatter.ISO_LOCAL_DATE)
             val prevIso = CardBillingMath.latestCutoff(b.cutoffDay, cutoff.minusDays(1))
                 .format(DateTimeFormatter.ISO_LOCAL_DATE)
-            // A credit card's synced balance is negative (money owed); take its magnitude.
-            val balance = abs(balances[b.wallet] ?: 0.0)
-            val rows = transactionRepository
-                .fetch(month = null, wallet = b.wallet, txType = null, dateTo = cutoffIso)
+            // ac: card-due-reflects-payments — the live synced balance nets all payments but also
+            // includes charges made after the cutoff (next statement). Subtract those so the amount
+            // shown is what is still owed on the current statement, which drops as payments land.
+            val liveBalance = abs(balances[b.wallet] ?: 0.0)
+            val allRows = transactionRepository
+                .fetch(month = null, wallet = b.wallet, txType = null)
                 .getOrElse { emptyList() }
+            val postCutoffCharges = allRows
+                .filter { it.txType == "expense" && it.dateIso > cutoffIso }
+                .sumOf { it.amount }
+            val balance = (liveBalance - postCutoffCharges).coerceAtLeast(0.0)
+            val rows = allRows.filter { it.dateIso <= cutoffIso }
             val installment = CardBillingMath.installmentPortion(rows, prevIso, cutoffIso)
             val minimum = CardBillingMath.minimumPayment(balance, installment, b.minPercent, b.minFullInstallments)
             val due = CardBillingMath.dueDateAfter(cutoff, b.dueDay)

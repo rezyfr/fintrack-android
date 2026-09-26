@@ -80,7 +80,9 @@ class HomeViewModel @Inject constructor(
                 .filter { it.txType == "income" || it.txType == "expense" }
                 .sortedByDescending { it.dateIso }
                 .take(5)
+            // ac: card-due-reflects-payments — a fully paid statement is not "due", so drop it from Home
             val cards = getCardStatements.getStatements().getOrElse { emptyList() }
+                .filter { it.balance > 0.0 }
             val budget = getBudgetGlance.getGlance("IDR").getOrNull()
             _state.value = HomeUiState(
                 loading = false,

@@ -1,9 +1,8 @@
 {
-  "feature": "mobile_home_screen",
-  "storyId": "home-cycle-overview",
+  "feature": "android_card_billing",
+  "storyId": "card-due-reflects-payments",
   "acceptanceCriteria": [
-    "the Home hero net per zone is money in minus money out, including cross-zone transfers credited by the received amount",
-    "Investments are a separate pool: withdrawing from Investments into an IDR account counts as money in on the IDR side",
-    "within-zone transfers do not affect the hero totals"
+    "Cards due shows the remaining owed on the current statement: the balance as of the cutoff minus charges made after the cutoff",
+    "a card whose current statement is fully paid is hidden from the Home Cards due section"
   ]
 }

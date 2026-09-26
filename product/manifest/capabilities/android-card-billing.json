@@ -2,7 +2,15 @@
   "id": "android-card-billing",
   "title": "Android Card Billing",
   "status": "In Progress",
-  "owners": ["fidriyantoriz@social.plus"],
-  "stories": ["android-card-statement-view"],
-  "flows": ["android-card-statement-view-flow"]
+  "owners": [
+    "fidriyantoriz@social.plus"
+  ],
+  "stories": [
+    "android-card-statement-view",
+    "card-due-reflects-payments"
+  ],
+  "flows": [
+    "android-card-statement-view-flow",
+    "card-due-reflects-payments-flow"
+  ]
 }
