@@ -1,0 +1,24 @@
+{
+  "id": "transport-provider-breakdown-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the Dashboard screen" },
+    {
+      "actor": "app",
+      "action": "displays BalanceCard and CategoryBreakdownCard for each currency section",
+      "noNavigation": true
+    },
+    {
+      "actor": "app",
+      "action": "displays TransportBreakdownCard below CategoryBreakdownCard for each currency that has transport transactions",
+      "story": "transport-provider-breakdown",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "changes the period filter (e.g. This Month to Last Month)" },
+    {
+      "actor": "app",
+      "action": "reloads TransportBreakdownCard with merchant totals for the new period",
+      "story": "transport-provider-breakdown",
+      "noNavigation": true
+    }
+  ]
+}

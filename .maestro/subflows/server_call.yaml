@@ -1,0 +1,5 @@
+# Calls the fake server in the middle of a flow. Env: SERVER_PATH, SERVER_BODY (optional JSON text).
+appId: com.fidriyanto.banktracker
+---
+- runScript:
+    file: ../scripts/js/server.js

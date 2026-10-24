@@ -1,0 +1,23 @@
+# seed: base
+# E2E-103. Rename an account.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn:
+    id: "settings_accounts"
+- tapOn:
+    id: "account_rename_CASH"
+- tapOn:
+    text: "Cash"
+    point: "98%,50%"
+- eraseText: 10
+- inputText: "Wallet cash"
+- tapOn: "Save"
+- assertVisible: "Wallet cash"

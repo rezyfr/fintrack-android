@@ -1,0 +1,13 @@
+{
+  "id": "budget-glance-reloads-on-resume-flow",
+  "steps": [
+    { "actor": "user", "action": "changes a budget line's kind or target directly in the database" },
+    {
+      "actor": "app",
+      "action": "refetches budget lines each time the Budget tab resumes",
+      "story": "budget-glance-reloads-on-resume",
+      "requires": "BudgetGlanceScreen"
+    },
+    { "actor": "user", "action": "reopens the Budget tab and sees the change reflected" }
+  ]
+}

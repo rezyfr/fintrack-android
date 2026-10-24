@@ -1,0 +1,12 @@
+{
+  "id": "card-statement-fifo-minimum-rollover",
+  "capability": "android-card-billing",
+  "role": "user",
+  "want": "the card due to be computed accurately after payments and cash advances, and to roll to the next statement",
+  "soThat": "I see the true remaining, whether the minimum is paid, and the correct upcoming due date",
+  "acceptance": [
+    "the statement remaining owed is computed by FIFO over all charges and payments, so cash-advance transfers-out and payments are both counted",
+    "the minimum shown is the remaining minimum after payments since the cutoff, and reads Paid when the minimum is covered",
+    "once a past-due statement is fully paid the card rolls forward to show the next statement's accumulating balance and due date"
+  ]
+}

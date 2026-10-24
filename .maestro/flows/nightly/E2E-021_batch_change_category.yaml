@@ -1,0 +1,23 @@
+# seed: base
+# E2E-021. Select two rows and change their category.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- longPressOn: "Lunch with team"
+- longPressOn: "Bus ticket"
+- tapOn: "Category"
+- tapOn: "Entertainment"
+- tapOn: "Apply"
+- assertVisible: "Entertainment.*"
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: PATCH
+      LOG_TABLE: transactions
+      LOG_CONTAINS: "Entertainment"

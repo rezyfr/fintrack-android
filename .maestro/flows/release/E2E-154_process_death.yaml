@@ -1,0 +1,15 @@
+# seed: base
+# E2E-154. Open the Add sheet, kill the process, relaunch. Home opens.
+appId: com.fidriyanto.banktracker
+tags:
+  - release
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- tapOn:
+    id: "add_fab"
+- waitForAnimationToEnd
+- killApp
+- launchApp
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 25000

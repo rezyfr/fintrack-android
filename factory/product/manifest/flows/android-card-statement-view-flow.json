@@ -1,0 +1,12 @@
+{
+  "id": "android-card-statement-view-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the Budget tab and selects the Cards view" },
+    {
+      "actor": "app",
+      "action": "loads the stored card_billing records and each card's transactions, then shows the statement balance, due date, and minimum for every credit card",
+      "story": "android-card-statement-view",
+      "requires": "CardsScreen"
+    }
+  ]
+}

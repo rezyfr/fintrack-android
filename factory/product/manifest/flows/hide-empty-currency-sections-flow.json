@@ -1,0 +1,27 @@
+{
+  "id": "hide-empty-currency-sections-flow",
+  "steps": [
+    { "actor": "user", "action": "tracks transactions in only one currency (for example, only IDR accounts, never using Bangkok Bank)" },
+    {
+      "actor": "app",
+      "action": "the Home hero shows only that currency's block, with no divider and no empty Thailand/Indonesia block for the unused currency",
+      "story": "hide-empty-currency-sections",
+      "requires": "HomeScreen"
+    },
+    { "actor": "user", "action": "opens the Balances tab" },
+    {
+      "actor": "app",
+      "action": "the net-worth row shows only the tile for the currency that has a wallet",
+      "story": "hide-empty-currency-sections",
+      "requires": "BalancesScreen",
+      "triggerElement": "NetWorthRow"
+    },
+    { "actor": "user", "action": "opens Insights on the web app for a period with no activity in the unused currency" },
+    {
+      "actor": "app",
+      "action": "shows only the active currency's section, instead of a second section reading all zeros",
+      "story": "hide-empty-currency-sections",
+      "noNavigation": true
+    }
+  ]
+}

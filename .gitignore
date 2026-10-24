@@ -1,0 +1,38 @@
+.superpowers/
+.omc/
+.claude/settings.local.json
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/app/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+governance/sheet-rules.md
+factory/.session-checkpoint.json
+factory/gate-log.jsonl
+factory/.gate-loop-state
+node_modules/
+web/node_modules/
+# Secrets — never commit
+.env
+.env.*
+*.env
+scripts/.env
+!.env.example
+!**/.env.example
+
+# Agent worktrees stay on this machine
+.claude/worktrees/
+
+# Your own list of sensitive terms stays on this machine
+governance/sensitive-terms.local.txt
+.kotlin/
+
+# Maestro run output
+.maestro/reports/
+.maestro/apks/

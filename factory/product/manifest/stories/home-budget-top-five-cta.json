@@ -1,0 +1,11 @@
+{
+  "id": "home-budget-top-five-cta",
+  "capability": "android-budget-glance",
+  "role": "user",
+  "want": "the Home budget card to show only the first five budget lines and a link to the Budget tab",
+  "soThat": "Home stays short and I can reach every budget in one tap",
+  "acceptance": [
+    "the Home budget card lists at most the first five flexible lines",
+    "the Home budget card has a See all budgets button that opens the Budget tab"
+  ]
+}

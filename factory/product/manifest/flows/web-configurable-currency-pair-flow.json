@@ -1,0 +1,19 @@
+{
+  "id": "web-configurable-currency-pair-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the Accounts tab and edits the currency codes and labels in Currency settings" },
+    {
+      "actor": "app",
+      "action": "saves the pair in this browser and relabels every section and total that names a currency",
+      "story": "web-configurable-currency-pair",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "opens Insights, Budget, Balances, or Calendar" },
+    {
+      "actor": "app",
+      "action": "shows each currency section under the configured label and code",
+      "story": "web-configurable-currency-pair",
+      "noNavigation": true
+    }
+  ]
+}

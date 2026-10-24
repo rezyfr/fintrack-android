@@ -1,0 +1,18 @@
+# seed: base
+# E2E-032. With a book selected, the Add form lists only wallets of that currency.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/select_book.yaml
+    env:
+      BOOK: EUR
+- tapOn:
+    id: "add_fab"
+- waitForAnimationToEnd
+- tapOn: "Wallet"
+- assertVisible: "Euro bank"
+- assertNotVisible: "Cash"
+- assertNotVisible: "Gold card"

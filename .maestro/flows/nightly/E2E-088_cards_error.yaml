@@ -1,0 +1,13 @@
+# seed: base
+# fault: GET card_billing=500
+# E2E-088. The server fails on card billing.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: cards
+- assertVisible: "Could not load cards"

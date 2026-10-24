@@ -1,0 +1,45 @@
+# seed: empty
+# E2E-002. Home currency USD and one account in USD. Home opens with no book switch.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- launchApp:
+    clearState: true
+    stopApp: true
+- tapOn: "Let us go"
+- runFlow:
+    file: ../../subflows/setup_storage_server.yaml
+- tapOn: "Currency code"
+- eraseText: 3
+- inputText: "USD"
+- hideKeyboard
+- tapOn: "Continue"
+- tapOn: "Continue"
+- assertVisible: "Add your accounts"
+- tapOn: "Account name"
+- inputText: "Cash"
+- hideKeyboard
+- tapOn: "Add account"
+- assertVisible: "Cash"
+- tapOn: "Continue"
+- assertVisible: "You are all set"
+- assertVisible: "Home currency: USD"
+- tapOn: "Open FinTrack"
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 20000
+- assertNotVisible:
+    id: "book_combined"
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: POST
+      LOG_TABLE: accounts
+      LOG_CONTAINS: CASH
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: POST
+      LOG_TABLE: app_settings
+      LOG_CONTAINS: USD

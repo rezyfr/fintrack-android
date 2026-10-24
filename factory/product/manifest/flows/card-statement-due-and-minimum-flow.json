@@ -1,0 +1,12 @@
+{
+  "id": "card-statement-due-and-minimum-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the Card Debt tab and selects a credit card" },
+    {
+      "actor": "app",
+      "action": "loads that card's stored billing record, resolves the latest statement cutoff and its due date, and shows the statement balance and the minimum payment",
+      "story": "card-statement-due-and-minimum",
+      "noNavigation": true
+    }
+  ]
+}

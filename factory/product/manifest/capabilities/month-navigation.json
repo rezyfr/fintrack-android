@@ -1,0 +1,8 @@
+{
+  "id": "month-navigation",
+  "title": "Month Navigation",
+  "status": "Approved",
+  "owners": ["owner@example.com"],
+  "stories": ["month-nav-buttons"],
+  "flows": ["month-nav-buttons-flow"]
+}

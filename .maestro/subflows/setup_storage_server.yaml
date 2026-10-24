@@ -1,0 +1,12 @@
+# Passes the storage and server pages of setup. A test build has the fake server built in, so the
+# server choice and its address are already filled in. The test of the connection must pass first.
+appId: com.fidriyanto.banktracker
+---
+- assertVisible: "Where should FinTrack keep your data?"
+- tapOn: "Continue"
+- assertVisible: "Connect your server"
+- tapOn: "Test the connection"
+- extendedWaitUntil:
+    visible: "Connected. The server has no data yet, so setup continues."
+    timeout: 10000
+- tapOn: "Continue"

@@ -1,0 +1,7 @@
+# Copy this file to governance/sensitive-terms.local.txt. Git ignores the copy.
+# One regular expression per line, matched without regard to case. Lines that start with # are comments.
+# Put in names, merchants and amounts that came from your real life, so no one commits them by mistake.
+# Examples with made-up values:
+\bjane doe\b
+\bcorner bakery\b
+1,234,567

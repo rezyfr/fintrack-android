@@ -1,0 +1,12 @@
+{
+  "id": "retire-pdf-import-tab-flow",
+  "steps": [
+    { "actor": "user", "action": "looks for a way to import a statement PDF in the web app" },
+    {
+      "actor": "app",
+      "action": "offers no Import tab, upload screen, or parser code — the feature and its script are both gone from the repo",
+      "story": "retire-pdf-import-tab",
+      "noNavigation": true
+    }
+  ]
+}

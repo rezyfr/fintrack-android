@@ -1,0 +1,22 @@
+# seed: base
+# E2E-104. Delete an account.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn:
+    id: "settings_accounts"
+- tapOn:
+    id: "account_delete_CASH"
+- assertNotVisible: "Cash"
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: DELETE
+      LOG_TABLE: accounts

@@ -1,0 +1,28 @@
+# seed: base
+# E2E-173. A rule saved on the phone is sent to the shared rules_doc row.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn: "Rules"
+- tapOn: "Create your first rule"
+- tapOn: "Text to look for"
+- inputText: "taxi"
+- hideKeyboard
+- tapOn: "Continue"
+- tapOn: "Transport"
+- tapOn: "Continue"
+- tapOn: "Save rule"
+- assertVisible: "Detail 1"
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: POST
+      LOG_TABLE: rules_doc
+      LOG_CONTAINS: "taxi"

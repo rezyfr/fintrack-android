@@ -1,0 +1,14 @@
+{
+  "id": "home-cycle-spending-comparison",
+  "capability": "mobile-home-screen",
+  "role": "user",
+  "want": "a line chart on Home that compares this cycle's spending against last cycle's spending",
+  "soThat": "I can see whether I am spending faster or slower than the previous cycle",
+  "acceptance": [
+    "Home shows a line chart of cumulative combined spending across the pay cycle (Bangkok Bank THB converted to IDR plus the IDR accounts), with dates on the x axis thinned so they fit the screen",
+    "the current cycle is drawn as a pine line with a translucent pine fill beneath it and a dot marking today",
+    "the previous cycle is drawn as its own actual cumulative spending curve across the cycle, aligned to the same day-of-cycle x axis",
+    "pressing and holding the chart shows the spending amount and the date at that point for both cycles",
+    "the press-and-hold tooltip also shows the amount difference between this cycle and last cycle at that day"
+  ]
+}

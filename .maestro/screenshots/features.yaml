@@ -1,0 +1,71 @@
+# seed: showcase
+# Takes the README screenshots of the newer features. This is not a test, so run_all.sh does not run it. See README.md in this folder.
+appId: com.fidriyanto.banktracker
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: budget
+- scrollUntilVisible:
+    element: "Last 3 cycles"
+    direction: DOWN
+- tapOn: "Last 3 cycles"
+- waitForAnimationToEnd
+- takeScreenshot: budget-compare
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- waitForAnimationToEnd
+- tapOn: "Scheduled transactions"
+- waitForAnimationToEnd
+- takeScreenshot: schedules-empty
+- runFlow:
+    file: ../../subflows/schedule_create.yaml
+    env:
+      TILE: "Rent or bills"
+      AMOUNT: "800"
+      NAME: "Monthly rent"
+      CATEGORY: "Bills"
+- runFlow:
+    file: ../../subflows/schedule_create.yaml
+    env:
+      TILE: "Subscription"
+      AMOUNT: "15"
+      NAME: "Streaming plan"
+      CATEGORY: "Subscriptions"
+- runFlow:
+    file: ../../subflows/schedule_create.yaml
+    env:
+      TILE: "Salary or income"
+      AMOUNT: "3000"
+      NAME: "Pay day"
+      CATEGORY: "Salary"
+- waitForAnimationToEnd
+- takeScreenshot: schedules-list
+- tapOn: "New schedule"
+- waitForAnimationToEnd
+- takeScreenshot: schedule-start
+- tapOn: "Rent or bills"
+- extendedWaitUntil:
+    visible: "How much, and for what"
+- waitForAnimationToEnd
+- takeScreenshot: schedule-what
+- back
+- tapOn: "Every month, day 1"
+- extendedWaitUntil:
+    visible: "How much, and for what"
+- tapOn: "Continue"
+- extendedWaitUntil:
+    visible: "When does it repeat\\?"
+- waitForAnimationToEnd
+- takeScreenshot: schedule-when
+- tapOn: "Continue"
+- extendedWaitUntil:
+    visible: "Looks right\\?"
+- tapOn: "Post automatically"
+- waitForAnimationToEnd
+- takeScreenshot: schedule-warning
+- tapOn: "Keep it off"

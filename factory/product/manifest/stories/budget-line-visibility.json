@@ -1,0 +1,11 @@
+{
+  "id": "budget-line-visibility",
+  "capability": "budget-cycle-tracking",
+  "role": "user",
+  "want": "to toggle each budget line on and off the chart",
+  "soThat": "I can compare a few lines at a time instead of reading twenty overlapping series at once",
+  "acceptance": [
+    "each budget line has a toggle that hides or shows both its target and actual series on the chart",
+    "hiding a line rescales the chart to fit only the lines still visible"
+  ]
+}

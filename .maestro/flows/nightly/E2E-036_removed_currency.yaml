@@ -1,0 +1,30 @@
+# seed: three_currency
+# E2E-036. Delete the last account of a currency while its book is selected. The app falls back to Combined.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/select_book.yaml
+    env:
+      BOOK: JPY
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn:
+    id: "settings_accounts"
+- tapOn:
+    id: "account_delete_YEN"
+- assertNotVisible: "Yen wallet"
+- tapOn: "Back"
+- tapOn: "Back"
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: home
+- assertNotVisible:
+    id: "book_JPY"
+- assertVisible: "All accounts"

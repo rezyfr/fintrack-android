@@ -1,0 +1,18 @@
+# seed: base
+# E2E-031. After a restart the Combined book is selected.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/select_book.yaml
+    env:
+      BOOK: EUR
+- assertNotVisible: "All accounts"
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 20000
+- assertVisible: "All accounts"

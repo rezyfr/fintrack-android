@@ -1,0 +1,13 @@
+{
+  "id": "transfer-uses-transfer-category-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the Add screen and selects the Transfer type" },
+    {
+      "actor": "app",
+      "action": "sets the transaction category to Transfer",
+      "story": "transfer-uses-transfer-category",
+      "requires": "AddScreen"
+    },
+    { "actor": "user", "action": "submits the transfer" }
+  ]
+}

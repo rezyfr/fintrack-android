@@ -1,0 +1,41 @@
+# seed: base
+# E2E-013. Transfer from a USD wallet to a EUR wallet. The form asks for the received amount.
+# The row shows in both books.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- tapOn:
+    id: "add_fab"
+- waitForAnimationToEnd
+- tapOn: "Transfer"
+- tapOn: "0"
+- inputText: "100"
+- tapOn: "To"
+- tapOn: "Euro bank"
+- assertVisible: "Received \\(EUR\\)"
+- tapOn: "0"
+- inputText: "90"
+- tapOn: "Add description…"
+- inputText: "Cross currency move"
+- hideKeyboard
+- extendedWaitUntil:
+    visible: "Save"
+    timeout: 8000
+- tapOn: "Save"
+- assertNotVisible: "Category:.*"
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- runFlow:
+    file: ../../subflows/select_book.yaml
+    env:
+      BOOK: USD
+- assertVisible: "Cross currency move"
+- runFlow:
+    file: ../../subflows/select_book.yaml
+    env:
+      BOOK: EUR
+- assertVisible: "Cross currency move"

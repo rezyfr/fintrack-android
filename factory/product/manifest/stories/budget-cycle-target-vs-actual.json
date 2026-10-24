@@ -1,0 +1,13 @@
+{
+  "id": "budget-cycle-target-vs-actual",
+  "capability": "budget-cycle-tracking",
+  "role": "user",
+  "want": "a chart of target against actual spending across the current pay cycle",
+  "soThat": "I can see part-way through the cycle whether I am tracking to the budget instead of finding out after the money is gone",
+  "acceptance": [
+    "the Budget tab opens on the pay cycle in progress and plots a target series and an actual series for every visible budget line",
+    "the actual series is cumulative spend to date and stops at today rather than running to the end of the cycle",
+    "a fixed budget line's target steps up on its due day instead of sloping evenly across the cycle",
+    "a flexible budget line's target slopes evenly from zero to its full amount across the cycle"
+  ]
+}

@@ -1,0 +1,12 @@
+# seed: no_installments
+# E2E-093. With no plans the view shows an empty text.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: installments
+- assertVisible: "No active installments"

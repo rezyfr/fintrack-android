@@ -1,0 +1,30 @@
+# seed: base
+# E2E-161. The month switch on Budget and Insights stays at the top while the page scrolls.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: budget
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: insights
+- assertVisible: "Previous cycle"
+- scrollUntilVisible:
+    element: "Last 6 months"
+    direction: DOWN
+- assertVisible: "Previous cycle"
+- assertVisible: "Next cycle"
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: budget
+- assertVisible: "Previous cycle"
+- scrollUntilVisible:
+    element: "Fixed bills"
+    direction: DOWN
+- assertVisible: "Previous cycle"

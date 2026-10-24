@@ -1,0 +1,14 @@
+{
+  "id": "hide-empty-currency-sections",
+  "title": "Hide Empty Currency Sections",
+  "status": "Approved",
+  "owners": [
+    "owner@example.com"
+  ],
+  "stories": [
+    "hide-empty-currency-sections"
+  ],
+  "flows": [
+    "hide-empty-currency-sections-flow"
+  ]
+}

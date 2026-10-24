@@ -1,0 +1,19 @@
+# seed: one_currency
+# E2E-147. One currency. No book switch. Insights and Accounts work.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- assertNotVisible:
+    id: "book_combined"
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: insights
+- assertVisible: "Money in"
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- assertVisible: "USD Net"

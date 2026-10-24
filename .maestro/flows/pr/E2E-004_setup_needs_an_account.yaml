@@ -1,0 +1,19 @@
+# seed: empty
+# E2E-004. With no account added, Continue on the accounts page stays disabled.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- launchApp:
+    clearState: true
+    stopApp: true
+- tapOn: "Let us go"
+- runFlow:
+    file: ../../subflows/setup_storage_server.yaml
+- tapOn: "Continue"
+- tapOn: "Continue"
+- assertVisible: "Add your accounts"
+# The button is disabled, so a tap does nothing and the page stays.
+- tapOn: "Continue"
+- assertVisible: "Add your accounts"
+- assertNotVisible: "You are all set"

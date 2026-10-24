@@ -1,0 +1,14 @@
+{
+  "id": "advanced-transaction-filters",
+  "capability": "transaction-search",
+  "role": "user",
+  "want": "to filter transactions by item text, amount range, and specific date range",
+  "soThat": "I can quickly find and audit specific transactions without scrolling through the full list",
+  "acceptance": [
+    "a search text field filters transactions whose item contains the query on both web and Android",
+    "amount range inputs (min and max) filter transactions whose amount falls within the range",
+    "date range inputs (from and to) filter transactions by specific dates within or across months",
+    "all advanced filters combine with the existing month, wallet, type, and category filters",
+    "clearing a filter restores the full result set with other active filters still applied"
+  ]
+}

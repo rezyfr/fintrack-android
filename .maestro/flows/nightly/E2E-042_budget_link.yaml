@@ -1,0 +1,10 @@
+# seed: base
+# E2E-042. See all budgets on Home opens the Budget tab.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/scroll_down.yaml
+- tapOn: "See all budgets"
+- assertVisible: "Remaining budget"

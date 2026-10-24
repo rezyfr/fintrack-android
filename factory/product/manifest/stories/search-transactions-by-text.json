@@ -1,0 +1,13 @@
+{
+  "id": "search-transactions-by-text",
+  "capability": "transaction-search",
+  "role": "user",
+  "want": "to search transactions by merchant or item text",
+  "soThat": "I can quickly find a specific transaction without scrolling through the list",
+  "acceptance": [
+    "a search text field is shown above the transaction list filters",
+    "typing in the search field filters transactions whose merchant or item contains the query",
+    "clearing the search field restores the unfiltered list",
+    "the search filter combines with the existing month, wallet, type, and category filters"
+  ]
+}

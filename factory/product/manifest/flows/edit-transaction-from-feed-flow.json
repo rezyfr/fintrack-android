@@ -1,0 +1,20 @@
+{
+  "id": "edit-transaction-from-feed-flow",
+  "steps": [
+    { "actor": "user", "action": "long-presses a transaction card on the feed" },
+    {
+      "actor": "app",
+      "action": "opens the edit bottom sheet pre-populated with the transaction's current values",
+      "story": "edit-transaction-from-feed",
+      "noNavigation": true,
+      "triggerElement": "EditTransactionBottomSheet"
+    },
+    { "actor": "user", "action": "edits one or more fields and taps Save" },
+    {
+      "actor": "app",
+      "action": "dismisses the bottom sheet, updates the local row optimistically, and syncs the PATCH to Supabase",
+      "story": "edit-transaction-from-feed",
+      "noNavigation": true
+    }
+  ]
+}

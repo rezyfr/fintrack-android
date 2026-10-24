@@ -1,0 +1,7 @@
+# Opens one view of the Budget tab. Env: SUB is budget, cards, installments or insights.
+appId: com.fidriyanto.banktracker
+---
+- tapOn:
+    id: "tab_budget"
+- tapOn:
+    id: "sub_${SUB}"

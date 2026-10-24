@@ -1,0 +1,26 @@
+# seed: base
+# E2E-010. Add an expense. The sheet closes and the row shows under Today.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/add_transaction.yaml
+    env:
+      TYPE: Expense
+      AMOUNT: "12500"
+      DESC: "Lunch special"
+      CATEGORY: "Groceries"
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertVisible: "Today"
+- assertVisible: "Lunch special"
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: POST
+      LOG_TABLE: transactions
+      LOG_CONTAINS: "Lunch special"

@@ -1,0 +1,12 @@
+# Editor-facing formatting hints (IntelliJ/Android Studio read this directly). The actual ktlint
+# rule selection Spotless enforces lives in app/build.gradle.kts's editorConfigOverride — Spotless's
+# ktlint step did not pick up per-rule overrides from this file in testing, so this file is IDE
+# guidance only; keep the two in sync by hand if you change one.
+root = true
+
+[*.{kt,kts}]
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = off

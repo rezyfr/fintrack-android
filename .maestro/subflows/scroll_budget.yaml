@@ -1,0 +1,9 @@
+# Scrolls the Budget view down. The swipe starts on the summary text, because the chart below takes drags.
+appId: com.fidriyanto.banktracker
+---
+- swipe:
+    start: "50%, 62%"
+    end: "50%, 15%"
+- swipe:
+    start: "50%, 62%"
+    end: "50%, 15%"

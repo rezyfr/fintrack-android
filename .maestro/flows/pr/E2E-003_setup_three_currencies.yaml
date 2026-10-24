@@ -1,0 +1,64 @@
+# seed: empty
+# E2E-003. Home USD with accounts in USD, EUR and JPY. A rate field shows for EUR and JPY only.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- launchApp:
+    clearState: true
+    stopApp: true
+- tapOn: "Let us go"
+- runFlow:
+    file: ../../subflows/setup_storage_server.yaml
+- tapOn: "Currency code"
+- eraseText: 3
+- inputText: "USD"
+- hideKeyboard
+- tapOn: "Continue"
+- tapOn: "Continue"
+- tapOn: "Account name"
+- inputText: "Main"
+- hideKeyboard
+- tapOn: "Add account"
+- tapOn: "Account name"
+- inputText: "Euro bank"
+- tapOn: "Currency"
+- eraseText: 3
+- inputText: "EUR"
+- hideKeyboard
+- tapOn: "Add account"
+- tapOn: "Account name"
+- inputText: "Yen wallet"
+- tapOn: "Currency"
+- eraseText: 3
+- inputText: "JPY"
+- hideKeyboard
+- tapOn: "Add account"
+- tapOn: "Continue"
+- assertVisible: "Exchange rates"
+- assertVisible: "Rate: 1 EUR in USD"
+- assertVisible: "Rate: 1 JPY in USD"
+- assertNotVisible: "Rate: 1 USD in USD"
+- tapOn: "Rate: 1 EUR in USD"
+- inputText: "1.1"
+- hideKeyboard
+- tapOn: "Continue"
+- assertVisible: "You are all set"
+- tapOn: "Open FinTrack"
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 20000
+- assertVisible:
+    id: "book_combined"
+- assertVisible:
+    id: "book_USD"
+- assertVisible:
+    id: "book_EUR"
+- assertVisible:
+    id: "book_JPY"
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: POST
+      LOG_TABLE: app_settings
+      LOG_CONTAINS: "1.1"

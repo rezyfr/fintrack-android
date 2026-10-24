@@ -1,0 +1,7 @@
+# Opens the Transactions tab and its filter sheet.
+appId: com.fidriyanto.banktracker
+---
+- tapOn:
+    id: "tab_transactions"
+- tapOn: "Filters.*"
+- assertVisible: "Search transactions"

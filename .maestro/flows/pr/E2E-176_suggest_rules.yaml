@@ -1,0 +1,37 @@
+# seed: suggest_rules
+# E2E-176. The Suggested rules screen finds a repeated amount and a monthly payment from saved transactions.
+# The fare of 65 has a category hint from rows that already have one. Add rule saves it.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn: "Rules"
+- assertVisible: "Find rules in my transactions"
+- tapOn: "Find rules in my transactions"
+- assertVisible: "Rules we found in your transactions"
+- extendedWaitUntil:
+    visible: "When the amount is 65.*"
+    timeout: 15000
+- assertVisible: "Would sort 6 transactions"
+- assertVisible: "Transactions with this amount that already have a category agree: 4 of 4 are Transport."
+- scrollUntilVisible:
+    element: "When the amount is 700, the date is 26.*"
+    direction: DOWN
+- assertVisible: "This amount repeats on day 26 of the month, in 4 different months."
+- scrollUntilVisible:
+    element: "Rules we found in your transactions"
+    direction: UP
+# The category of the first suggestion is already chosen from the hint, so Add rule works at once.
+- tapOn:
+    text: "Add rule"
+    index: 0
+- assertVisible: "Rule added."
+- tapOn: "Back"
+- assertVisible: "Amount 65"
+- assertVisible: ".*the amount is 65.*Transport.*"

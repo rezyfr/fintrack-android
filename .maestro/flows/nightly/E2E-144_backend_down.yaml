@@ -1,0 +1,27 @@
+# seed: base
+# E2E-144. The server is down at launch. The app does not crash and the Transactions tab says it could not load.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertVisible: "Bus ticket"
+- runFlow:
+    file: ../../subflows/server_call.yaml
+    env:
+      SERVER_PATH: /__fault
+      SERVER_BODY: '{"route":"*","mode":"500"}'
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 25000
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertVisible: "Could not load transactions.*"

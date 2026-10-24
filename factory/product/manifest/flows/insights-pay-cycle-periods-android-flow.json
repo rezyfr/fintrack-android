@@ -1,0 +1,13 @@
+{
+  "id": "insights-pay-cycle-periods-android-flow",
+  "steps": [
+    { "actor": "user", "action": "opens Budget then Insights on Android" },
+    {
+      "actor": "app",
+      "action": "resolves This Month, Last Month, and Last 3 Months to day-precise 26th-to-25th pay cycles, matching web, instead of calendar months",
+      "story": "insights-pay-cycle-periods",
+      "requires": "DashboardScreen"
+    },
+    { "actor": "user", "action": "sees totals for the current pay cycle instead of the calendar month" }
+  ]
+}

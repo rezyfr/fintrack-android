@@ -1,0 +1,19 @@
+# seed: base
+# E2E-077. In a book, Insights shows the Spending Breakdown card. Tapping a category is not automated: the breakdown is one chart node.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: insights
+- runFlow:
+    file: ../../subflows/select_book.yaml
+    env:
+      BOOK: USD
+- scrollUntilVisible:
+    element: "Spending Breakdown"
+    direction: DOWN
+- assertVisible: "Spending Breakdown"

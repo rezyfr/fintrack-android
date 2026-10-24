@@ -1,0 +1,17 @@
+{
+  "id": "insights-advanced-filters",
+  "title": "Insights Advanced Filters",
+  "status": "Approved",
+  "owners": [
+    "owner@example.com"
+  ],
+  "stories": [
+    "insights-custom-range-and-multi-wallet",
+    "insights-pay-cycle-periods"
+  ],
+  "flows": [
+    "insights-custom-range-and-multi-wallet-flow",
+    "insights-pay-cycle-periods-flow",
+    "insights-pay-cycle-periods-android-flow"
+  ]
+}

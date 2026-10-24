@@ -1,0 +1,15 @@
+{
+  "id": "web-manage-categories",
+  "capability": "web-account-category-management",
+  "role": "user",
+  "want": "the web app to read the same categories and subcategories as the Android app and let me add and remove them",
+  "soThat": "a category I add on one device shows up on the other, and the web app is not limited to a fixed hardcoded list",
+  "acceptance": [
+    "the web app loads the categories and subcategories tables from Supabase on startup and builds its expense category and subcategory lists from them",
+    "when the categories tables cannot be read or are empty, the web app falls back to the shipped default categories and subcategories",
+    "a Manage Categories view lists every category with its subcategories",
+    "the user can add a custom category, and a default (seeded) category cannot be deleted",
+    "the user can add and delete subcategories under any category",
+    "the category and subcategory pickers in Add Transaction, Edit Transaction, and the Transactions filters reflect the current lists"
+  ]
+}

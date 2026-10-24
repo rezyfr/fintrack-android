@@ -1,0 +1,10 @@
+{
+  "id": "home-recent-category-icons",
+  "capability": "mobile-home-screen",
+  "role": "user",
+  "want": "the recent transactions on Home to show category icons",
+  "soThat": "they look the same as the Transactions list",
+  "acceptance": [
+    "each row in the Home recent transactions shows the category icon in a rounded square, the same as the Transactions list"
+  ]
+}

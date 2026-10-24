@@ -1,0 +1,19 @@
+{
+  "id": "expand-insights-category-to-transactions-flow",
+  "steps": [
+    { "actor": "user", "action": "clicks a category row in the Spending Breakdown card" },
+    {
+      "actor": "app",
+      "action": "expands the row and fetches the transactions contributing to that category's total under the active filters",
+      "story": "expand-insights-category-to-transactions",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "clicks the expanded category row again" },
+    {
+      "actor": "app",
+      "action": "collapses the transaction list",
+      "story": "expand-insights-category-to-transactions",
+      "noNavigation": true
+    }
+  ]
+}

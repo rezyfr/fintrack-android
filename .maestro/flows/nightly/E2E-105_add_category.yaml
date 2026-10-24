@@ -1,0 +1,28 @@
+# seed: base
+# E2E-105. Add a category.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn:
+    id: "settings_categories"
+- scrollUntilVisible:
+    element: "Add Category"
+    direction: DOWN
+- tapOn: "Add Category"
+- tapOn: "Category name"
+- inputText: "Pets"
+- hideKeyboard
+- tapOn: "Save"
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: POST
+      LOG_TABLE: categories
+      LOG_CONTAINS: "Pets"

@@ -1,0 +1,13 @@
+# seed: three_currency
+# E2E-074. Combined budget converts lines in two currencies.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: budget
+- assertVisible: "of .*"
+- takeScreenshot: e2e-074-budget

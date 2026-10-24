@@ -1,0 +1,51 @@
+# seed: base
+# E2E-106. Change book names and the cycle day. The switch and the range follow.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn:
+    id: "settings_currencies"
+- tapOn: "Home currency label"
+- eraseText: 10
+- inputText: "Home"
+- tapOn: "Pay cycle starts on day"
+- eraseText: 3
+- inputText: "1"
+- hideKeyboard
+- tapOn: "Book name for EUR"
+- eraseText: 10
+- inputText: "Europe"
+- hideKeyboard
+- scrollUntilVisible:
+    element: "Save"
+    direction: DOWN
+- tapOn: "Save"
+# Settings is a full page now. Go back to the tabs, whichever page the save returns to.
+- runFlow:
+    when:
+      notVisible:
+        id: "tab_home"
+    commands:
+      - back
+- runFlow:
+    when:
+      notVisible:
+        id: "tab_home"
+    commands:
+      - back
+- tapOn:
+    id: "tab_home"
+- assertVisible: "Home"
+- assertVisible: "Europe"
+- runScript:
+    file: ../../scripts/js/cycle.js
+    env:
+      START_DAY: "1"
+- assertVisible: "${output.range}"

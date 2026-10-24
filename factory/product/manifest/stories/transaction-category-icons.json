@@ -1,0 +1,11 @@
+{
+  "id": "transaction-category-icons",
+  "capability": "android-transactions-view",
+  "role": "user",
+  "want": "each transaction in the list to show an icon for its category",
+  "soThat": "I can tell food, transport, bills and other spending apart at a glance",
+  "acceptance": [
+    "each transaction row shows a Material icon for its category in a rounded square, in place of the category's first letter",
+    "categories without a dedicated icon, including custom categories, show a generic category icon"
+  ]
+}

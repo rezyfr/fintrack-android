@@ -1,0 +1,13 @@
+{
+  "id": "bca-received-notification-flow",
+  "steps": [
+    { "actor": "user", "action": "receives money into BCA and myBCA posts a 'You received' notification" },
+    {
+      "actor": "app",
+      "action": "parses the amount, payer and category and saves an income transaction on BCA in IDR_INCOME",
+      "story": "bca-received-notification",
+      "requires": "NotificationParser"
+    },
+    { "actor": "user", "action": "reviews the captured income in the feed" }
+  ]
+}

@@ -1,0 +1,27 @@
+# seed: base
+# E2E-012. Transfer between two wallets of the same currency. The row shows and the net total stays the same.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- assertVisible: "-\\$544"
+- tapOn:
+    id: "add_fab"
+- waitForAnimationToEnd
+- tapOn: "Transfer"
+- tapOn: "0"
+- inputText: "50000"
+- tapOn: "To"
+- tapOn: "Cash"
+- tapOn: "Add description…"
+- inputText: "Move to cash"
+- hideKeyboard
+- tapOn: "Save"
+- assertNotVisible: "Category:.*"
+- assertVisible: "-\\$544"
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertVisible: "Move to cash"

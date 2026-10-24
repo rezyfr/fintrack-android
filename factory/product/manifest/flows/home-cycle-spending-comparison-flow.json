@@ -1,0 +1,19 @@
+{
+  "id": "home-cycle-spending-comparison-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the Home tab" },
+    {
+      "actor": "app",
+      "action": "draws the cumulative spending line for the current cycle and the straight reference line for the previous cycle",
+      "story": "home-cycle-spending-comparison",
+      "requires": "HomeScreen"
+    },
+    { "actor": "user", "action": "presses and holds the chart to inspect a day" },
+    {
+      "actor": "app",
+      "action": "shows the spending amount and the date at the touched point for both cycles",
+      "story": "home-cycle-spending-comparison",
+      "requires": "HomeScreen"
+    }
+  ]
+}

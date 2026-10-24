@@ -1,0 +1,47 @@
+# seed: showcase
+# adb: set_listener.sh on
+# Takes the README screenshots. This is not a test, so run_all.sh does not run it. See README.md in this folder.
+appId: com.fidriyanto.banktracker
+---
+- runFlow: ../../subflows/launch_clean.yaml
+# The app keeps its own dark theme switch, and a clean start turns it off.
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn:
+    id: "settings_dark_theme"
+- tapOn: "Back"
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: home
+- waitForAnimationToEnd
+- takeScreenshot: home-dark
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: budget
+- waitForAnimationToEnd
+- takeScreenshot: budget-dark
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: insights
+- extendedWaitUntil:
+    visible: "Spending Breakdown"
+    timeout: 15000
+- waitForAnimationToEnd
+- takeScreenshot: insights-dark
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn: "Rules"
+- extendedWaitUntil:
+    visible: "Rent day"
+    timeout: 15000
+- waitForAnimationToEnd
+- takeScreenshot: rules-dark

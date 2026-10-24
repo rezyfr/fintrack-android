@@ -1,0 +1,14 @@
+# seed: cards_states
+# E2E-086. Cards show Due in 3 days, Due today and Overdue by 2 days.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: cards
+- assertVisible: "Due in 3 days"
+- assertVisible: "Due today"
+- assertVisible: "Overdue by 2 days"

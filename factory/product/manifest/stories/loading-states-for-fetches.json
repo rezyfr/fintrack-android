@@ -1,0 +1,12 @@
+{
+  "id": "loading-states-for-fetches",
+  "capability": "mobile-visual-refresh",
+  "role": "user",
+  "want": "every screen that loads data from the backend to show a loading state",
+  "soThat": "I never see empty or half-drawn content while data loads",
+  "acceptance": [
+    "one shared loading indicator is shown by a screen while its first backend fetch runs",
+    "the Budget glance, Cards, and Transactions Calendar views show the loading indicator while they load, instead of a text label or an empty grid",
+    "Home, Budget, Installments, Insights, Transactions, and Balances use the same shared loading indicator"
+  ]
+}

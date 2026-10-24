@@ -1,0 +1,9 @@
+# seed: base
+# E2E-116. Ask asks for the model first.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- tapOn: "Ask about your spending"
+- assertVisible: "Download the model once to ask questions about your spending."

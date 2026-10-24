@@ -1,0 +1,22 @@
+{
+  "id": "android-budget-glance",
+  "title": "Android Budget Glance",
+  "status": "In Progress",
+  "owners": [
+    "owner@example.com"
+  ],
+  "stories": [
+    "android-budget-daily-allowance",
+    "budget-fixed-bills",
+    "budget-glance-reloads-on-resume",
+    "budget-line-details-and-assignment",
+    "budget-remaining-sums-lines",
+    "home-budget-top-five-cta"
+  ],
+  "flows": [
+    "android-budget-daily-allowance-flow",
+    "budget-fixed-bills-flow",
+    "budget-glance-reloads-on-resume-flow",
+    "budget-line-details-and-assignment-flow"
+  ]
+}

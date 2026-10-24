@@ -1,0 +1,32 @@
+# Creates one schedule from the Scheduled list. Env: TILE (the idea to pick), AMOUNT, NAME, CATEGORY.
+appId: com.fidriyanto.banktracker
+---
+- tapOn: "New schedule"
+- tapOn: "${TILE}"
+- extendedWaitUntil:
+    visible: "How much, and for what"
+    timeout: 10000
+- tapOn: "Amount.*"
+- inputText: "${AMOUNT}"
+- tapOn: "Name"
+- inputText: "${NAME}"
+- hideKeyboard
+- scrollUntilVisible:
+    element: "${CATEGORY}"
+    direction: DOWN
+- tapOn: "${CATEGORY}"
+- scrollUntilVisible:
+    element: "Continue"
+    direction: DOWN
+- tapOn: "Continue"
+- extendedWaitUntil:
+    visible: "When does it repeat\\?"
+    timeout: 10000
+- tapOn: "Continue"
+- extendedWaitUntil:
+    visible: "Looks right\\?"
+    timeout: 10000
+- tapOn: "Save schedule"
+- extendedWaitUntil:
+    visible: "Your schedules"
+    timeout: 10000

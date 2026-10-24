@@ -1,0 +1,15 @@
+{
+  "id": "configurable-currency-pair",
+  "title": "Configurable Currency Pair",
+  "status": "Approved",
+  "owners": [
+    "owner@example.com"
+  ],
+  "stories": [
+    "configurable-currency-pair",
+    "multicurrency-money-formatting"
+  ],
+  "flows": [
+    "configurable-currency-pair-flow"
+  ]
+}

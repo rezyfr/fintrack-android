@@ -1,0 +1,32 @@
+{
+  "id": "set-category-budget-flow",
+  "steps": [
+    { "actor": "user", "action": "taps the Budget tab in the bottom navigation bar" },
+    {
+      "actor": "app",
+      "action": "navigates to the Budget screen and loads budget limits and current month spending",
+      "story": "set-category-budget",
+      "requires": "BudgetScreen"
+    },
+    {
+      "actor": "app",
+      "action": "displays a currency selector and a list of category rows each with a progress bar",
+      "story": "set-category-budget",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "taps a category row" },
+    {
+      "actor": "app",
+      "action": "opens an inline edit field pre-filled with the current budget limit",
+      "story": "set-category-budget",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "enters a new value and taps Save" },
+    {
+      "actor": "app",
+      "action": "persists the updated limit to the budgets table in Supabase and refreshes the row",
+      "story": "set-category-budget",
+      "noNavigation": true
+    }
+  ]
+}

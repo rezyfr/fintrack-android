@@ -1,0 +1,25 @@
+# seed: empty
+# fault: POST accounts=500
+# E2E-005. The server returns 500 when the setup saves the accounts. An error message shows.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- launchApp:
+    clearState: true
+    stopApp: true
+- tapOn: "Let us go"
+- runFlow:
+    file: ../../subflows/setup_storage_server.yaml
+- tapOn: "Continue"
+- tapOn: "Continue"
+- tapOn: "Account name"
+- inputText: "Cash"
+- hideKeyboard
+- tapOn: "Add account"
+- tapOn: "Continue"
+- assertVisible: "You are all set"
+- tapOn: "Open FinTrack"
+- assertVisible: "The setup could not be saved. Check your connection and try again."
+- assertNotVisible:
+    id: "tab_home"

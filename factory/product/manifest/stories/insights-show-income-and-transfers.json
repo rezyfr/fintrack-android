@@ -1,0 +1,14 @@
+{
+  "id": "insights-show-income-and-transfers",
+  "capability": "insights-transfer-visibility",
+  "role": "user",
+  "want": "to see transfer activity (like a Mandiri CC payment) on the Insights page without it being silently dropped",
+  "soThat": "I can see both my real spending and how much I've paid onto a wallet like a credit card, without transfers between my own accounts inflating the Income or Expenses totals",
+  "acceptance": [
+    "each currency section shows a Transfer In and a Transfer Out total, separate from Income and Expenses",
+    "Transfer In sums transfer transactions landing on a wallet in the current filter scope; Transfer Out sums transfer transactions leaving a wallet in scope",
+    "Income and Expenses totals are unaffected by transfers, so they still reflect only real money in and out",
+    "clicking Transfer In or Transfer Out expands it to show the underlying transfer transactions, the same way a category row expands",
+    "when there is no income, expense, or transfer activity for the period, the No Data state still shows"
+  ]
+}

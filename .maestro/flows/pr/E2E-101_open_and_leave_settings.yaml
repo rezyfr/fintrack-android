@@ -1,0 +1,15 @@
+# seed: base
+# E2E-101. Menu opens Settings. Back returns to balances.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- assertVisible: "Settings"
+- tapOn: "Back"
+- assertVisible: "USD Net"

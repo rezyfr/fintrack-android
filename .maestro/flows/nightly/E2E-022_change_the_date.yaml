@@ -1,0 +1,35 @@
+# seed: base
+# E2E-022. Add an expense dated yesterday. The row shows under Yesterday.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runScript:
+    file: ../../scripts/js/yesterday.js
+- runFlow: ../../subflows/launch_clean.yaml
+- tapOn:
+    id: "add_fab"
+- waitForAnimationToEnd
+- tapOn: "0"
+- inputText: "9"
+- tapOn: "Add description…"
+- inputText: "Yesterday snack"
+- hideKeyboard
+- tapOn: "Date"
+- runFlow:
+    when:
+      true: ${output.prevMonth == 'true'}
+    commands:
+      - tapOn: "Change to previous month"
+- tapOn: "${output.label}"
+- tapOn: "Save"
+- extendedWaitUntil:
+    visible: "Save"
+    timeout: 8000
+- tapOn: "Save"
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertVisible: "Yesterday"
+- assertVisible: "Yesterday snack"

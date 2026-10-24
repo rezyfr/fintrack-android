@@ -1,0 +1,11 @@
+{
+  "id": "home-loading-state",
+  "capability": "mobile-home-screen",
+  "role": "user",
+  "want": "Home to show a loading state on a fresh open",
+  "soThat": "I do not see empty or broken sections while the data loads",
+  "acceptance": [
+    "while Home loads for the first time, it shows a loading indicator and no empty sections",
+    "when Home reloads on resume, it keeps showing the data it already has"
+  ]
+}

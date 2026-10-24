@@ -1,0 +1,14 @@
+# seed: base
+# E2E-068. Tap a budget line to see its transactions.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: budget
+- runFlow: ../../subflows/scroll_budget.yaml
+- tapOn: "Food"
+- assertVisible: "Morning coffee"

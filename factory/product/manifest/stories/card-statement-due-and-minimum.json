@@ -1,0 +1,13 @@
+{
+  "id": "card-statement-due-and-minimum",
+  "capability": "card-billing-cycle",
+  "role": "user",
+  "want": "each credit card to show its current statement balance, payment due date, and minimum payment",
+  "soThat": "I know exactly how much to pay and by when, instead of computing the statement cutoff and minimum by hand every month",
+  "acceptance": [
+    "the Card Debt tab shows, for the selected card, the statement closing date, the payment due date, the statement balance, and the minimum payment",
+    "the minimum payment uses the card's stored rule: a percentage of the balance, and for a card whose installments bill in full, the installment charges plus that percentage of the rest",
+    "the due date is the card's due day on the first month after the statement closes",
+    "the statement closing day, due day, and minimum-payment rule come from a stored per-card record rather than hardcoded values"
+  ]
+}

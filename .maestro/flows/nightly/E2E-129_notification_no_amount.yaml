@@ -1,0 +1,18 @@
+# seed: base
+# E2E-129. A notification with no amount adds no row.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/map_bank_main.yaml
+- runFlow:
+    file: ../../subflows/run_helper.yaml
+    env:
+      SCRIPT_NAME: post_notification
+      SCRIPT_ARGS: '["myBCA","Your OTP is 123"]'
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertNotVisible: "Pending"

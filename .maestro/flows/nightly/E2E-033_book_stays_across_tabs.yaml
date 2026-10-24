@@ -1,0 +1,34 @@
+# seed: base
+# E2E-033. The selected book stays while you visit every tab.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/select_book.yaml
+    env:
+      BOOK: EUR
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertVisible: "Museum ticket"
+- assertNotVisible: "Morning coffee"
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: budget
+- assertVisible: "Travel"
+- assertNotVisible: "Transport"
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- assertVisible: "Euro bank"
+- assertNotVisible: "Gold card"
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: home
+- assertNotVisible: "All accounts"

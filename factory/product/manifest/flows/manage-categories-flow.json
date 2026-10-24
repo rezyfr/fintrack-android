@@ -1,0 +1,27 @@
+{
+  "id": "manage-categories-flow",
+  "steps": [
+    { "actor": "user", "action": "opens Settings and taps Manage Categories" },
+    {
+      "actor": "app",
+      "action": "navigates to the Manage Categories screen listing every category and its subcategories",
+      "story": "manage-categories",
+      "requires": "ManageCategoriesScreen",
+      "triggerElement": "ManageCategoriesScreen"
+    },
+    { "actor": "user", "action": "taps a category, adds a subcategory, and saves" },
+    {
+      "actor": "app",
+      "action": "persists the new subcategory and shows it under that category everywhere subcategories are picked",
+      "story": "manage-categories",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "opens the Add Transaction form and picks a category" },
+    {
+      "actor": "app",
+      "action": "shows the category and subcategory pickers built from the current list instead of a compiled-in map",
+      "story": "manage-categories",
+      "requires": "AddScreen"
+    }
+  ]
+}

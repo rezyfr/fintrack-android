@@ -1,0 +1,14 @@
+# Scrolls a sideways chip row until a chip shows, then taps it.
+# Env: CHIP. The row is at 65 percent of the screen height.
+appId: com.fidriyanto.banktracker
+---
+- waitForAnimationToEnd
+- repeat:
+    times: 10
+    while:
+      notVisible: "${CHIP}"
+    commands:
+      - swipe:
+          start: "90%, 65%"
+          end: "15%, 65%"
+- tapOn: "${CHIP}"

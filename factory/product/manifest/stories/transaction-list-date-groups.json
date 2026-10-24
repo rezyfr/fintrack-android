@@ -1,0 +1,12 @@
+{
+  "id": "transaction-list-date-groups",
+  "capability": "android-transactions-view",
+  "role": "user",
+  "want": "the transaction list split into Today, Yesterday, Last 7 days, and Older sections by default",
+  "soThat": "I can find recent transactions without scrolling through one long list",
+  "acceptance": [
+    "the Transactions list view shows section headers for Today, Yesterday, Last 7 days, and Older, in that order",
+    "each transaction sits in the section for its date, where Last 7 days covers 2 to 7 days ago and Older covers anything earlier",
+    "a section with no transactions is not shown"
+  ]
+}

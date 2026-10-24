@@ -1,0 +1,14 @@
+{
+  "id": "filter-transactions-by-category",
+  "capability": "transaction-category-filter",
+  "role": "user",
+  "want": "to filter the transaction list by category",
+  "soThat": "I can focus on spending in a specific area without opening Insights",
+  "acceptance": [
+    "a category selector is shown in the transaction list filter row",
+    "selecting a category shows only transactions with that category",
+    "selecting All categories clears the category filter",
+    "the category filter combines with the existing wallet, type, and month filters",
+    "the category selector lists all known expense and income categories in alphabetical order"
+  ]
+}

@@ -1,0 +1,19 @@
+# seed: base
+# E2E-078. A book shows wallet chips. Combined shows none.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: insights
+- assertNotVisible: "All wallets"
+- runFlow:
+    file: ../../subflows/select_book.yaml
+    env:
+      BOOK: USD
+- assertVisible: "All wallets"
+- tapOn: "Gold card"
+- assertVisible: "Money in"

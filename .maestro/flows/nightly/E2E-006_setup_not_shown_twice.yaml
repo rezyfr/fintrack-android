@@ -1,0 +1,27 @@
+# seed: empty
+# E2E-006. After the setup, a restart opens Home at once.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- launchApp:
+    clearState: true
+    stopApp: true
+- tapOn: "Let us go"
+- runFlow:
+    file: ../../subflows/setup_storage_server.yaml
+- tapOn: "Continue"
+- tapOn: "Continue"
+- tapOn: "Account name"
+- inputText: "Cash"
+- hideKeyboard
+- tapOn: "Add account"
+- tapOn: "Continue"
+- tapOn: "Open FinTrack"
+- assertVisible:
+    id: "tab_home"
+- stopApp
+- launchApp
+- assertVisible:
+    id: "tab_home"
+- assertNotVisible: "Welcome to FinTrack"

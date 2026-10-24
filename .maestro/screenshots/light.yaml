@@ -1,0 +1,114 @@
+# seed: empty
+# adb: set_listener.sh on
+# Takes the README screenshots. This is not a test, so run_all.sh does not run it. See README.md in this folder.
+appId: com.fidriyanto.banktracker
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Welcome to FinTrack"
+    timeout: 20000
+- waitForAnimationToEnd
+- takeScreenshot: setup-welcome
+- tapOn: "Let us go"
+- tapOn: "Currency code"
+- inputText: "USD"
+- hideKeyboard
+- waitForAnimationToEnd
+- takeScreenshot: setup-currency
+- tapOn: "Continue"
+- waitForAnimationToEnd
+- takeScreenshot: setup-cycle
+- tapOn: "Continue"
+- waitForAnimationToEnd
+- tapOn: "Account name"
+- inputText: "Main"
+- hideKeyboard
+- waitForAnimationToEnd
+- scrollUntilVisible:
+    element: "Add account"
+    direction: DOWN
+- tapOn: "Add account"
+- waitForAnimationToEnd
+- takeScreenshot: setup-accounts
+- runFlow:
+    file: ../../subflows/server_call.yaml
+    env:
+      SERVER_PATH: /__seed/showcase
+- runFlow: ../../subflows/launch_clean.yaml
+- waitForAnimationToEnd
+- takeScreenshot: home
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- waitForAnimationToEnd
+- takeScreenshot: transactions
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: budget
+- waitForAnimationToEnd
+- takeScreenshot: budget
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: insights
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: "Spending Breakdown"
+    timeout: 15000
+- waitForAnimationToEnd
+- takeScreenshot: insights
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- waitForAnimationToEnd
+- takeScreenshot: accounts
+- tapOn:
+    id: "add_fab"
+- waitForAnimationToEnd
+- back
+- tapOn:
+    id: "add_fab"
+- waitForAnimationToEnd
+- waitForAnimationToEnd
+- takeScreenshot: add-transaction
+- back
+- runFlow:
+    file: ../../subflows/run_helper.yaml
+    env:
+      SCRIPT_NAME: set_listener
+      SCRIPT_ARGS: '["on"]'
+- tapOn: "Menu"
+- waitForAnimationToEnd
+- takeScreenshot: settings
+- tapOn: "Rules"
+- extendedWaitUntil:
+    visible: "Rent day"
+    timeout: 15000
+- waitForAnimationToEnd
+- takeScreenshot: rules-list
+- tapOn: "New rule"
+- waitForAnimationToEnd
+- takeScreenshot: rule-editor
+- back
+- back
+- runFlow:
+    file: ../../subflows/server_call.yaml
+    env:
+      SERVER_PATH: /__seed/suggest_rules
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn: "Rules"
+- tapOn: "Find rules in my transactions"
+- extendedWaitUntil:
+    visible: "Would sort.*"
+    timeout: 15000
+- waitForAnimationToEnd
+- takeScreenshot: suggest-rules

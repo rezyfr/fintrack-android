@@ -1,0 +1,16 @@
+{
+  "id": "merchant-autocomplete",
+  "capability": "merchant-suggestion",
+  "role": "user",
+  "want": "to see suggestions of previously used merchants when filling the merchant field",
+  "soThat": "I can quickly reuse common merchants without retyping them",
+  "acceptance": [
+    "focusing the merchant field shows a dropdown of up to 10 previously saved merchants",
+    "typing filters the list to merchants containing the typed string (case-insensitive)",
+    "selecting a suggestion fills the merchant field and closes the dropdown",
+    "if no history exists or no suggestions match the current input, no dropdown is shown",
+    "a merchant name is saved to history only when a transaction is successfully submitted",
+    "history is deduplicated — the same merchant appears at most once, ordered most-recent first",
+    "history is capped at 10 entries; adding an 11th drops the oldest"
+  ]
+}

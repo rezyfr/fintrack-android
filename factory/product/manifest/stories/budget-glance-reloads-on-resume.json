@@ -1,0 +1,10 @@
+{
+  "id": "budget-glance-reloads-on-resume",
+  "capability": "android-budget-glance",
+  "role": "user",
+  "want": "the Budget tab to reflect budget-line changes without restarting the app",
+  "soThat": "editing a line's kind, target, or pattern directly is visible the next time I open the tab",
+  "acceptance": [
+    "reopening the Budget tab refetches budget lines so an out-of-band change is reflected without restarting the app"
+  ]
+}

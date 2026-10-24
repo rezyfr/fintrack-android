@@ -1,0 +1,16 @@
+{
+  "id": "set-category-budget",
+  "capability": "budget-management",
+  "role": "user",
+  "want": "to set a monthly spending limit for each category",
+  "soThat": "I can track whether my actual spending stays within my planned budget",
+  "acceptance": [
+    "a Budget screen is accessible from the bottom navigation bar",
+    "a currency selector lets the user switch between THB and IDR budgets",
+    "each category row shows the category name, budget limit, and current month spending",
+    "a linear progress bar in each row shows how much of the budget has been used",
+    "rows where spending exceeds the budget are highlighted in the error colour",
+    "tapping a row opens an inline edit field to update the budget limit",
+    "saving a budget limit persists it to the budgets table in Supabase"
+  ]
+}

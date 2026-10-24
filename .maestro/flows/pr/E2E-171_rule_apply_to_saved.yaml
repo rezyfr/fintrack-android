@@ -1,0 +1,51 @@
+# seed: base
+# E2E-171. A rule is tried on saved transactions. The preview lists the rows, Apply changes them and Undo puts them back.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn: "Rules"
+- tapOn: "Create your first rule"
+- tapOn: "Text to look for"
+- inputText: "coffee"
+- hideKeyboard
+- tapOn: "Continue"
+- tapOn: "Shopping"
+- tapOn: "Continue"
+- assertVisible: "Saved transactions"
+- tapOn: "Review"
+- assertVisible: "Apply to saved transactions"
+- extendedWaitUntil:
+    visible: "Saved transactions that would change: 2"
+    timeout: 15000
+- assertVisible: "Morning coffee"
+- assertVisible: "Coffee with friend"
+- tapOn: "Apply \\(2\\)"
+# The dialog covers the page, so the next tap is the dialog button.
+- assertVisible: "Change saved transactions\\?"
+- tapOn: "Apply \\(2\\)"
+- extendedWaitUntil:
+    visible: "Changed 2 saved transactions."
+    timeout: 15000
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: PATCH
+      LOG_TABLE: transactions
+      LOG_CONTAINS: "Shopping"
+- tapOn: "Undo"
+- extendedWaitUntil:
+    visible: "The changes are undone."
+    timeout: 15000
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: PATCH
+      LOG_TABLE: transactions
+      LOG_CONTAINS: "Food & Drink"

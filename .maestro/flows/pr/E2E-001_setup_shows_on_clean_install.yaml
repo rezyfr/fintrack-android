@@ -1,0 +1,27 @@
+# seed: empty
+# E2E-001. A clean install with no accounts on the backend shows the setup wizard and no tab bar.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- launchApp:
+    clearState: true
+    stopApp: true
+- assertVisible: "Welcome to FinTrack"
+- assertVisible: "Let us go"
+- assertNotVisible:
+    id: "tab_home"
+- tapOn: "Let us go"
+- runFlow:
+    file: ../../subflows/setup_storage_server.yaml
+- assertVisible: "What is your home currency?"
+- assertVisible: "Currency code"
+- assertNotVisible:
+    id: "tab_home"
+- tapOn: "Continue"
+- assertVisible: "When does your month start?"
+- tapOn: "Continue"
+- assertVisible: "Add your accounts"
+- assertVisible: "Account name"
+- assertNotVisible:
+    id: "tab_home"

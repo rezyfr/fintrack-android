@@ -1,0 +1,29 @@
+# seed: base
+# E2E-107. A cycle day of 0 or 29 blocks Save.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn:
+    id: "settings_currencies"
+- tapOn: "Pay cycle starts on day"
+- eraseText: 3
+- inputText: "29"
+- hideKeyboard
+- scrollUntilVisible:
+    element: "Save"
+    direction: DOWN
+- tapOn: "Save"
+- assertVisible: "Currency Settings"
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: POST
+      LOG_TABLE: app_settings
+      LOG_EXPECT: none

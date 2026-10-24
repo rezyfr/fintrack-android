@@ -1,0 +1,15 @@
+# seed: accounts_only
+# E2E-027. With no account left, the form asks for a wallet.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn:
+    id: "settings_accounts"
+- takeScreenshot: e2e-027-accounts

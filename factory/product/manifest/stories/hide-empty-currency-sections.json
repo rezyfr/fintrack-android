@@ -1,0 +1,14 @@
+{
+  "id": "hide-empty-currency-sections",
+  "capability": "hide-empty-currency-sections",
+  "role": "user",
+  "want": "the Home hero, Balances net-worth tiles, and web Insights/Balances sections to hide a currency I don't use, instead of showing a permanent empty block for it",
+  "soThat": "the app doesn't look broken or confusing for someone who only tracks one currency",
+  "acceptance": [
+    "the Home hero omits the Thailand block when there is no THB income or spend this cycle, and omits the Indonesia block when there is no IDR income or spend this cycle",
+    "the divider between the two Home hero blocks only shows when both blocks are visible",
+    "the Balances screen's net-worth row omits the THB Net tile when no THB wallet exists, and omits the IDR Net tile when no IDR wallet exists",
+    "the web Insights page omits a currency's section when that currency has no income, expense, or transfer activity in the selected period, independently of the other currency",
+    "the web Balances page's net-worth row omits a currency's tile when no wallet of that currency exists"
+  ]
+}

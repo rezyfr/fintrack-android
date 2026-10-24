@@ -1,0 +1,18 @@
+# seed: base
+# E2E-100. The Accounts tab shows a net tile for each currency and owed cards.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- assertVisible: "USD Net"
+- assertVisible: "EUR Net"
+# The growth card sits above the cards, so the owed cards are below the first screen.
+- scrollUntilVisible:
+    element: ".*owed.*"
+    direction: DOWN
+- assertVisible: ".*owed.*"

@@ -1,0 +1,17 @@
+# seed: base
+# E2E-061. Type a search, then close the sheet without Apply. The list stays.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/open_filters.yaml
+- tapOn: "Search transactions"
+- inputText: "zzzz"
+- hideKeyboard
+- swipe:
+    start: "50%, 40%"
+    end: "50%, 95%"
+- assertNotVisible: "Search transactions"
+- assertVisible: "Bus ticket"
+- assertVisible: "Filters \\(1\\)"

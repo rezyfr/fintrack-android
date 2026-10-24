@@ -1,0 +1,12 @@
+# seed: accounts_only
+# E2E-079. A cycle with no data shows an empty text.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: insights
+- assertVisible: "No transactions in this cycle."

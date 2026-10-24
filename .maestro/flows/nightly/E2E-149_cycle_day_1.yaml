@@ -1,0 +1,18 @@
+# seed: cycle_1
+# E2E-149. Cycle day 1. The range covers the calendar month.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runScript:
+    file: ../../scripts/js/cycle.js
+    env:
+      START_DAY: "1"
+- assertVisible: "${output.range}"
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: budget
+- tapOn: "Previous cycle"
+- assertVisible: "Remaining budget"

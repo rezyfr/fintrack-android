@@ -1,0 +1,5 @@
+# Env: TAB is home, transactions, budget or accounts.
+appId: com.fidriyanto.banktracker
+---
+- tapOn:
+    id: "tab_${TAB}"

@@ -1,0 +1,8 @@
+{
+  "id": "reconciliation-retirement",
+  "title": "Reconciliation Retirement",
+  "status": "Approved",
+  "owners": ["owner@example.com"],
+  "stories": ["remove-wallet-reconciliation"],
+  "flows": ["remove-wallet-reconciliation-flow"]
+}

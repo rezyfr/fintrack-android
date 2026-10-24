@@ -1,0 +1,35 @@
+{
+  "id": "four-tab-nav-with-add-fab-flow",
+  "steps": [
+    {
+      "actor": "user",
+      "action": "launches the Android app"
+    },
+    {
+      "actor": "app",
+      "action": "shows the Home tab with the four-tab bottom bar and a central Add button",
+      "story": "four-tab-nav-with-add-fab",
+      "requires": "AppNavigation"
+    },
+    {
+      "actor": "app",
+      "action": "shows the tabs in a floating toolbar with the Add button beside it, and the selected tab named next to its icon",
+      "story": "floating-bottom-toolbar",
+      "requires": "AppNavigation"
+    },
+    {
+      "actor": "user",
+      "action": "taps the central Add button to record a transaction"
+    },
+    {
+      "actor": "user",
+      "action": "opens the Accounts tab and taps the menu button at the top right"
+    },
+    {
+      "actor": "app",
+      "action": "lists the accounts as cards, and opens Settings from the menu button",
+      "story": "accounts-tab-revamp",
+      "requires": "AppNavigation"
+    }
+  ]
+}

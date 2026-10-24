@@ -1,0 +1,15 @@
+{
+  "id": "manage-categories",
+  "capability": "account-category-management",
+  "role": "user",
+  "want": "to add, rename, and remove transaction categories and subcategories from Settings, instead of being limited to a fixed hardcoded list",
+  "soThat": "the app fits spending categories that were not originally written for one household",
+  "acceptance": [
+    "the app ships with the existing 13 categories pre-seeded as defaults, so existing transactions keep their category unchanged",
+    "the Settings screen has a Manage Categories entry listing every category and its subcategories",
+    "the user can add a custom category, and add, rename, or delete subcategories under any category",
+    "a default (seeded) category cannot be deleted, since the Dashboard and Budget tab category breakdowns are keyed to the original 13 categories",
+    "the Add Transaction form's category and subcategory pickers reflect the current list instead of a compiled-in map",
+    "the Dashboard and Budget tab category breakdowns are unaffected by this change and continue to total only the original 13 categories, until a separate project generalizes that aggregation"
+  ]
+}

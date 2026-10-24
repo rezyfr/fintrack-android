@@ -1,0 +1,12 @@
+{
+  "id": "budget-fixed-bills",
+  "capability": "android-budget-glance",
+  "role": "user",
+  "want": "to see my fixed bills and whether they are paid on the Budget tab",
+  "soThat": "I can tell that rent, electricity, and allowances for this cycle are covered",
+  "acceptance": [
+    "the Budget tab shows a Fixed bills section listing each fixed budget line for the selected currency with its spent and target",
+    "a fixed line whose spend covers its target is marked Paid",
+    "the flex daily-allowance glance continues to exclude fixed lines"
+  ]
+}

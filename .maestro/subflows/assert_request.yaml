@@ -1,0 +1,5 @@
+# Checks the fake server log. Env: LOG_METHOD, LOG_TABLE, LOG_CONTAINS (optional), LOG_EXPECT (some or none).
+appId: com.fidriyanto.banktracker
+---
+- runScript:
+    file: ../scripts/js/assert_log.js

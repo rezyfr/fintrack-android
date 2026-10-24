@@ -1,0 +1,23 @@
+# seed: base
+# adb: set_listener.sh off
+# after: set_listener.sh on
+# E2E-109. The listener status follows the access: Not capturing payments when off, Capturing payments when on.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- assertVisible: "Not capturing payments"
+- runFlow:
+    file: ../../subflows/run_helper.yaml
+    env:
+      SCRIPT_NAME: set_listener
+      SCRIPT_ARGS: '["on"]'
+- tapOn: "Back"
+- tapOn: "Menu"
+- assertVisible: "Capturing payments"

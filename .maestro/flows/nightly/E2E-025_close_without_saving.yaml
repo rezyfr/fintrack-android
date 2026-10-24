@@ -1,0 +1,28 @@
+# seed: base
+# E2E-025. Fill the amount, then close the form. No row is added and nothing is sent.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- tapOn:
+    id: "add_fab"
+- waitForAnimationToEnd
+- tapOn: "0"
+- inputText: "777"
+- tapOn: "Add description…"
+- inputText: "Never saved"
+- hideKeyboard
+- tapOn: "Close"
+- assertNotVisible: "Category:.*"
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertNotVisible: "Never saved"
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: POST
+      LOG_TABLE: transactions
+      LOG_EXPECT: none

@@ -1,0 +1,18 @@
+{
+  "id": "mobile-home-screen",
+  "title": "Mobile Home Screen",
+  "status": "In Progress",
+  "owners": [
+    "owner@example.com"
+  ],
+  "stories": [
+    "home-cycle-overview",
+    "home-cycle-spending-comparison",
+    "home-recent-category-icons",
+    "home-loading-state"
+  ],
+  "flows": [
+    "home-cycle-overview-flow",
+    "home-cycle-spending-comparison-flow"
+  ]
+}

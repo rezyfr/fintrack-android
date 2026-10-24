@@ -1,0 +1,16 @@
+# seed: three_currency
+# E2E-148. Four chips. Combined converts with each rate.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- assertVisible:
+    id: "book_combined"
+- assertVisible:
+    id: "book_USD"
+- assertVisible:
+    id: "book_EUR"
+- assertVisible:
+    id: "book_JPY"
+- assertVisible: "All accounts"

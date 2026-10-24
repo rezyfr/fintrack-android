@@ -1,0 +1,12 @@
+# seed: low_balance
+# E2E-073. A low balance limits the daily budget.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: budget
+- assertVisible: "Limited by your balance of.*"

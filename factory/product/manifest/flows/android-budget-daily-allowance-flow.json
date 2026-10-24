@@ -1,0 +1,21 @@
+{
+  "id": "android-budget-daily-allowance-flow",
+  "steps": [
+    {
+      "actor": "user",
+      "action": "opens the Budget tab"
+    },
+    {
+      "actor": "app",
+      "action": "loads the budget_lines and the pay-cycle transactions, attributes spend to each line, and shows the remaining total, the daily allowance, and each line's per-day remaining",
+      "story": "android-budget-daily-allowance",
+      "requires": "BudgetGlanceScreen"
+    },
+    {
+      "actor": "app",
+      "action": "shows a remaining total equal to the sum of the lines' remaining, with every flexible line listed on Home",
+      "story": "budget-remaining-sums-lines",
+      "requires": "HomeScreen"
+    }
+  ]
+}

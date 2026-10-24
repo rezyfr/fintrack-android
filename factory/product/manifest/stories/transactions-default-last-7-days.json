@@ -1,0 +1,11 @@
+{
+  "id": "transactions-default-last-7-days",
+  "capability": "android-transactions-view",
+  "role": "user",
+  "want": "the Transactions list to open on the last 7 days",
+  "soThat": "I see recent activity first, and I can widen the period when I need to",
+  "acceptance": [
+    "the Transactions list opens with a date range of the last 7 days, and the period chip All is selected",
+    "choosing a period chip replaces the default date range"
+  ]
+}

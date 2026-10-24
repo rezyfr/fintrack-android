@@ -1,0 +1,18 @@
+# Maps the BCA bank notification to the account Main and the Bangkok Bank one to Euro bank.
+appId: com.fidriyanto.banktracker
+---
+- tapOn:
+    id: "tab_accounts"
+- tapOn: "Menu"
+- tapOn: "Bank notifications"
+- tapOn:
+    text: "Off"
+    index: 0
+- tapOn: "Main · USD"
+- tapOn:
+    text: "Off"
+- tapOn: "Euro bank · EUR"
+- tapOn: "Back"
+- tapOn: "Back"
+- tapOn:
+    id: "tab_home"

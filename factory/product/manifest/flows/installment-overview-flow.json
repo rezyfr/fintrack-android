@@ -1,0 +1,31 @@
+{
+  "id": "installment-overview-flow",
+  "steps": [
+    {
+      "actor": "user",
+      "action": "taps the Installments entry in the navigation bar"
+    },
+    {
+      "actor": "app",
+      "action": "navigates to InstallmentsScreen and shows active installment cards sorted by next due date",
+      "story": "installment-overview",
+      "noNavigation": true
+    },
+    {
+      "actor": "app",
+      "action": "shows a Completed section below active installments for any fully-paid plans",
+      "story": "installment-overview",
+      "noNavigation": true
+    },
+    {
+      "actor": "user",
+      "action": "a new CC notification is captured that matches an installment merchant and amount"
+    },
+    {
+      "actor": "app",
+      "action": "database trigger auto-links the transaction to the installment and increments the step count",
+      "story": "installment-overview",
+      "noNavigation": true
+    }
+  ]
+}

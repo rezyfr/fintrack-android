@@ -1,0 +1,37 @@
+{
+  "id": "home-cycle-overview-flow",
+  "steps": [
+    {
+      "actor": "user",
+      "action": "launches the app"
+    },
+    {
+      "actor": "app",
+      "action": "shows a loading indicator until the first load finishes",
+      "story": "home-loading-state",
+      "requires": "HomeScreen"
+    },
+    {
+      "actor": "app",
+      "action": "resolves the current 26th-to-25th pay cycle, loads its transactions and the card statements, and shows the cycle summary, cards due, and recent activity",
+      "story": "home-cycle-overview",
+      "requires": "HomeScreen"
+    },
+    {
+      "actor": "app",
+      "action": "shows a category icon on each recent transaction row",
+      "story": "home-recent-category-icons",
+      "requires": "HomeScreen"
+    },
+    {
+      "actor": "user",
+      "action": "taps See all budgets on the Home budget card"
+    },
+    {
+      "actor": "app",
+      "action": "opens the Budget tab",
+      "story": "home-budget-top-five-cta",
+      "requires": "AppNavigation"
+    }
+  ]
+}

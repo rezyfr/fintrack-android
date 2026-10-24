@@ -1,0 +1,16 @@
+# seed: base
+# E2E-056. Filter by category and subcategory.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/open_filters.yaml
+- runFlow:
+    file: ../../subflows/find_chip_row_71.yaml
+    env:
+      CHIP: "Food & Drink"
+- tapOn: "Restaurant"
+- tapOn: "Apply"
+- assertVisible: "Lunch with team"
+- assertNotVisible: "Morning coffee"

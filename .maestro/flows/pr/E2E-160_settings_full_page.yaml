@@ -1,0 +1,33 @@
+# seed: base
+# E2E-160. Settings and its pages are full pages. The book switch, the tab bar and the Add button are hidden.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- assertVisible: "Settings"
+- assertNotVisible:
+    id: "add_fab"
+- assertNotVisible:
+    id: "tab_home"
+- assertNotVisible: "Combined"
+- tapOn:
+    id: "settings_currencies"
+- assertNotVisible:
+    id: "add_fab"
+- scrollUntilVisible:
+    element: "Save"
+    direction: DOWN
+- assertVisible: "Save"
+# Back goes from the page to the Settings list, then to the Accounts tab.
+- back
+- assertVisible: "Currency Settings"
+- back
+- assertVisible:
+    id: "add_fab"
+- assertVisible: "Combined"

@@ -1,0 +1,12 @@
+{
+  "id": "multicurrency-money-formatting",
+  "capability": "configurable-currency-pair",
+  "role": "user",
+  "want": "every amount in the app to show in the currency of its own account",
+  "soThat": "a Bangkok Bank transaction never shows as Rupiah, and adding another currency needs no new formatting code",
+  "acceptance": [
+    "one shared formatter turns an amount and a currency code into display text, and no screen defines its own per-currency formatting function",
+    "the Home recent transactions, card dues, budget card, and spending comparison show each amount in the currency of its own account or budget line",
+    "the Transactions, Insights, Budget, Cards, Installments, Balances, and delete confirmation screens format amounts with the same shared formatter"
+  ]
+}

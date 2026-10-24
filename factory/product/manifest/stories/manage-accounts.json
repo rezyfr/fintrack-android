@@ -1,0 +1,15 @@
+{
+  "id": "manage-accounts",
+  "capability": "account-category-management",
+  "role": "user",
+  "want": "to add, rename, and remove the accounts I track from Settings, instead of being limited to a fixed hardcoded list",
+  "soThat": "the app works for accounts and banks it was not originally written for",
+  "acceptance": [
+    "the app ships with the existing BBL, BCA, BCA Credit Card, Mandiri, Mandiri Credit Card, and Investment accounts pre-seeded as defaults, so existing transactions and notification capture keep resolving them unchanged",
+    "the Settings screen has a Manage Accounts entry listing every account with its currency",
+    "the user can add a custom account with a name and a currency",
+    "the user can rename or delete a custom account they added",
+    "a default (seeded) account cannot be deleted, since bank notification parsing depends on its fixed id",
+    "the Add Transaction form's account picker reflects the current account list instead of a compiled-in enum"
+  ]
+}

@@ -1,0 +1,6 @@
+# Scrolls the page down once. The swipe starts low on the screen, away from the Home chart that takes drags.
+appId: com.fidriyanto.banktracker
+---
+- swipe:
+    start: "50%, 80%"
+    end: "50%, 25%"

@@ -1,0 +1,27 @@
+{
+  "id": "manage-accounts-flow",
+  "steps": [
+    { "actor": "user", "action": "opens Settings and taps Manage Accounts" },
+    {
+      "actor": "app",
+      "action": "navigates to the Manage Accounts screen listing every account and its currency",
+      "story": "manage-accounts",
+      "requires": "ManageAccountsScreen",
+      "triggerElement": "ManageAccountsScreen"
+    },
+    { "actor": "user", "action": "taps Add Account, enters a name and currency, and saves" },
+    {
+      "actor": "app",
+      "action": "persists the new account and shows it in the list and in the Add Transaction form's account picker",
+      "story": "manage-accounts",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "opens the Add Transaction form" },
+    {
+      "actor": "app",
+      "action": "shows the account picker built from the current account list instead of a fixed set",
+      "story": "manage-accounts",
+      "requires": "AddScreen"
+    }
+  ]
+}

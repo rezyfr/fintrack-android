@@ -1,0 +1,12 @@
+# seed: base
+# E2E-055. Filter by wallet.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/open_filters.yaml
+- tapOn: "Gold card"
+- tapOn: "Apply"
+- assertVisible: "Online shop order"
+- assertNotVisible: "Bus ticket"

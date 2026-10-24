@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <title>FinTrack app icon</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#242836"/>
+      <stop offset="1" stop-color="#0B0B10"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F0D9A2"/>
+      <stop offset="1" stop-color="#C8A96E"/>
+    </linearGradient>
+    <linearGradient id="gold-bright" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F5E3B5"/>
+      <stop offset="1" stop-color="#C8A96E"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <rect x="102.4" y="275.2" width="76.8" height="128" rx="25.6" fill="url(#gold)" fill-opacity="0.5"/>
+  <rect x="217.6" y="198.4" width="76.8" height="204.8" rx="25.6" fill="url(#gold)" fill-opacity="0.75"/>
+  <rect x="332.8" y="108.8" width="76.8" height="294.4" rx="25.6" fill="url(#gold-bright)"/>
+</svg>

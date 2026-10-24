@@ -1,0 +1,13 @@
+{
+  "id": "card-due-reflects-payments-flow",
+  "steps": [
+    { "actor": "user", "action": "pays part or all of a credit card statement" },
+    {
+      "actor": "app",
+      "action": "shows the remaining statement due (live balance minus post-cutoff charges) and hides the card once fully paid",
+      "story": "card-due-reflects-payments",
+      "requires": "GetCardStatementsUseCase"
+    },
+    { "actor": "user", "action": "opens Home and sees the reduced or cleared card due" }
+  ]
+}

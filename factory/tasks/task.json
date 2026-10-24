@@ -1,0 +1,9 @@
+{
+  "feature": "mobile_visual_refresh",
+  "storyId": "loading-states-for-fetches",
+  "acceptanceCriteria": [
+    "one shared loading indicator is shown by a screen while its first backend fetch runs",
+    "the Budget glance, Cards, and Transactions Calendar views show the loading indicator while they load, instead of a text label or an empty grid",
+    "Home, Budget, Installments, Insights, Transactions, and Balances use the same shared loading indicator"
+  ]
+}

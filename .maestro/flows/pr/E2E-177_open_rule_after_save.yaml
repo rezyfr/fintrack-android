@@ -1,0 +1,37 @@
+# seed: base
+# E2E-177. After a rule is saved, opening a rule or a new rule shows the editor and keeps it open.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn: "Rules"
+- tapOn: "Create your first rule"
+- tapOn: "Text to look for"
+- inputText: "lunch"
+- hideKeyboard
+- tapOn: "Continue"
+- tapOn: "Shopping"
+- tapOn: "Continue"
+- tapOn: "Save rule"
+- assertVisible: "Detail 1"
+# Open the saved rule. The editor must stay open.
+- tapOn: "lunch"
+- assertVisible: "Edit rule"
+- waitForAnimationToEnd
+- assertVisible: "Edit rule"
+- tapOn: "Continue"
+- assertVisible: "What should happen?"
+- back
+- back
+- assertVisible: "Detail 1"
+# Open a new rule. The editor must stay open too.
+- tapOn: "New rule"
+- assertVisible: "When should this rule apply?"
+- waitForAnimationToEnd
+- assertVisible: "When should this rule apply?"

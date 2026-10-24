@@ -1,0 +1,15 @@
+{
+  "id": "category-spending-donut",
+  "capability": "spending-breakdown-chart",
+  "role": "user",
+  "want": "to see my category spending visualised as a donut chart on the dashboard",
+  "soThat": "I can immediately grasp the proportional split of my expenses at a glance",
+  "acceptance": [
+    "the category breakdown card shows an animated donut chart with one arc per spending category",
+    "the total expense amount is displayed in the centre of the donut",
+    "each arc uses a distinct, accessible colour that is consistent per category",
+    "tapping a segment highlights it and shows the category name and amount in the centre",
+    "below the chart a scrollable list shows each category as a card with a colour dot, name on one line with percentage top-right, and bold amount on the line below",
+    "the chart and list are hidden when there are no expense transactions in the period"
+  ]
+}

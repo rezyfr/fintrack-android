@@ -1,0 +1,44 @@
+# seed: three_currency
+# E2E-030. Switch books. Every tab follows the book. A transfer between two currencies shows in both books.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- assertVisible: "All accounts"
+- runFlow:
+    file: ../../subflows/select_book.yaml
+    env:
+      BOOK: USD
+- assertNotVisible: "All accounts"
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertVisible: "Morning coffee"
+- assertNotVisible: "Museum ticket"
+- assertNotVisible: "Ramen lunch"
+- scrollUntilVisible:
+    element: "Transfer to Euro bank"
+    direction: DOWN
+- runFlow:
+    file: ../../subflows/select_book.yaml
+    env:
+      BOOK: EUR
+- assertVisible: "Museum ticket"
+- assertNotVisible: "Morning coffee"
+- assertVisible: "Transfer to Euro bank"
+- runFlow:
+    file: ../../subflows/select_book.yaml
+    env:
+      BOOK: JPY
+- assertVisible: "Ramen lunch"
+- assertNotVisible: "Museum ticket"
+- runFlow:
+    file: ../../subflows/select_book.yaml
+    env:
+      BOOK: combined
+- scrollUntilVisible:
+    element: "Morning coffee"
+    direction: UP
+- assertVisible: "Museum ticket"

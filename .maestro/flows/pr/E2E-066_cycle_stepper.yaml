@@ -1,0 +1,17 @@
+# seed: base
+# E2E-066. The stepper moves to the previous cycle and back. Next cycle is disabled on the current cycle.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: budget
+- tapOn: "Previous cycle"
+- assertVisible: "Remaining budget"
+- tapOn: "Next cycle"
+- assertVisible: "Remaining budget"
+- tapOn: "Next cycle"
+- assertVisible: "Remaining budget"

@@ -1,0 +1,14 @@
+# seed: base
+# E2E-075. Insights loads the total and the breakdown.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: insights
+- assertVisible: "Money in"
+- assertVisible: "Net"
+- assertVisible: "Daily spending"

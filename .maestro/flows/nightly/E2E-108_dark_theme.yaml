@@ -1,0 +1,20 @@
+# seed: base
+# E2E-108. The dark theme switch changes the screen and survives a restart.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn: "Dark theme"
+- takeScreenshot: e2e-108-dark
+- stopApp
+- launchApp
+- tapOn:
+    id: "tab_accounts"
+- tapOn: "Menu"
+- takeScreenshot: e2e-108-dark-restart

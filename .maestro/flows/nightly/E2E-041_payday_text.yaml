@@ -1,0 +1,8 @@
+# seed: base
+# E2E-041. Home shows how many days remain to payday.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- assertVisible: "Payday (in [0-9]+ days|today)"

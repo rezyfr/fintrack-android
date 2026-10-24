@@ -1,0 +1,27 @@
+# seed: accounts_only
+# E2E-146. Accounts and no data. Every screen shows an empty text.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertVisible: "No transactions found."
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: cards
+- assertVisible: "No card billing records found"
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: installments
+- assertVisible: "No active installments"
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: insights
+- assertVisible: "No transactions in this cycle."

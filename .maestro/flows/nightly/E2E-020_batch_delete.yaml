@@ -1,0 +1,20 @@
+# seed: base
+# E2E-020. Long press a row, select a second row, delete both.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- longPressOn: "Lunch with team"
+- assertVisible: "1 selected"
+- longPressOn: "Bus ticket"
+- assertVisible: "2 selected"
+- tapOn: "Delete"
+- assertVisible: "Delete transactions\\?"
+- tapOn: "Delete"
+- assertNotVisible: "Lunch with team"
+- assertNotVisible: "Bus ticket"

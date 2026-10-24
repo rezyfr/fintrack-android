@@ -1,0 +1,40 @@
+# Adds a transaction from the Add button and saves it.
+# Env: TYPE (Expense, Income, Transfer or Investment), AMOUNT, DESC, CATEGORY (optional), WALLET (optional name).
+# Env: OFFLINE (optional, "true"): the save cannot sync, but the form still closes and the row shows Failed.
+appId: com.fidriyanto.banktracker
+---
+- tapOn:
+    id: "add_fab"
+- waitForAnimationToEnd
+- assertVisible: "Expense"
+- tapOn: "${TYPE}"
+- runFlow:
+    when:
+      true: ${typeof WALLET !== 'undefined' && WALLET !== ''}
+    commands:
+      - tapOn: "Wallet"
+      - tapOn: "${WALLET}"
+- tapOn: "0"
+- inputText: "${AMOUNT}"
+- tapOn: "Add description…"
+- inputText: "${DESC}"
+- hideKeyboard
+- runFlow:
+    when:
+      true: ${typeof CATEGORY !== 'undefined' && CATEGORY !== ''}
+    commands:
+      - runFlow:
+          file: pick_category.yaml
+          env:
+            CATEGORY: "${CATEGORY}"
+- tapOn: "Save"
+- runFlow:
+    when:
+      true: ${typeof OFFLINE !== 'undefined' && OFFLINE == 'true'}
+    commands:
+      - assertNotVisible: "Save"
+- runFlow:
+    when:
+      true: ${typeof OFFLINE === 'undefined' || OFFLINE != 'true'}
+    commands:
+      - assertNotVisible: "Category:.*"

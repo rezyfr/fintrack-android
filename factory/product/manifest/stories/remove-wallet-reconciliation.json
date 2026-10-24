@@ -1,0 +1,12 @@
+{
+  "id": "remove-wallet-reconciliation",
+  "capability": "reconciliation-retirement",
+  "role": "user",
+  "want": "the statement reconciliation section gone from the Balances screen on Android and the web app",
+  "soThat": "the Balances screen shows only wallet cards and net worth, since the opening-balance and status feature gave me no useful information",
+  "acceptance": [
+    "the Android Balances screen has no Reconciliation section, month navigator, or opening-balance input",
+    "the web Balances tab has no Reconciliation table, month navigator, or opening-balance input",
+    "neither app calls the get_wallet_reconciliation RPC or writes to the statement_balances table"
+  ]
+}

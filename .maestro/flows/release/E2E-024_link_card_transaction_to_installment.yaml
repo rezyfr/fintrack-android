@@ -1,0 +1,33 @@
+# seed: base
+# E2E-024. Link a card transaction to an installment from the edit sheet. Unlink removes the link.
+appId: com.fidriyanto.banktracker
+tags:
+  - release
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- tapOn: "Online shop order"
+- assertVisible: "Edit transaction"
+- scrollUntilVisible:
+    element: "Link to installment"
+    direction: DOWN
+- tapOn: "Link to installment"
+- tapOn: "Laptop plan, step 3 of 12"
+- assertVisible: "Linked to Laptop plan.*"
+- assertVisible: "Unlink"
+- tapOn: "Unlink"
+- assertNotVisible: "Unlink"
+- tapOn: "Link to installment"
+- tapOn: "Laptop plan, step 3 of 12"
+- tapOn: "Save changes"
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: PATCH
+      LOG_TABLE: transactions
+      LOG_CONTAINS: "installment_id"
+- tapOn: "Online shop order"
+- assertVisible: "Linked to Laptop plan.*"

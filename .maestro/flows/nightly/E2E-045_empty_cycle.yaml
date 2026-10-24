@@ -1,0 +1,10 @@
+# seed: accounts_only
+# E2E-045. With no transactions, Home says there is no activity.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/scroll_down.yaml
+- runFlow: ../../subflows/scroll_down.yaml
+- assertVisible: "No activity yet this cycle"

@@ -1,0 +1,25 @@
+# seed: base
+# E2E-080. Insights shows its cards, from the top down.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: insights
+- runFlow:
+    file: ../../subflows/select_book.yaml
+    env:
+      BOOK: USD
+- assertVisible: "Daily spending"
+- scrollUntilVisible:
+    element: "Largest expenses"
+    direction: DOWN
+- scrollUntilVisible:
+    element: "Paid with"
+    direction: DOWN
+- scrollUntilVisible:
+    element: "Last 6 months"
+    direction: DOWN

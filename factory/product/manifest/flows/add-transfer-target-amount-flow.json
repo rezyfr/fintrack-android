@@ -1,0 +1,13 @@
+{
+  "id": "add-transfer-target-amount-flow",
+  "steps": [
+    { "actor": "user", "action": "adds a transfer from a THB wallet to an IDR wallet" },
+    {
+      "actor": "app",
+      "action": "shows a received-amount field and stores it as to_amount so the destination is credited correctly",
+      "story": "add-transfer-target-amount",
+      "requires": "AddScreen"
+    },
+    { "actor": "user", "action": "enters the received amount and submits" }
+  ]
+}

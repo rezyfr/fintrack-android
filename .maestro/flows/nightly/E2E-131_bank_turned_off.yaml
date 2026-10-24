@@ -1,0 +1,17 @@
+# seed: base
+# E2E-131. With BCA set to Off, a BCA text makes no pattern row.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/run_helper.yaml
+    env:
+      SCRIPT_NAME: post_notification
+      SCRIPT_ARGS: '["myBCA","You spent IDR 45,000 at Food and Beverage"]'
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertNotVisible: "Food and Beverage"

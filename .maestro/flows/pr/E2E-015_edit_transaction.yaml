@@ -1,0 +1,28 @@
+# seed: base
+# E2E-015. Edit the amount of a row. The row shows the new amount and the server gets a PATCH.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- tapOn: "Lunch with team"
+- assertVisible: "Edit transaction"
+- tapOn:
+    text: "25"
+    point: "98%,50%"
+- eraseText: 5
+- inputText: "40"
+- hideKeyboard
+- tapOn: "Save changes"
+- assertNotVisible: "Edit transaction"
+- assertVisible: ".*\\$40.*"
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: PATCH
+      LOG_TABLE: transactions
+      LOG_CONTAINS: "40"

@@ -1,0 +1,23 @@
+# seed: base
+# fault: PATCH transactions=500
+# E2E-019. The server returns 500 on PATCH. A message shows.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- tapOn: "Lunch with team"
+- tapOn:
+    text: "25"
+    point: "98%,50%"
+- eraseText: 5
+- inputText: "40"
+- hideKeyboard
+- tapOn: "Save changes"
+- extendedWaitUntil:
+    visible: "Failed to update transaction. Please try again."
+    timeout: 15000

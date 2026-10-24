@@ -1,0 +1,10 @@
+# seed: three_currency
+# E2E-046. Combined totals convert each currency with its rate. Totals come from the seed by hand calculation.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- assertVisible: "All accounts"
+- assertVisible: "Money in"
+- takeScreenshot: e2e-046-home

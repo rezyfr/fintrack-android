@@ -1,0 +1,18 @@
+# seed: base
+# E2E-127. A Bangkok Bank notification makes a row.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/map_bank_main.yaml
+- runFlow:
+    file: ../../subflows/run_helper.yaml
+    env:
+      SCRIPT_NAME: post_notification
+      SCRIPT_ARGS: '["Bangkok Bank","Cafe Nero 120.50THB"]'
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertVisible: "Cafe Nero"

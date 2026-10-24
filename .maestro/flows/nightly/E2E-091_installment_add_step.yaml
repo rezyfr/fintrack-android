@@ -1,0 +1,15 @@
+# seed: base
+# E2E-091. +1 Step grows the step count.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: installments
+- assertVisible: "3 of 12"
+- tapOn:
+    id: "inst_step_1"
+- assertVisible: "4 of 12"

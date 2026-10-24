@@ -1,0 +1,24 @@
+# seed: large_list
+# E2E-155. A seed of 2,000 rows. The list scrolls.
+appId: com.fidriyanto.banktracker
+tags:
+  - release
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+# The list opens on the last 7 days. Reset shows every row.
+- tapOn: "Filters.*"
+- tapOn: "Reset"
+- tapOn: "Apply"
+- scrollUntilVisible:
+    element: "Older"
+    direction: DOWN
+    speed: 90
+    timeout: 120000
+- scroll
+- scroll
+- assertVisible:
+    id: "tab_transactions"

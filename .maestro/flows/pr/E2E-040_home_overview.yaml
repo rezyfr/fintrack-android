@@ -1,0 +1,16 @@
+# seed: base
+# E2E-040. Home shows the greeting, the cycle range, Money in, Money out and Recent activity.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runScript:
+    file: ../../scripts/js/info.js
+- assertVisible: "Welcome back"
+- assertVisible: "${output.range}"
+- assertVisible: "Money in"
+- assertVisible: "Money out"
+- runFlow: ../../subflows/scroll_down.yaml
+- runFlow: ../../subflows/scroll_down.yaml
+- assertVisible: "Recent activity"

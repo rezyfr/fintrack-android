@@ -1,0 +1,14 @@
+{
+  "id": "view-wallet-balances",
+  "capability": "wallet-balances-view",
+  "role": "user",
+  "want": "to see each wallet balance and the net worth per currency on the Android app",
+  "soThat": "I can check my balances without opening the web dashboard",
+  "acceptance": [
+    "a Balances screen is accessible from the bottom navigation bar",
+    "each wallet is displayed as a card showing its name and current balance",
+    "credit card wallets are visually distinguished and labeled as owed",
+    "a net worth row shows THB Net and IDR Net totals excluding credit card balances",
+    "balances are fetched from the wallet_balances Supabase view on screen load"
+  ]
+}

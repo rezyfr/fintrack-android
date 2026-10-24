@@ -1,0 +1,13 @@
+{
+  "id": "budget-fixed-bills-flow",
+  "steps": [
+    { "actor": "user", "action": "pays a fixed bill such as condo rent or electricity" },
+    {
+      "actor": "app",
+      "action": "shows the fixed line's spend against its target in the Budget tab's Fixed bills section, marking it Paid when covered",
+      "story": "budget-fixed-bills",
+      "requires": "BudgetGlanceScreen"
+    },
+    { "actor": "user", "action": "opens the Budget tab and sees the bill reflected" }
+  ]
+}

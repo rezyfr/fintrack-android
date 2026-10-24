@@ -1,0 +1,15 @@
+{
+  "id": "web-manage-accounts",
+  "capability": "web-account-category-management",
+  "role": "user",
+  "want": "the web app to read the same account list as the Android app and let me add, rename, and delete accounts",
+  "soThat": "an account I add on one device shows up on the other, and the web app is not limited to a fixed hardcoded list",
+  "acceptance": [
+    "the web app loads the accounts table from Supabase on startup and builds its account list from it",
+    "when the accounts table cannot be read or is empty, the web app falls back to the shipped default accounts, so it still works before the migration is run",
+    "a Manage Accounts view lists every account with its currency",
+    "the user can add a custom account with a name and a currency, and its id is derived from the name the same way Android derives it",
+    "the user can rename or delete a custom account, and a default (seeded) account cannot be deleted",
+    "the account pickers in Add Transaction, Edit Transaction, and the Transactions filter reflect the current account list, and Card Debt lists every credit account"
+  ]
+}

@@ -1,0 +1,18 @@
+# seed: cycle_28
+# E2E-150. Cycle day 28. No crash.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runScript:
+    file: ../../scripts/js/cycle.js
+    env:
+      START_DAY: "28"
+- assertVisible: "${output.range}"
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: budget
+- tapOn: "Previous cycle"
+- assertVisible: "Remaining budget"

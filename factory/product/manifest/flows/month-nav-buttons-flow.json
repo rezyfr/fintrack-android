@@ -1,0 +1,19 @@
+{
+  "id": "month-nav-buttons-flow",
+  "steps": [
+    { "actor": "user", "action": "clicks the ‹ or › button next to the month input" },
+    {
+      "actor": "app",
+      "action": "updates the month state one step backward or forward and refreshes the view",
+      "story": "month-nav-buttons",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "optionally edits the month input directly by hand" },
+    {
+      "actor": "app",
+      "action": "reflects the manually entered month in the view",
+      "story": "month-nav-buttons",
+      "noNavigation": true
+    }
+  ]
+}

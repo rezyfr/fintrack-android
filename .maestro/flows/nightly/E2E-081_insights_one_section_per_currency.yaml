@@ -1,0 +1,18 @@
+# seed: three_currency
+# E2E-081. Each book shows only its currency.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: insights
+- runFlow:
+    file: ../../subflows/select_book.yaml
+    env:
+      BOOK: JPY
+- assertVisible: "Money in"
+- assertVisible: ".*¥.*"
+- assertNotVisible: ".*\\$[0-9].*"

@@ -1,0 +1,15 @@
+# seed: base
+# E2E-057. The No budget chip shows only rows with the mark.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/open_filters.yaml
+- runFlow:
+    file: ../../subflows/find_chip_row_65.yaml
+    env:
+      CHIP: "No budget"
+- tapOn: "Apply"
+- assertVisible: "Grocery run"
+- assertNotVisible: "Bus ticket"

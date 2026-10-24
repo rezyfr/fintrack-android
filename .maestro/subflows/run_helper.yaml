@@ -1,0 +1,5 @@
+# Runs a helper script from scripts/ on the host. Env: SCRIPT_NAME, SCRIPT_ARGS (JSON array text).
+appId: com.fidriyanto.banktracker
+---
+- runScript:
+    file: ../scripts/js/run_script.js

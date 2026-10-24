@@ -1,0 +1,18 @@
+# seed: base
+# E2E-014. Add an investment.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/add_transaction.yaml
+    env:
+      TYPE: Investment
+      AMOUNT: "200"
+      DESC: "Fund top-up"
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertVisible: "Fund top-up"

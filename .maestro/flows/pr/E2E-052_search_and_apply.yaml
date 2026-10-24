@@ -1,0 +1,15 @@
+# seed: base
+# E2E-052. Search for coffee and apply. Only matching rows show. The list opens with a date range of 7 days (1 filter), so the chip reads Filters (2).
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/open_filters.yaml
+- tapOn: "Search transactions"
+- inputText: "coffee"
+- hideKeyboard
+- tapOn: "Apply"
+- assertVisible: "Filters \\(2\\)"
+- assertVisible: "Morning coffee"
+- assertNotVisible: "Bus ticket"

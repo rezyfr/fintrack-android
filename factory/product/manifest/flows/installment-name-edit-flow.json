@@ -1,0 +1,19 @@
+{
+  "id": "installment-name-edit-flow",
+  "steps": [
+    { "actor": "user", "action": "taps the edit icon on an installment card" },
+    {
+      "actor": "app",
+      "action": "opens an edit dialog pre-filled with the current display name",
+      "story": "installment-name-edit",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "types a new name and confirms" },
+    {
+      "actor": "app",
+      "action": "PATCHes the installments table and updates the card merchant label",
+      "story": "installment-name-edit",
+      "noNavigation": true
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+# seed: base
+# E2E-125. A BCA expense notification makes a row in the mapped account.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/map_bank_main.yaml
+- runFlow:
+    file: ../../subflows/run_helper.yaml
+    env:
+      SCRIPT_NAME: post_notification
+      SCRIPT_ARGS: '["myBCA","You spent IDR 45,000 at Food and Beverage"]'
+# The app posts its own review notification for the new row.
+- swipe:
+    start: "50%, 1%"
+    end: "50%, 70%"
+- assertVisible: ".*45,000 . Food & Drink.*"
+- back
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertVisible: "Food and Beverage"

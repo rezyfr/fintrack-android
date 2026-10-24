@@ -1,0 +1,15 @@
+# seed: base
+# E2E-141. An amount and no description.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- tapOn:
+    id: "add_fab"
+- waitForAnimationToEnd
+- tapOn: "0"
+- inputText: "10"
+- hideKeyboard
+- tapOn: "Save"
+- assertVisible: "Add a description."

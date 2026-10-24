@@ -1,0 +1,26 @@
+# seed: empty
+# E2E-007. A currency code that is too short or has symbols keeps Continue disabled.
+appId: com.fidriyanto.banktracker
+tags:
+  - release
+---
+- launchApp:
+    clearState: true
+    stopApp: true
+- tapOn: "Let us go"
+- runFlow:
+    file: ../../subflows/setup_storage_server.yaml
+- tapOn: "Currency code"
+- eraseText: 3
+- inputText: "US"
+- hideKeyboard
+- tapOn: "Continue"
+- assertVisible: "What is your home currency\\?"
+- assertNotVisible: "When does your month start\\?"
+- tapOn: "Currency code"
+- eraseText: 3
+- inputText: "12$"
+- hideKeyboard
+- tapOn: "Continue"
+- assertVisible: "What is your home currency\\?"
+- assertNotVisible: "When does your month start\\?"

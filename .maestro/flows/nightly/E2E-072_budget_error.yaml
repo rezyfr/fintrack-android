@@ -1,0 +1,13 @@
+# seed: base
+# fault: GET budget_lines=500
+# E2E-072. The server fails on budget lines. An error text shows.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: budget
+- assertVisible: "Could not load budget"

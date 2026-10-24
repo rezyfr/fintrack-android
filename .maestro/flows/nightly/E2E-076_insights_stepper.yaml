@@ -1,0 +1,13 @@
+# seed: base
+# E2E-076. The stepper changes the cycle.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: insights
+- tapOn: "Previous cycle"
+- assertVisible: "Money in"

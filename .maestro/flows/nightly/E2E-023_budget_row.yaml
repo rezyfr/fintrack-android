@@ -1,0 +1,22 @@
+# seed: base
+# E2E-023. The form shows the budget line of the chosen category. A category with no line shows No budget.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- tapOn:
+    id: "add_fab"
+- waitForAnimationToEnd
+- runFlow:
+    file: ../../subflows/pick_category.yaml
+    env:
+      CATEGORY: "Food & Drink"
+- assertVisible: "Budget"
+- assertVisible: "Food"
+- assertNotVisible: "No budget"
+- runFlow:
+    file: ../../subflows/pick_category.yaml
+    env:
+      CATEGORY: "Groceries"
+- assertVisible: "No budget"

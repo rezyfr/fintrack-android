@@ -1,0 +1,36 @@
+# seed: empty
+# E2E-008. Pay cycle day 28. The Home range starts on day 28.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runScript:
+    file: ../../scripts/js/cycle.js
+    env:
+      START_DAY: "28"
+- launchApp:
+    clearState: true
+    stopApp: true
+- tapOn: "Let us go"
+- runFlow:
+    file: ../../subflows/setup_storage_server.yaml
+- tapOn: "Continue"
+- repeat:
+    times: 10
+    while:
+      notVisible: "28"
+    commands:
+      - swipe:
+          start: "90%, 47%"
+          end: "10%, 47%"
+- tapOn: "28"
+- assertVisible: "Your current cycle: .*"
+- tapOn: "Continue"
+- tapOn: "Account name"
+- inputText: "Cash"
+- hideKeyboard
+- tapOn: "Add account"
+- tapOn: "Continue"
+- assertVisible: "Pay cycle starts on day 28"
+- tapOn: "Open FinTrack"
+- assertVisible: "${output.range}"

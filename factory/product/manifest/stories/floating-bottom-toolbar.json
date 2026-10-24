@@ -1,0 +1,13 @@
+{
+  "id": "floating-bottom-toolbar",
+  "capability": "mobile-navigation-revamp",
+  "role": "user",
+  "want": "the bottom navigation to be a floating toolbar with the Add button beside it",
+  "soThat": "the tabs and Add sit above the content as one compact control and the selected tab is named next to its icon",
+  "acceptance": [
+    "the four tabs (Home, Transactions, Budget, Accounts) sit in a rounded floating toolbar above the screen content instead of a full-width navigation bar",
+    "only the selected tab shows its name to the right of its icon, and the other tabs show the icon alone",
+    "the Add button is a separate rounded button to the right of the toolbar, on the same row",
+    "the page content fills the whole screen behind the floating toolbar, and scrolling content can still be scrolled clear of the toolbar"
+  ]
+}

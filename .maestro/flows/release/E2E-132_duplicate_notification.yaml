@@ -1,0 +1,23 @@
+# seed: base
+# E2E-132. Post the same text twice. The result is recorded in the report.
+appId: com.fidriyanto.banktracker
+tags:
+  - release
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/map_bank_main.yaml
+- runFlow:
+    file: ../../subflows/run_helper.yaml
+    env:
+      SCRIPT_NAME: post_notification
+      SCRIPT_ARGS: '["myBCA","You spent IDR 45,000 at Food and Beverage","dup1"]'
+- runFlow:
+    file: ../../subflows/run_helper.yaml
+    env:
+      SCRIPT_NAME: post_notification
+      SCRIPT_ARGS: '["myBCA","You spent IDR 45,000 at Food and Beverage","dup2"]'
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- takeScreenshot: e2e-132-duplicate

@@ -1,0 +1,36 @@
+# seed: base
+# E2E-102. Add an account. It appears in the Add form.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn:
+    id: "settings_accounts"
+- tapOn: "Add Account"
+- tapOn: "Name"
+- inputText: "Travel fund"
+- tapOn: "Currency"
+- inputText: "USD"
+- hideKeyboard
+- tapOn: "Save"
+- assertVisible: "Travel fund"
+- assertVisible: "USD · Checking"
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: POST
+      LOG_TABLE: accounts
+      LOG_CONTAINS: "Travel fund"
+- tapOn: "Back"
+- tapOn: "Back"
+- tapOn:
+    id: "add_fab"
+- waitForAnimationToEnd
+- tapOn: "Wallet"
+- assertVisible: "Travel fund"

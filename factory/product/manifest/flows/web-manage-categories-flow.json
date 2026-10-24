@@ -1,0 +1,19 @@
+{
+  "id": "web-manage-categories-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the Categories tab in the web app" },
+    {
+      "actor": "app",
+      "action": "shows every category with its subcategories, built from the categories tables",
+      "story": "web-manage-categories",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "adds a category or a subcategory" },
+    {
+      "actor": "app",
+      "action": "saves it to Supabase and shows it in the category and subcategory pickers",
+      "story": "web-manage-categories",
+      "noNavigation": true
+    }
+  ]
+}

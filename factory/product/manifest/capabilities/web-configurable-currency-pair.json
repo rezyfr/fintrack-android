@@ -1,0 +1,14 @@
+{
+  "id": "web-configurable-currency-pair",
+  "title": "Web Configurable Currency Pair",
+  "status": "In Progress",
+  "owners": [
+    "owner@example.com"
+  ],
+  "stories": [
+    "web-configurable-currency-pair"
+  ],
+  "flows": [
+    "web-configurable-currency-pair-flow"
+  ]
+}

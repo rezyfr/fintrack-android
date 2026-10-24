@@ -1,0 +1,35 @@
+# seed: base
+# E2E-175. The text is optional, but a rule needs one condition. A date can be a range of days.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn: "Rules"
+- tapOn: "Create your first rule"
+- assertVisible: "Text to look for"
+- tapOn: "Remove"
+- assertNotVisible: "Text to look for"
+- assertVisible: "Add text"
+# With no condition on, Continue says what is missing.
+- tapOn: "Continue"
+- assertVisible: "Add at least one thing to look for."
+- tapOn: "Add date"
+- tapOn: "Day, or first day"
+- inputText: "2"
+- tapOn: "Last day \\(optional\\)"
+- inputText: "5"
+- hideKeyboard
+- tapOn: "Continue"
+- assertVisible: "What should happen?"
+- tapOn: "Shopping"
+- tapOn: "Continue"
+- assertVisible: ".*the date is 2 to 5.*"
+- tapOn: "Save rule"
+- assertVisible: ".*the date is 2 to 5.*"
+- assertVisible: "Detail 1"

@@ -1,0 +1,13 @@
+# seed: base
+# E2E-089. The Installments view shows Active and Total monthly.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: installments
+- assertVisible: "Active"
+- assertVisible: "Total monthly"

@@ -1,0 +1,8 @@
+{
+  "id": "transaction-search",
+  "title": "Transaction Search",
+  "status": "Approved",
+  "owners": ["owner@example.com"],
+  "stories": ["search-transactions-by-text", "advanced-transaction-filters"],
+  "flows": ["search-transactions-by-text-flow", "advanced-transaction-filters-flow"]
+}

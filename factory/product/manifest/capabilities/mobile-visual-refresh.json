@@ -1,0 +1,15 @@
+{
+  "id": "mobile-visual-refresh",
+  "title": "Mobile Visual Refresh",
+  "status": "In Progress",
+  "owners": [
+    "owner@example.com"
+  ],
+  "stories": [
+    "light-pine-theme",
+    "loading-states-for-fetches"
+  ],
+  "flows": [
+    "light-pine-theme-flow"
+  ]
+}

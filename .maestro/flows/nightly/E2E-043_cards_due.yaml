@@ -1,0 +1,11 @@
+# seed: base
+# E2E-043. Home lists cards that are due soon.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/scroll_down.yaml
+- runFlow: ../../subflows/scroll_down.yaml
+- assertVisible: "Cards due"
+- assertVisible: "Due in [0-9]+d"

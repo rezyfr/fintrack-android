@@ -1,0 +1,16 @@
+{
+  "id": "mobile-navigation-revamp",
+  "title": "Mobile Navigation Revamp",
+  "status": "In Progress",
+  "owners": [
+    "owner@example.com"
+  ],
+  "stories": [
+    "four-tab-nav-with-add-fab",
+    "accounts-tab-revamp",
+    "floating-bottom-toolbar"
+  ],
+  "flows": [
+    "four-tab-nav-with-add-fab-flow"
+  ]
+}

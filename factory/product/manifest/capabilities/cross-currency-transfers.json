@@ -1,0 +1,8 @@
+{
+  "id": "cross-currency-transfers",
+  "title": "Cross-Currency Transfers",
+  "status": "Approved",
+  "owners": ["owner@example.com"],
+  "stories": ["edit-transfer-target-amount", "transfer-in-wallet-view", "add-transfer-target-amount"],
+  "flows": ["edit-transfer-target-amount-flow", "transfer-in-wallet-view-flow", "add-transfer-target-amount-flow"]
+}

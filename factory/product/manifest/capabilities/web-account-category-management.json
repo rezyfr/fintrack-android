@@ -1,0 +1,16 @@
+{
+  "id": "web-account-category-management",
+  "title": "Web Account & Category Management",
+  "status": "In Progress",
+  "owners": [
+    "owner@example.com"
+  ],
+  "stories": [
+    "web-manage-accounts",
+    "web-manage-categories"
+  ],
+  "flows": [
+    "web-manage-accounts-flow",
+    "web-manage-categories-flow"
+  ]
+}

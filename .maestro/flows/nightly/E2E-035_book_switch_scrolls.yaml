@@ -1,0 +1,15 @@
+# seed: five_currency
+# E2E-035. Five currencies on a narrow screen. Every chip is reachable by scrolling the switch.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- scrollUntilVisible:
+    element:
+      id: "book_AUD"
+    direction: RIGHT
+    centerElement: true
+- tapOn:
+    id: "book_AUD"
+- assertNotVisible: "All accounts"

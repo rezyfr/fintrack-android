@@ -1,0 +1,19 @@
+{
+  "id": "budget-line-details-and-assignment-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the Budget tab" },
+    {
+      "actor": "app",
+      "action": "lists each budget line with its attributed spend, counting transactions manually assigned to that line",
+      "story": "budget-line-details-and-assignment",
+      "requires": "BudgetGlanceScreen"
+    },
+    { "actor": "user", "action": "taps a budget line" },
+    {
+      "actor": "app",
+      "action": "expands the line to show its most recent transactions, and collapses it when tapped again",
+      "story": "budget-line-details-and-assignment",
+      "requires": "BudgetGlanceScreen"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+# seed: base
+# E2E-140. Save with no amount.
+# App bug F-010: the first time the Add sheet opens, it rests about 130 px too low and the Save button sits
+# under the system buttons. The flow closes the sheet and opens it again, which shows the button in its right place.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- tapOn:
+    id: "add_fab"
+- waitForAnimationToEnd
+- tapOn: "Close"
+- tapOn:
+    id: "add_fab"
+- waitForAnimationToEnd
+- tapOn: "Save"
+- assertVisible: "Enter an amount above 0."

@@ -1,0 +1,15 @@
+{
+  "id": "inline-cell-edit",
+  "capability": "transaction-modify",
+  "role": "user",
+  "want": "to edit a transaction field directly in the list by double-clicking it",
+  "soThat": "I can fix small mistakes quickly without opening the full edit modal",
+  "acceptance": [
+    "double-clicking a free-text cell (date, merchant, item, amount, or note) activates an inline input pre-filled with the current value",
+    "pressing Enter or clicking away commits the change and patches Supabase",
+    "pressing Escape cancels the edit and restores the original displayed value",
+    "double-clicking a predefined cell (category or wallet) shows a select dropdown pre-selected to the current value; choosing an option commits immediately",
+    "changes are applied optimistically; if the API call fails the row reverts to its original value",
+    "the edit icon opens the full modal for fields not editable inline such as transaction type and to-wallet"
+  ]
+}

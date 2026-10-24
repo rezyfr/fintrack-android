@@ -1,0 +1,14 @@
+# seed: base
+# E2E-120. No suggestion chip shows without a model.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- tapOn:
+    id: "add_fab"
+- waitForAnimationToEnd
+- tapOn: "Add description…"
+- inputText: "Coffee"
+- hideKeyboard
+- assertNotVisible: "Suggested:.*"

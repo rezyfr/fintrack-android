@@ -1,0 +1,14 @@
+# Picks a category in the Add or Edit form. Env: CATEGORY. The keyboard must be hidden already: a second hideKeyboard would close the sheet.
+# The form shows the selected and the most used categories as chips. Any other category is in the full list that the All chip opens.
+appId: com.fidriyanto.banktracker
+---
+- waitForAnimationToEnd
+- runFlow:
+    when:
+      notVisible: "${CATEGORY}"
+    commands:
+      - tapOn:
+          id: "category_all"
+      - scrollUntilVisible:
+          element: "${CATEGORY}"
+- tapOn: "${CATEGORY}"

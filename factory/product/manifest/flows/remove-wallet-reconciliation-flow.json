@@ -1,0 +1,19 @@
+{
+  "id": "remove-wallet-reconciliation-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the Balances screen on Android" },
+    {
+      "actor": "app",
+      "action": "shows wallet cards and the net worth row only, with no Reconciliation section below them",
+      "story": "remove-wallet-reconciliation",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "opens the Balances tab on the web app" },
+    {
+      "actor": "app",
+      "action": "shows the wallet grid and net worth cards only, with no Reconciliation table below them",
+      "story": "remove-wallet-reconciliation",
+      "noNavigation": true
+    }
+  ]
+}

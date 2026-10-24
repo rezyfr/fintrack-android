@@ -1,0 +1,21 @@
+# seed: base
+# E2E-050. The list has the groups Today, Yesterday, Last 7 days and Older.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertVisible: "Today"
+- assertVisible: "Yesterday"
+- assertVisible: "Last 7 days"
+# The list opens on the last 7 days. Reset clears the date range, so Older rows show.
+- tapOn: "Filters.*"
+- tapOn: "Reset"
+- tapOn: "Apply"
+- scrollUntilVisible:
+    element: "Older"
+    direction: DOWN

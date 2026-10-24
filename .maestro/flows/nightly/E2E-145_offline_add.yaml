@@ -1,0 +1,42 @@
+# seed: base
+# after: set_airplane.sh off
+# E2E-145. Airplane mode on. An added expense is saved on the phone and its row shows Failed with Retry.
+# After airplane mode is off, Retry syncs it and the badge goes away. The doc said Queued, but the app shows Failed.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: home
+- setAirplaneMode: enabled
+- runFlow:
+    file: ../../subflows/add_transaction.yaml
+    env:
+      TYPE: Expense
+      AMOUNT: "21"
+      DESC: "Offline coffee"
+      OFFLINE: "true"
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertVisible: "Offline coffee"
+- assertVisible: "Failed"
+- setAirplaneMode: disabled
+- tapOn: "Retry"
+- extendedWaitUntil:
+    notVisible: "Failed"
+    timeout: 20000
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: POST
+      LOG_TABLE: transactions
+      LOG_CONTAINS: "Offline coffee"

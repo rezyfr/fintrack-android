@@ -1,0 +1,13 @@
+# seed: base
+# E2E-060. A search with no match shows an empty text.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/open_filters.yaml
+- tapOn: "Search transactions"
+- inputText: "zzzz"
+- hideKeyboard
+- tapOn: "Apply"
+- assertVisible: "No transactions found."

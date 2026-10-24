@@ -1,0 +1,18 @@
+# seed: base
+# E2E-126. A BCA income notification makes an income row.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/map_bank_main.yaml
+- runFlow:
+    file: ../../subflows/run_helper.yaml
+    env:
+      SCRIPT_NAME: post_notification
+      SCRIPT_ARGS: '["myBCA","You received IDR 1,500,000 from ACME at Salary"]'
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertVisible: "ACME"

@@ -1,0 +1,14 @@
+{
+  "id": "bca-expense-notification",
+  "capability": "bca-notification-sync",
+  "role": "user",
+  "want": "myBCA spending notifications to be automatically captured as expense transactions",
+  "soThat": "I do not have to enter BCA card expenses manually",
+  "acceptance": [
+    "myBCA notifications whose body matches 'You spent IDR x at [Category]' are parsed and saved as expense transactions",
+    "the wallet is set to BCA and the tab to IDR_EXPENSES",
+    "the BCA category text is mapped to the nearest app category; unrecognised categories default to Other",
+    "the merchant field is set to the BCA category text since no merchant name is present in the notification",
+    "duplicate notifications are not stored twice"
+  ]
+}

@@ -1,0 +1,9 @@
+# Starts the app with no saved data and waits for Home. The server must hold accounts.
+appId: com.fidriyanto.banktracker
+---
+- launchApp:
+    clearState: true
+    stopApp: true
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 25000

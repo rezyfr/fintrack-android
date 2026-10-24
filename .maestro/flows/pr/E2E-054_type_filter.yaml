@@ -1,0 +1,27 @@
+# seed: base
+# E2E-054. Each type chip shows only that type.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/open_filters.yaml
+- tapOn: "Income"
+- tapOn: "Apply"
+- assertVisible: "Freelance payment"
+- assertNotVisible: "Bus ticket"
+- tapOn: "Filters.*"
+- tapOn: "Transfer"
+- tapOn: "Apply"
+- assertVisible: "Cash withdrawal"
+- assertNotVisible: "Freelance payment"
+- tapOn: "Filters.*"
+- tapOn: "Investment"
+- tapOn: "Apply"
+- assertVisible: "Index fund"
+- assertNotVisible: "Cash withdrawal"
+- tapOn: "Filters.*"
+- tapOn: "Expense"
+- tapOn: "Apply"
+- assertVisible: "Bus ticket"
+- assertNotVisible: "Index fund"

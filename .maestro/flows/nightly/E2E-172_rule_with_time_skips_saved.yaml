@@ -1,0 +1,29 @@
+# seed: base
+# E2E-172. A rule with a time of day is not tried on saved transactions, and the page says why.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn: "Rules"
+- tapOn: "Create your first rule"
+- tapOn: "Text to look for"
+- inputText: "coffee"
+- hideKeyboard
+- tapOn: "Add time"
+- tapOn: "From \\(24 hour\\)"
+- inputText: "08:00"
+- tapOn: "To \\(24 hour\\)"
+- inputText: "11:00"
+- hideKeyboard
+- tapOn: "Continue"
+- tapOn: "Shopping"
+- tapOn: "Continue"
+- tapOn: "Review"
+- assertVisible: "Saved transactions have no time.*"
+- assertNotVisible: "Apply \\(.*"

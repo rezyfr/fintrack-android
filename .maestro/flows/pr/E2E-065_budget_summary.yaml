@@ -1,0 +1,14 @@
+# seed: base
+# E2E-065. The Budget view shows the summary.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: budget
+- assertVisible: "Remaining budget"
+- assertVisible: ".* days left"
+- assertVisible: "You can spend .*"

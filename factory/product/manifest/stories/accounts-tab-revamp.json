@@ -1,0 +1,12 @@
+{
+  "id": "accounts-tab-revamp",
+  "capability": "mobile-navigation-revamp",
+  "role": "user",
+  "want": "the Accounts tab to list my accounts as clean cards and to open Settings from a menu button at the top right",
+  "soThat": "the balances read at a glance in the new visual style and Settings no longer takes a slot in the Accounts tab toggle",
+  "acceptance": [
+    "the Accounts tab shows an Accounts title with a menu button at the top right and no Balances or Settings toggle",
+    "each account is a rounded card with the account name, a subtitle of currency and account type, and the balance right-aligned in the display font, with owed and negative balances in the expense color",
+    "tapping the menu button opens Settings, and its back arrow returns to the account list"
+  ]
+}

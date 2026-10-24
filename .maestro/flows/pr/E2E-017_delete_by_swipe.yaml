@@ -1,0 +1,25 @@
+# seed: base
+# E2E-017. Swipe a row left. Cancel keeps the row. Delete removes it.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- swipe:
+    from:
+      text: "Lunch with team"
+    direction: LEFT
+- assertVisible: "Delete transaction\\?"
+- tapOn: "Cancel"
+- assertVisible: "Lunch with team"
+- swipe:
+    from:
+      text: "Lunch with team"
+    direction: LEFT
+- assertVisible: "Delete transaction\\?"
+- tapOn: "Delete"
+- assertNotVisible: "Lunch with team"

@@ -1,0 +1,19 @@
+{
+  "id": "category-spending-donut-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the Dashboard and views the spending breakdown section" },
+    {
+      "actor": "app",
+      "action": "renders an animated donut chart with arcs sized to each category's share, total in centre, and a colour-coded list below",
+      "story": "category-spending-donut",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "taps a segment on the donut chart" },
+    {
+      "actor": "app",
+      "action": "highlights the tapped segment and updates the centre label to show the category name and amount",
+      "story": "category-spending-donut",
+      "noNavigation": true
+    }
+  ]
+}

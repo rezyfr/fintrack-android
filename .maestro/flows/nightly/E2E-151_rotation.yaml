@@ -1,0 +1,19 @@
+# seed: base
+# E2E-151. Landscape on the Add form. The doc allows the typed text to stay or to be lost. The flow records the screens and checks that the app survives.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- tapOn:
+    id: "add_fab"
+- waitForAnimationToEnd
+- tapOn: "Add description…"
+- inputText: "Rotate me"
+- hideKeyboard
+- setOrientation: LANDSCAPE_LEFT
+- takeScreenshot: e2e-151-landscape
+- setOrientation: PORTRAIT
+- takeScreenshot: e2e-151-portrait
+- assertVisible:
+    id: "tab_home"

@@ -1,0 +1,18 @@
+# seed: base
+# E2E-142. A transfer with no To wallet.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- tapOn:
+    id: "add_fab"
+- waitForAnimationToEnd
+- tapOn: "Transfer"
+- tapOn: "0"
+- inputText: "10"
+- tapOn: "Add description…"
+- inputText: "No target"
+- hideKeyboard
+- tapOn: "Save"
+- assertVisible: "Choose the wallet to transfer to."

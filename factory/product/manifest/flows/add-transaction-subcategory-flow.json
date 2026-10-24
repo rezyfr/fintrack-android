@@ -1,0 +1,13 @@
+{
+  "id": "add-transaction-subcategory-flow",
+  "steps": [
+    { "actor": "user", "action": "opens the Add screen and picks a category" },
+    {
+      "actor": "app",
+      "action": "shows a subcategory dropdown with that category's subcategories and None",
+      "story": "add-transaction-subcategory",
+      "requires": "AddScreen"
+    },
+    { "actor": "user", "action": "picks a subcategory and submits" }
+  ]
+}

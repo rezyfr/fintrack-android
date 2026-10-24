@@ -1,0 +1,12 @@
+{
+  "id": "retire-pdf-import-tab",
+  "capability": "pdf-import-retirement",
+  "role": "user",
+  "want": "no PDF statement import capability anywhere in the web app: no Import tab and no parser code behind it",
+  "soThat": "the repo carries no code for a workflow I do not use, since I never run the statement PDF importer myself",
+  "acceptance": [
+    "the web app has no Import tab, navigation button, or upload screen",
+    "web/src/utils/pdfParser.js, its test, and scripts/parse_bank_statement.mjs are gone from the repo",
+    "pdfjs-dist is gone from web/package.json and its lockfile"
+  ]
+}

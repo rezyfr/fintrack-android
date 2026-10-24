@@ -1,0 +1,14 @@
+# seed: base
+# E2E-115. The model is not installed. The download button shows. The flow does not tap it.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn: "On-device AI"
+- assertVisible: "Download model \\(2.6 GB\\)"

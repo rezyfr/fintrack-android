@@ -1,0 +1,13 @@
+{
+  "id": "budget-line-details-and-assignment",
+  "capability": "android-budget-glance",
+  "role": "user",
+  "want": "manually assigned transactions to count toward their budget line, and to expand a line to see its recent transactions",
+  "soThat": "the app matches what the web shows and I can check what a budget was spent on",
+  "acceptance": [
+    "a transaction manually assigned to a budget line counts toward that line on Android, overriding the automatic match rules, matching the web app",
+    "tapping a budget line on the Budget tab expands it to show that line's most recent transactions",
+    "the expanded list shows up to three transactions with each transaction's name, date, and amount",
+    "tapping the expanded line again collapses the list"
+  ]
+}

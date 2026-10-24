@@ -1,0 +1,25 @@
+# seed: base
+# E2E-111. Choose accounts for the banks. The choices stay after a restart.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn: "Bank notifications"
+- tapOn:
+    text: "Off"
+    index: 0
+- tapOn: "Main · USD"
+- assertVisible: "Main"
+- stopApp
+- launchApp
+- tapOn:
+    id: "tab_accounts"
+- tapOn: "Menu"
+- tapOn: "Bank notifications"
+- assertVisible: "Main"

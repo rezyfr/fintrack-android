@@ -1,0 +1,13 @@
+{
+  "id": "card-statement-fifo-minimum-rollover-flow",
+  "steps": [
+    { "actor": "user", "action": "pays a statement and later takes a cash advance on the card" },
+    {
+      "actor": "app",
+      "action": "computes remaining by FIFO, shows the minimum as paid when covered, and rolls a settled past-due statement to the next due",
+      "story": "card-statement-fifo-minimum-rollover",
+      "requires": "GetCardStatementsUseCase"
+    },
+    { "actor": "user", "action": "sees the correct due amount and date on Home" }
+  ]
+}

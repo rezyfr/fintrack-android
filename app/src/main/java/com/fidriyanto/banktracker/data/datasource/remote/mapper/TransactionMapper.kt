@@ -1,0 +1,49 @@
+package com.fidriyanto.banktracker.data.datasource.remote.mapper
+
+import com.fidriyanto.banktracker.data.datasource.remote.dto.TransactionDto
+import com.fidriyanto.banktracker.data.datasource.remote.dto.TransactionInsertDto
+import com.fidriyanto.banktracker.data.db.TransactionEntity
+import com.fidriyanto.banktracker.data.model.LedgerTab
+import com.fidriyanto.banktracker.data.model.TransactionEntry
+import com.fidriyanto.banktracker.data.model.TransactionStatus
+
+internal const val REMOTE_ID_OFFSET = 10_000_000L
+
+fun TransactionDto.toEntity(): TransactionEntity? = runCatching {
+    TransactionEntity(
+        id = id + REMOTE_ID_OFFSET,
+        item = item.orEmpty(),
+        amount = amount,
+        category = category ?: "Other",
+        dateIso = date.orEmpty(),
+        referenceNo = "",
+        tab = tab?.let { runCatching { LedgerTab.valueOf(it) }.getOrDefault(LedgerTab.EXPENSES) }
+            ?: LedgerTab.EXPENSES,
+        status = TransactionStatus.SYNCED,
+        wallet = wallet,
+        txType = txType ?: "expense",
+        toWallet = toWallet,
+        subcategory = subcategory,
+        toAmount = toAmount,
+    ).also {
+        it.budgetLineId = budgetLineId
+        it.installmentId = installmentId
+    }
+}.getOrNull()
+
+fun TransactionEntry.toInsertDto() = TransactionInsertDto(
+    tab = tab.name,
+    date = date.toString(),
+    item = item,
+    amount = amount,
+    category = category,
+    note = note,
+    wallet = wallet,
+    txType = txType,
+    toWallet = toWallet,
+    // ac: add-transfer-target-amount — persist the received amount for cross-currency transfers
+    toAmount = toAmount,
+    // ac: add-transaction-subcategory — persist the chosen subcategory to the server
+    subcategory = subcategory,
+    installmentId = installmentId,
+)

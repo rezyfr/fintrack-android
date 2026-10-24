@@ -1,0 +1,41 @@
+{
+  "id": "transactions-list-calendar-toggle-flow",
+  "steps": [
+    {
+      "actor": "user",
+      "action": "opens the Transactions tab in List view"
+    },
+    {
+      "actor": "app",
+      "action": "shows the transactions under Today, Yesterday, Last 7 days, and Older headers with a category icon on each row",
+      "story": "transaction-list-date-groups",
+      "requires": "FeedScreen"
+    },
+    {
+      "actor": "app",
+      "action": "limits the list to the last 7 days until the user picks another period",
+      "story": "transactions-default-last-7-days",
+      "requires": "FeedScreen"
+    },
+    {
+      "actor": "app",
+      "action": "shows a category icon on each transaction row, or a generic icon for other categories",
+      "story": "transaction-category-icons",
+      "requires": "FeedScreen"
+    },
+    {
+      "actor": "user",
+      "action": "opens the Transactions tab and taps the Calendar toggle"
+    },
+    {
+      "actor": "app",
+      "action": "lays the loaded transactions on a weekday-aligned grid with per-day spending totals",
+      "story": "transactions-list-calendar-toggle",
+      "requires": "FeedScreen"
+    },
+    {
+      "actor": "user",
+      "action": "taps a day to see that day's transactions, or opens the filter sheet"
+    }
+  ]
+}

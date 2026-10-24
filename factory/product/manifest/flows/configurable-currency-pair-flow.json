@@ -1,0 +1,32 @@
+{
+  "id": "configurable-currency-pair-flow",
+  "steps": [
+    {
+      "actor": "user",
+      "action": "opens Settings and taps Currency Settings"
+    },
+    {
+      "actor": "app",
+      "action": "navigates to the Currency Settings screen with fields for the home/foreign currency codes and labels",
+      "story": "configurable-currency-pair",
+      "requires": "CurrencySettingsScreen",
+      "triggerElement": "CurrencySettingsScreen"
+    },
+    {
+      "actor": "user",
+      "action": "changes the foreign currency code and label and saves"
+    },
+    {
+      "actor": "app",
+      "action": "persists the change and every screen that shows or buckets by currency reflects it: Home hero labels, Balances net-worth tiles, Insights section headers, and the Budget currency toggle",
+      "story": "configurable-currency-pair",
+      "noNavigation": true
+    },
+    {
+      "actor": "app",
+      "action": "shows each amount in the currency of its own account, for example a Bangkok Bank transaction in Thai baht on Home",
+      "story": "multicurrency-money-formatting",
+      "noNavigation": true
+    }
+  ]
+}

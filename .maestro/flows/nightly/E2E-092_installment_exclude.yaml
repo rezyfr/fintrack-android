@@ -1,0 +1,20 @@
+# seed: base
+# E2E-092. The switch excludes a plan. The label flips.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: installments
+- tapOn:
+    id: "inst_exclude_1"
+- assertVisible: "Excluded"
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: PATCH
+      LOG_TABLE: installments
+      LOG_CONTAINS: "excluded"

@@ -1,0 +1,10 @@
+# seed: base
+# E2E-044. Home shows the spending comparison with last cycle.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- assertVisible: "Spending vs last cycle"
+- assertVisible: "This cycle"
+- assertVisible: "Last cycle"

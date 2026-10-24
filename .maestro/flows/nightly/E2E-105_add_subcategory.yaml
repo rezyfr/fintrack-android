@@ -1,0 +1,26 @@
+# seed: base
+# E2E-105. Add a subcategory under Subscriptions. The server gets the new row.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn:
+    id: "settings_categories"
+- tapOn:
+    text: "Add Subcategory"
+    index: 0
+- tapOn: "Subcategory name"
+- inputText: "Podcasts"
+- tapOn: "Save"
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: POST
+      LOG_TABLE: subcategories
+      LOG_CONTAINS: "Podcasts"

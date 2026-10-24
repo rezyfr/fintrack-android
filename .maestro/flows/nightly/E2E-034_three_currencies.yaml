@@ -1,0 +1,22 @@
+# seed: three_currency
+# E2E-034. Accounts in USD, EUR and JPY give one book for each currency.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- assertVisible:
+    id: "book_combined"
+- assertVisible:
+    id: "book_USD"
+- assertVisible:
+    id: "book_EUR"
+- assertVisible:
+    id: "book_JPY"
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- assertVisible: "USD Net"
+- assertVisible: "EUR Net"
+- assertVisible: "JPY Net"

@@ -1,0 +1,15 @@
+{
+  "id": "track-cc-transactions-as-debt",
+  "capability": "cc-debt-tracking",
+  "role": "user",
+  "want": "each Mandiri CC and BCA CC charge tracked as debt that gets checked off as paid when I make a payment",
+  "soThat": "I can see exactly which purchases are still unpaid instead of just a single running balance, and understand why my card balance keeps growing",
+  "acceptance": [
+    "each Mandiri CC and BCA CC charge shows a status of Paid, Partially Paid, or Unpaid",
+    "a payment or refund/credit settles the oldest unpaid charges first (FIFO), and can only settle charges dated on or before its own date",
+    "a payment that doesn't fully cover a charge marks it Partially Paid and shows the remaining unpaid amount",
+    "the page shows a total unpaid balance for the selected card",
+    "a wallet selector switches the view between Mandiri Credit Card and BCA Credit Card",
+    "the page shows the total unpaid balance as of each past billing statement cutoff date (11th of the month for Mandiri CC, 3rd for BCA CC), computed from only the charges and payments dated on or before that cutoff"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "android-transactions-view",
+  "title": "Android Transactions View",
+  "status": "In Progress",
+  "owners": [
+    "owner@example.com"
+  ],
+  "stories": [
+    "transactions-list-calendar-toggle",
+    "transaction-list-date-groups",
+    "transaction-category-icons",
+    "transactions-default-last-7-days"
+  ],
+  "flows": [
+    "transactions-list-calendar-toggle-flow"
+  ]
+}

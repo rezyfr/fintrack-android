@@ -1,0 +1,21 @@
+# seed: base
+# E2E-016. Delete a row from the edit sheet and confirm.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- tapOn: "Lunch with team"
+- tapOn: "Delete"
+- assertVisible: "Delete transaction\\?"
+- tapOn: "Delete"
+- assertNotVisible: "Lunch with team"
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: DELETE
+      LOG_TABLE: transactions

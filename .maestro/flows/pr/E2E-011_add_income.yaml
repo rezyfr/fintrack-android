@@ -1,0 +1,20 @@
+# seed: base
+# E2E-011. Add income. The row shows and Money in on Home grows.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- assertVisible: "\\$500"
+- runFlow:
+    file: ../../subflows/add_transaction.yaml
+    env:
+      TYPE: Income
+      AMOUNT: "1000000"
+      DESC: "Salary bonus"
+- assertVisible: "\\$1,000,500"
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertVisible: "Salary bonus"

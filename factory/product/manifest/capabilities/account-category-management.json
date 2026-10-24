@@ -1,0 +1,16 @@
+{
+  "id": "account-category-management",
+  "title": "Account & Category Management",
+  "status": "In Progress",
+  "owners": [
+    "owner@example.com"
+  ],
+  "stories": [
+    "manage-accounts",
+    "manage-categories"
+  ],
+  "flows": [
+    "manage-accounts-flow",
+    "manage-categories-flow"
+  ]
+}

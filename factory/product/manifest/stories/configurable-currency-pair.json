@@ -1,0 +1,16 @@
+{
+  "id": "configurable-currency-pair",
+  "capability": "configurable-currency-pair",
+  "role": "user",
+  "want": "to rename the two currencies this app tracks and their display labels from Settings, instead of the app being hardcoded to IDR/THB and labeled \"Indonesia\"/\"Thailand\"",
+  "soThat": "the app works for anyone's own pair of currencies, not just mine",
+  "acceptance": [
+    "Settings has a Currency Settings entry with fields for the home currency code, home currency label, foreign currency code, and foreign currency label, defaulting to IDR/Indonesia/THB/Thailand so an existing installation looks unchanged until these are edited",
+    "the Home hero's two blocks are labeled with the configured labels instead of the hardcoded strings \"Thailand\"/\"Indonesia\"",
+    "a wallet's currency zone (Home, Insights, Budget, the Transactions calendar) is read from its own account currency instead of a hardcoded wallet id such as \"BBL\"",
+    "the Add Transaction form routes a transaction to the correct internal ledger tab based on the configured foreign currency instead of a hardcoded \"THB\" check",
+    "the Balances net-worth row, Dashboard/Insights section headers, and Budget currency toggle all use the configured pair instead of a hardcoded listOf(\"IDR\", \"THB\")",
+    "currency symbols come from a shared currency-code lookup table instead of separate hardcoded \"THB\"/else branches scattered across screens",
+    "this story covers the Android app only; the web app's equivalent \"Thailand\"/\"Indonesia\" labels are a separate follow-up"
+  ]
+}

@@ -1,0 +1,8 @@
+# Maestro workspace config. Run the whole suite with:
+#   maestro test --device emulator-5554 .maestro
+# The runner scripts/run_all.sh adds the fake server setup, tags and reports.
+flows:
+  - "flows/**"
+platform:
+  android:
+    disableAnimations: false

@@ -1,0 +1,16 @@
+{
+  "id": "web-configurable-currency-pair",
+  "capability": "web-configurable-currency-pair",
+  "role": "user",
+  "want": "to set the two currencies the web app tracks and their display labels, the same way the Android app does",
+  "soThat": "the web app works for anyone's own pair of currencies instead of being hardcoded to IDR/THB and labeled \"Indonesia\"/\"Thailand\"",
+  "acceptance": [
+    "the Accounts view has a Currency settings form with the home currency code, home currency label, foreign currency code, and foreign currency label, defaulting to IDR/Indonesia/THB/Thailand so an existing installation looks unchanged until they are edited",
+    "the pair is stored in this browser's localStorage, and missing or unreadable storage falls back to the defaults",
+    "a wallet's currency is read from its own account currency, and a wallet that is not in the account list counts as the home currency, instead of a hardcoded wallet id such as BBL",
+    "Add Transaction and Edit Transaction route a transaction to the correct internal ledger tab based on the configured foreign currency instead of a hardcoded THB check",
+    "the Transactions totals, Balances net-worth row, Insights and Budget section headers, and Calendar currency toggle use the configured pair instead of hardcoded THB and IDR, Thailand and Indonesia",
+    "currency symbols and decimal places come from one shared lookup, and a code that is not in the lookup is shown as the code itself",
+    "the Budget tab identifies foreign-currency spending by account currency and derives its exchange rate from transfers out of foreign-currency accounts instead of the BBL wallet"
+  ]
+}

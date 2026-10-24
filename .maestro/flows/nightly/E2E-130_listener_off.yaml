@@ -1,0 +1,24 @@
+# seed: base
+# after: set_listener.sh on
+# E2E-130. With the listener off no row is added.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/map_bank_main.yaml
+- runFlow:
+    file: ../../subflows/run_helper.yaml
+    env:
+      SCRIPT_NAME: set_listener
+      SCRIPT_ARGS: '["off"]'
+- runFlow:
+    file: ../../subflows/run_helper.yaml
+    env:
+      SCRIPT_NAME: post_notification
+      SCRIPT_ARGS: '["myBCA","You spent IDR 45,000 at Food and Beverage"]'
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertNotVisible: "Pending"

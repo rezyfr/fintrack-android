@@ -1,0 +1,26 @@
+# seed: base_with_rules
+# E2E-174. A rule list that another phone shared shows on this phone and stays after a restart.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn: "Rules"
+- extendedWaitUntil:
+    visible: "Shared taxi rule"
+    timeout: 15000
+- assertVisible: ".*the text contains grab.*Transport.*"
+- stopApp
+- launchApp
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn: "Rules"
+- assertVisible: "Shared taxi rule"

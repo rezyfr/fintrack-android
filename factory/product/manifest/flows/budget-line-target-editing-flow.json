@@ -1,0 +1,12 @@
+{
+  "id": "budget-line-target-editing-flow",
+  "steps": [
+    { "actor": "user", "action": "edits the target amount on a budget line and confirms it" },
+    {
+      "actor": "app",
+      "action": "persists the new target to Supabase, redraws that line's target series, and keeps showing the recommended range from recent pay cycles",
+      "story": "budget-line-target-editing",
+      "noNavigation": true
+    }
+  ]
+}

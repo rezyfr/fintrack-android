@@ -1,0 +1,39 @@
+# seed: base
+# E2E-152. Visit every tab in the dark theme. No crash.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn: "Dark theme"
+- tapOn: "Back"
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: home
+- takeScreenshot: e2e-152-home
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- takeScreenshot: e2e-152-transactions
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: budget
+- takeScreenshot: e2e-152-budget
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: insights
+- takeScreenshot: e2e-152-insights
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- takeScreenshot: e2e-152-accounts

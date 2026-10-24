@@ -1,0 +1,31 @@
+# seed: base
+# E2E-090. Rename an installment.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_sub.yaml
+    env:
+      SUB: installments
+- tapOn:
+    id: "inst_edit_1"
+# The first tap opens the field and the keyboard. The second tap puts the cursor at the end of the text.
+- tapOn:
+    text: "Laptop plan"
+    point: "98%,50%"
+- waitForAnimationToEnd
+- tapOn:
+    text: "Laptop plan"
+    point: "98%,50%"
+- eraseText: 30
+- inputText: "Work laptop"
+- tapOn: "Save"
+- assertVisible: "Work laptop"
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: PATCH
+      LOG_TABLE: installments
+      LOG_CONTAINS: "Work laptop"

@@ -1,0 +1,33 @@
+{
+  "id": "advanced-transaction-filters-flow",
+  "steps": [
+    { "actor": "user", "action": "types a query into the search field in the transaction list" },
+    {
+      "actor": "app",
+      "action": "filters displayed transactions to those whose item contains the query text",
+      "story": "advanced-transaction-filters",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "enters a minimum and/or maximum amount in the amount range inputs" },
+    {
+      "actor": "app",
+      "action": "filters displayed transactions to those whose amount falls within the specified range",
+      "story": "advanced-transaction-filters",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "selects a from date and/or to date in the date range inputs" },
+    {
+      "actor": "app",
+      "action": "filters displayed transactions to those within the specified date range",
+      "story": "advanced-transaction-filters",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "clears a filter" },
+    {
+      "actor": "app",
+      "action": "restores the transaction list with remaining active filters still applied",
+      "story": "advanced-transaction-filters",
+      "noNavigation": true
+    }
+  ]
+}

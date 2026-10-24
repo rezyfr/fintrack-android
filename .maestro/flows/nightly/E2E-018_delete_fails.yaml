@@ -1,0 +1,21 @@
+# seed: base
+# fault: DELETE transactions=500
+# E2E-018. The server returns 500 on DELETE. A message with Retry shows.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- swipe:
+    from:
+      text: "Lunch with team"
+    direction: LEFT
+- tapOn: "Delete"
+- extendedWaitUntil:
+    visible: "Failed to delete transaction. Please try again."
+    timeout: 15000
+- assertVisible: "Retry"

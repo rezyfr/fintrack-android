@@ -1,0 +1,16 @@
+# seed: base
+# E2E-059. The list opens with a From date 7 days back. Clear it, pick Today as the From date, and keep only today rows.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/open_filters.yaml
+- tapOn: "Advanced"
+- tapOn: "From: .*"
+- tapOn: "From date"
+- tapOn: "Today, .*"
+- tapOn: "Save"
+- tapOn: "Apply"
+- assertVisible: "Morning coffee"
+- assertNotVisible: "Bus ticket"

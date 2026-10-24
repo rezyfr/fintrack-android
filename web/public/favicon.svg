@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <title>FinTrack</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#242836"/>
+      <stop offset="1" stop-color="#0B0B10"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F0D9A2"/>
+      <stop offset="1" stop-color="#C8A96E"/>
+    </linearGradient>
+    <linearGradient id="gold-bright" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F5E3B5"/>
+      <stop offset="1" stop-color="#C8A96E"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  <rect x="12.8" y="34.4" width="9.6" height="16" rx="3.2" fill="url(#gold)" fill-opacity="0.5"/>
+  <rect x="27.2" y="24.8" width="9.6" height="25.6" rx="3.2" fill="url(#gold)" fill-opacity="0.75"/>
+  <rect x="41.6" y="13.6" width="9.6" height="36.8" rx="3.2" fill="url(#gold-bright)"/>
+</svg>

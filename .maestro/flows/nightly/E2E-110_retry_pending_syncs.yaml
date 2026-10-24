@@ -1,0 +1,47 @@
+# seed: base
+# fault: POST transactions=500
+# E2E-110. A row that failed to sync shows Failed. With the server back, Retry pending syncs in Settings syncs it.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow:
+    file: ../../subflows/add_transaction.yaml
+    env:
+      TYPE: Expense
+      AMOUNT: "33"
+      DESC: "Queued item"
+      OFFLINE: "true"
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertVisible: "Queued item"
+- assertVisible: "Failed"
+- runFlow:
+    file: ../../subflows/server_call.yaml
+    env:
+      SERVER_PATH: /__fault/clear
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- scrollUntilVisible:
+    element: "Retry pending syncs"
+    direction: DOWN
+- tapOn: "Retry pending syncs"
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- extendedWaitUntil:
+    notVisible: "Failed"
+    timeout: 20000
+- runFlow:
+    file: ../../subflows/assert_request.yaml
+    env:
+      LOG_METHOD: POST
+      LOG_TABLE: transactions
+      LOG_CONTAINS: "Queued item"

@@ -1,0 +1,8 @@
+{
+  "id": "bca-notification-sync",
+  "title": "BCA Notification Sync",
+  "status": "Approved",
+  "owners": ["owner@example.com"],
+  "stories": ["bca-expense-notification", "bca-received-notification"],
+  "flows": ["bca-expense-notification-flow", "bca-received-notification-flow"]
+}

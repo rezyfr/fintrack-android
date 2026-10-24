@@ -1,0 +1,26 @@
+{
+  "id": "add-transaction-date-flow",
+  "steps": [
+    { "actor": "user", "action": "navigates to the Add Transaction screen" },
+    {
+      "actor": "app",
+      "action": "renders the Add Transaction form with a date field defaulting to today and a Submit button",
+      "story": "add-transaction-date",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "taps the date field" },
+    {
+      "actor": "app",
+      "action": "opens a date picker dialog pre-selected to the current date field value",
+      "story": "add-transaction-date",
+      "noNavigation": true
+    },
+    { "actor": "user", "action": "selects a date and confirms" },
+    {
+      "actor": "app",
+      "action": "closes the dialog and updates the date field to the chosen date",
+      "story": "add-transaction-date",
+      "noNavigation": true
+    }
+  ]
+}

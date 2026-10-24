@@ -1,0 +1,8 @@
+{
+  "id": "transaction-category-filter",
+  "title": "Transaction Category Filter",
+  "status": "Approved",
+  "owners": ["owner@example.com"],
+  "stories": ["filter-transactions-by-category"],
+  "flows": ["filter-transactions-by-category-flow"]
+}

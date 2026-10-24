@@ -1,0 +1,18 @@
+# seed: base
+# E2E-053. Reset clears the filters and all rows return.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/open_filters.yaml
+- tapOn: "Search transactions"
+- inputText: "coffee"
+- hideKeyboard
+- tapOn: "Apply"
+- assertNotVisible: "Bus ticket"
+- tapOn: "Filters.*"
+- tapOn: "Reset"
+- tapOn: "Apply"
+- assertVisible: "Bus ticket"
+- assertVisible: "Filters"

@@ -1,0 +1,5 @@
+# Env: BOOK is combined or a currency code such as USD.
+appId: com.fidriyanto.banktracker
+---
+- tapOn:
+    id: "book_${BOOK}"

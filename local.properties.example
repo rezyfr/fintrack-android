@@ -1,0 +1,12 @@
+# Copy this file to local.properties and fill in your own values.
+# local.properties is gitignored — never commit real credentials.
+
+# Path to your Android SDK. Android Studio sets this automatically on first sync;
+# leave it out and let Android Studio fill it in.
+# sdk.dir=/Users/you/Library/Android/sdk
+
+# Optional: a FinTrack server built into the app. Leave both out and the setup wizard asks where to keep
+# the data: on the phone, or on a server whose address and token the user types.
+# With both set, setup suggests this server. Use the address without a trailing slash.
+# API_BASE_URL=https://your-server.example.com
+# API_TOKEN=your-api-token

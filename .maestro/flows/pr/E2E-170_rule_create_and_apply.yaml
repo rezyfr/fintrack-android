@@ -1,0 +1,67 @@
+# seed: base
+# E2E-170. Create a rule in the three steps. A bank notification then gets the rule's category and description.
+appId: com.fidriyanto.banktracker
+tags:
+  - pr
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/map_bank_main.yaml
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: accounts
+- tapOn: "Menu"
+- tapOn: "Rules"
+- assertVisible: "Teach FinTrack how you spend"
+- tapOn: "Create your first rule"
+- assertVisible: "When should this rule apply?"
+- assertNotVisible: "From"
+- tapOn: "Text to look for"
+- inputText: "cafe nero"
+- hideKeyboard
+- tapOn: "Add amount"
+- assertVisible: "From"
+# The amount is on but empty, so Continue shows what is missing.
+- tapOn: "Continue"
+- assertVisible: "Enter an amount.*"
+- tapOn: "From"
+- inputText: "10"
+- tapOn: "To"
+- inputText: "500"
+- hideKeyboard
+- tapOn: "Continue"
+- assertVisible: "What should happen?"
+- assertNotVisible: "New description"
+- tapOn: "Food & Drink"
+- tapOn: "Add description"
+- tapOn: "New description"
+- inputText: "Coffee break"
+- hideKeyboard
+- tapOn: "Continue"
+- assertVisible: "Check your rule"
+- assertVisible: ".*the text contains cafe nero.*"
+- assertVisible: ".*the amount is 10 to 500.*"
+- tapOn: "Save rule"
+- assertVisible: "Detail 2"
+- runFlow:
+    file: ../../subflows/run_helper.yaml
+    env:
+      SCRIPT_NAME: post_notification
+      SCRIPT_ARGS: '["Bangkok Bank","CAFE NERO 120.50THB"]'
+- runFlow:
+    when:
+      notVisible:
+        id: "tab_home"
+    commands:
+      - back
+- runFlow:
+    when:
+      notVisible:
+        id: "tab_home"
+    commands:
+      - back
+- runFlow:
+    file: ../../subflows/open_tab.yaml
+    env:
+      TAB: transactions
+- assertVisible: "Coffee break"

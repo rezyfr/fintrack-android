@@ -1,0 +1,11 @@
+{
+  "id": "budget-remaining-sums-lines",
+  "capability": "android-budget-glance",
+  "role": "user",
+  "want": "the remaining budget to equal the sum of the remaining of each budget line",
+  "soThat": "the total matches the lines I can see, and an overspent line does not hide money left in other lines",
+  "acceptance": [
+    "the remaining budget total on the Budget tab and on Home is the sum of each flexible line's own remaining, where an overspent line counts as 0 remaining",
+    "the Home budget card lists the first five flexible lines, and the Budget tab lists every flexible line"
+  ]
+}

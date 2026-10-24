@@ -1,0 +1,19 @@
+# seed: base
+# E2E-058. Amount range 10 to 30 keeps rows inside the range.
+appId: com.fidriyanto.banktracker
+tags:
+  - nightly
+---
+- runFlow: ../../subflows/launch_clean.yaml
+- runFlow: ../../subflows/open_filters.yaml
+- tapOn: "Advanced"
+- tapOn: "Min amount"
+- inputText: "10"
+- tapOn: "Max amount"
+- inputText: "30"
+- hideKeyboard
+- tapOn: "Apply"
+- assertVisible: "Bus ticket"
+- assertVisible: "Lunch with team"
+- assertNotVisible: "Monthly rent"
+- assertNotVisible: "Morning coffee"

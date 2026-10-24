@@ -1,0 +1,20 @@
+{
+  "id": "delete-transaction-from-feed-flow",
+  "steps": [
+    { "actor": "user", "action": "swipes a transaction card to the left on the feed" },
+    {
+      "actor": "app",
+      "action": "reveals the delete background and, once the swipe completes, shows the delete confirmation dialog with the transaction's merchant and amount",
+      "story": "delete-transaction-from-feed",
+      "noNavigation": true,
+      "triggerElement": "DeleteTransactionDialog"
+    },
+    { "actor": "user", "action": "taps Delete in the confirmation dialog" },
+    {
+      "actor": "app",
+      "action": "dismisses the dialog, removes the row from the local cache, and issues a DELETE to Supabase",
+      "story": "delete-transaction-from-feed",
+      "noNavigation": true
+    }
+  ]
+}
