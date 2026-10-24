@@ -13,6 +13,7 @@ import com.fidriyanto.banktracker.domain.usecase.ParseNotificationWithAiUseCase
 import com.fidriyanto.banktracker.domain.usecase.RecordAutoAddedUseCase
 import com.fidriyanto.banktracker.domain.usecase.ResolveBankWalletUseCase
 import com.fidriyanto.banktracker.notification.NotificationParser
+import com.fidriyanto.banktracker.notification.notificationTime
 import com.fidriyanto.banktracker.notification.ReviewNotificationManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -52,7 +53,9 @@ class BankNotificationService : NotificationListenerService() {
             .getCharSequence(android.app.Notification.EXTRA_TEXT)?.toString()
         Log.d(TAG, "pkg=${sbn.packageName} title=$title text=$text")
 
-        val parsed = NotificationParser.parse(title, text, sbn.postTime)
+        // ac: repost-duplicate - one time for the whole notification, so a repost of it is not saved twice
+        val at = notificationTime(sbn.notification.`when`, sbn.postTime)
+        val parsed = NotificationParser.parse(title, text, at)
         Log.d(TAG, "parsed=$parsed")
         // This app's own review notifications are never read.
         if (title == null || text == null || sbn.packageName == packageName) return
@@ -61,10 +64,10 @@ class BankNotificationService : NotificationListenerService() {
             val fromPattern = parsed?.let { resolveBankWallet(it) }
             if (fromPattern != null) return@launch capture(fromPattern)
             // ac: custom-bank-patterns - a bank the user taught the app is read before the on-device model
-            parseCustomBank(title, text, sbn.postTime)?.let { return@launch capture(it) }
+            parseCustomBank(title, text, at)?.let { return@launch capture(it) }
             // ac: on-device-ai - a payment the patterns do not know, or a bank the user turned off or has
             // no account for, goes to the on-device model.
-            if (NotificationParser.looksLikePayment(title, text)) parseWithAi(title, text, sbn.postTime)?.let { capture(it) }
+            if (NotificationParser.looksLikePayment(title, text)) parseWithAi(title, text, at)?.let { capture(it) }
         }
     }
 
