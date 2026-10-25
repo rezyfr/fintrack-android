@@ -98,14 +98,24 @@ FinTrack keeps your data in one of two places. You choose the place in the app's
 
 | Mode | Where your data is | What you need |
 |---|---|---|
-| **A. On this phone** | In the app, on your phone only. No server and no account. | Android Studio and an Android phone or emulator |
+| **A. On this phone** | In the app, on your phone only. No server and no account. | An Android 8.0 or later phone |
 | **B. On your own server** | On a FinTrack server that you run. The web app needs this mode. | The same, plus a FinTrack server with an HTTPS address |
 
 The mode stays fixed after setup. To change it, see [Change the mode](#change-the-mode).
 
-### 1. Install the Android app
+### 1. Get the Android app
 
-Both modes start here.
+Both modes start here. Choose one way.
+
+**Download the app.** This is the easy way. You do not need Android Studio.
+
+1. Open the [latest release](https://github.com/rezyfr/fintrack-android/releases/latest) on your phone and download `FinTrack-1.0.apk` (the number is the version).
+2. Open the file. Android asks you to allow installs from your browser or file app. Allow it.
+3. Open FinTrack and go to step 2A or 2B.
+
+The release page lists the SHA-256 checksum of the file and of the signing certificate, so you can check the download. If you installed a build from source before, uninstall it first. Android does not update an app that has a different signature.
+
+**Build it from source.** Use this way to change the code.
 
 1. Install [Android Studio](https://developer.android.com/studio). It includes JDK 17. In its SDK Manager, install Android SDK 35.
 2. Get the code.
@@ -185,7 +195,7 @@ A backup file restores into mode A only. FinTrack cannot copy the data of the ph
 
 ### Release build
 
-`./gradlew :app:assembleRelease` builds an unsigned APK with R8 on. Sign it with your own keystore (`zipalign`, then `apksigner sign`). Keep `app/build/outputs/mapping/release/mapping.txt` of every build you share, because a release crash trace is unreadable without it. A class that Gson reads by field name needs a keep rule in `app/proguard-rules.pro`.
+`./gradlew :app:assembleRelease` builds an unsigned APK with R8 on. Make sure `local.properties` has no `API_BASE_URL` and `API_TOKEN`, because the build copies both into the APK. Sign it with your own keystore (`zipalign`, then `apksigner sign`). Keep `app/build/outputs/mapping/release/mapping.txt` of every build you share, because a release crash trace is unreadable without it. A class that Gson reads by field name needs a keep rule in `app/proguard-rules.pro`.
 
 ## Testing and quality
 
