@@ -15,7 +15,8 @@ interface TransactionRepository {
         // ac: insights-wallet-flow — rows where this wallet is the source or the transfer target
         involvingWallet: String? = null,
     ): Result<List<TransactionUiModel>>
-    suspend fun processNewNotification(parsed: ParsedTransaction): Long?
+    // [alsoSeenAt] is another time the same notification can be known by. A copy under either time is skipped.
+    suspend fun processNewNotification(parsed: ParsedTransaction, alsoSeenAt: Long? = null): Long?
     suspend fun syncTransaction(id: Long): Result<Unit>
     suspend fun insertManual(entry: TransactionEntry): Result<Unit>
     suspend fun updateAndSync(id: Long, item: String, category: String)
