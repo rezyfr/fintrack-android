@@ -15,6 +15,7 @@ import com.fidriyanto.banktracker.data.model.TransactionEdit
 import com.fidriyanto.banktracker.data.model.TransactionEntry
 import com.fidriyanto.banktracker.data.model.TransactionStatus
 import com.fidriyanto.banktracker.data.model.ledgerTabFor
+import com.fidriyanto.banktracker.notification.notificationKeys
 import com.fidriyanto.banktracker.domain.model.TransactionUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -48,12 +49,12 @@ class TransactionRepositoryImpl @Inject constructor(
         fetchDataSource.fetch(month, wallet, txType, category, search, amountMin, amountMax, dateFrom, dateTo, involvingWallet)
             .map { list -> list.map { it.toUiModel() } }
 
-    override suspend fun processNewNotification(parsed: ParsedTransaction): Long? {
-        val compositeKey = "${parsed.item}|${parsed.amount}|${parsed.date}|${parsed.timestampMs}"
-        // Atomic dedup: the ref insert ignores conflicts and returns -1 when the key already exists.
-        // Android often delivers onNotificationPosted more than once; a check-then-insert raced and
-        // recorded the transaction twice. Only the first insert of a key proceeds.
-        if (localDataSource.insertRef(ProcessedRefEntity(compositeKey)) == -1L) return null
+    override suspend fun processNewNotification(parsed: ParsedTransaction, alsoSeenAt: Long?): Long? {
+        val keys = notificationKeys(parsed.item, parsed.amount, parsed.date, parsed.timestampMs, alsoSeenAt)
+        // Atomic dedup: a ref insert ignores conflicts and returns -1 when the key exists. A check-then-insert raced
+        // and recorded a transaction twice. Every key is inserted, so a later copy is caught under any of them.
+        val fresh = keys.map { localDataSource.insertRef(ProcessedRefEntity(it)) != -1L }
+        if (fresh.any { !it }) return null
         // ac: bca-expense-notification, configurable-currency-pair — the tab comes from the wallet's currency
         val settings = currencySettingsDataSource.observe().first()
         val walletCurrency = accountDataSource.observeAll().first().firstOrNull { it.id == parsed.wallet }?.currency

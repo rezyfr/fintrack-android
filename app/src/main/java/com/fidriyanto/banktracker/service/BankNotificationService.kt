@@ -46,35 +46,40 @@ class BankNotificationService : NotificationListenerService() {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    override fun onNotificationPosted(sbn: StatusBarNotification) {
+    override fun onNotificationPosted(sbn: StatusBarNotification) = handle(sbn, catchUp = false)
+
+    // ac: catch-up-on-connect - [catchUp] is true for a notification that was already in the shade when the listener
+    // connected. Those go through the patterns only. The on-device model is left out, so a reconnect does not run
+    // it on every payment-looking notification that is still waiting in the shade.
+    private fun handle(sbn: StatusBarNotification, catchUp: Boolean) {
         val title = sbn.notification.extras
             .getCharSequence(android.app.Notification.EXTRA_TITLE)?.toString()
         val text = sbn.notification.extras
             .getCharSequence(android.app.Notification.EXTRA_TEXT)?.toString()
-        Log.d(TAG, "pkg=${sbn.packageName} title=$title text=$text")
+        if (!catchUp) Log.d(TAG, "pkg=${sbn.packageName} title=$title text=$text")
 
         // ac: repost-duplicate - one time for the whole notification, so a repost of it is not saved twice
         val at = notificationTime(sbn.notification.`when`, sbn.postTime)
         val parsed = NotificationParser.parse(title, text, at)
-        Log.d(TAG, "parsed=$parsed")
+        if (!catchUp) Log.d(TAG, "parsed=$parsed")
         // This app's own review notifications are never read.
         if (title == null || text == null || sbn.packageName == packageName) return
         scope.launch {
             // ac: bank-parser-accounts - a bank pattern saves to the account the user chose for that bank
             val fromPattern = parsed?.let { resolveBankWallet(it) }
-            if (fromPattern != null) return@launch capture(fromPattern)
+            if (fromPattern != null) return@launch capture(fromPattern, sbn.postTime)
             // ac: custom-bank-patterns - a bank the user taught the app is read before the on-device model
-            parseCustomBank(title, text, at)?.let { return@launch capture(it) }
+            parseCustomBank(title, text, at)?.let { return@launch capture(it, sbn.postTime) }
             // ac: on-device-ai - a payment the patterns do not know, or a bank the user turned off or has
             // no account for, goes to the on-device model.
-            if (NotificationParser.looksLikePayment(title, text)) parseWithAi(title, text, at)?.let { capture(it) }
+            if (!catchUp && NotificationParser.looksLikePayment(title, text)) parseWithAi(title, text, at)?.let { capture(it, sbn.postTime) }
         }
     }
 
-    private suspend fun capture(read: ParsedTransaction) {
+    private suspend fun capture(read: ParsedTransaction, postTime: Long) {
         // ac: custom-rules - the user's rules set the category and the description, or drop the transaction
         val parsed = applyRules.forCapture(read) ?: return
-        val id = repository.processNewNotification(parsed) ?: return
+        val id = repository.processNewNotification(parsed, alsoSeenAt = postTime) ?: return
         reviewNotificationManager.showCapturedNotification(id)
         // ac: auto-added-notice - Home tells the user about it until they dismiss it. A failure here never undoes the capture.
         runCatching { recordAutoAdded(parsed.item, parsed.amount, parsed.txType, parsed.wallet, AutoSource.NOTIFICATION) }
@@ -98,6 +103,10 @@ class BankNotificationService : NotificationListenerService() {
         super.onListenerConnected()
         isConnected = true
         Log.d(TAG, "listener connected")
+        // ac: catch-up-on-connect - Android can stop this app for memory, and a payment that arrives while it is
+        // stopped is never delivered. When the listener connects again, the notifications still in the shade are read.
+        // One that was already saved is skipped by the duplicate check.
+        runCatching { activeNotifications }.getOrNull()?.forEach { handle(it, catchUp = true) }
     }
 
     override fun onDestroy() {
