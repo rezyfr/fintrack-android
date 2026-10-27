@@ -79,6 +79,7 @@ fun SpendCompareChart(sc: SpendCompare, currency: String) {
     val thisLbl = stringResource(R.string.home_spend_this_cycle)
     val lastLbl = stringResource(R.string.home_spend_last_cycle)
     val diffLbl = stringResource(R.string.home_spend_difference)
+    val noDataLbl = stringResource(R.string.home_spend_no_data)
     val twoAgoLbl = stringResource(R.string.home_spend_two_cycles_ago)
     val threeAgoLbl = stringResource(R.string.home_spend_three_cycles_ago)
     val avgLbl = stringResource(R.string.home_spend_average)
@@ -191,28 +192,30 @@ fun SpendCompareChart(sc: SpendCompare, currency: String) {
                 // press-and-hold crosshair + tooltip
                 val sx = selectedX
                 if (sx != null) {
-                    val day = (((sx - leftPad) / plotW) * maxDay).roundToInt().coerceIn(0, sc.todayIndex)
-                    val cur = sc.points[day].cumulative
+                    // ac: spend-compare-scrub-to-end - the finger can go to the last day of the cycle. For a day after today
+                    // this cycle has no figure yet, so [cur] is null and only the past cycles show.
+                    val day = (((sx - leftPad) / plotW) * maxDay).roundToInt().coerceIn(0, maxDay)
+                    val cur = sc.points.getOrNull(day)?.cumulative
                     // each reference cycle's cumulative at the same day-of-cycle (clamped to its last day)
                     val refValues = refs.map { (label, pts) -> label to pts.at(day) }
                     val lst = refValues.map { it.second }.average()
                     val cx = xOf(day)
                     drawLine(outline, Offset(cx, topPad), Offset(cx, baseY), strokeWidth = 1.dp.toPx())
-                    drawCircle(pine, radius = 4.dp.toPx(), center = Offset(cx, yOf(cur)))
+                    if (cur != null) drawCircle(pine, radius = 4.dp.toPx(), center = Offset(cx, yOf(cur)))
                     refValues.forEach { (_, v) -> drawCircle(muted, radius = 3.dp.toPx(), center = Offset(cx, yOf(v))) }
 
                     val dateStr = start.plusDays(day.toLong()).format(DateTimeFormatter.ofPattern("d MMM", Locale.US))
                     // ac: home-cycle-spending-comparison — difference = this cycle minus the reference at this
                     // day. Positive means spending faster (red); negative means slower (green). With three
                     // reference cycles the reference is their average.
-                    val diff = cur - lst
-                    val diffColor = if (diff > 0) overColor else if (diff < 0) underColor else muted
+                    val diff = cur?.let { it - lst }
+                    val diffColor = if (diff == null) muted else if (diff > 0) overColor else if (diff < 0) underColor else muted
                     val lines = buildList {
                         add(dateStr)
-                        add("$thisLbl  ${formatMoney(currency, cur)}")
+                        add("$thisLbl  ${cur?.let { formatMoney(currency, it) } ?: noDataLbl}")
                         refValues.forEach { (label, v) -> add("$label  ${formatMoney(currency, v)}") }
                         val diffName = if (refs.size > 1) "$diffLbl ($avgLbl)" else diffLbl
-                        add("$diffName  ${formatMoney(currency, diff, showSign = true)}")
+                        if (diff != null) add("$diffName  ${formatMoney(currency, diff, showSign = true)}")
                     }
                     val tPaint = android.graphics.Paint().apply { isAntiAlias = true; textSize = 11.sp.toPx() }
                     val padX = 8.dp.toPx(); val padY = 6.dp.toPx(); val lh = 15.sp.toPx()
@@ -232,7 +235,7 @@ fun SpendCompareChart(sc: SpendCompare, currency: String) {
                                 when (i) {
                                     0 -> { color = onSurface.toArgb(); typeface = android.graphics.Typeface.DEFAULT_BOLD }
                                     1 -> { color = pine.toArgb(); typeface = android.graphics.Typeface.DEFAULT }
-                                    lines.lastIndex -> { color = diffColor.toArgb(); typeface = android.graphics.Typeface.DEFAULT_BOLD }
+                                    lines.lastIndex -> if (diff != null) { color = diffColor.toArgb(); typeface = android.graphics.Typeface.DEFAULT_BOLD } else { color = muted.toArgb(); typeface = android.graphics.Typeface.DEFAULT }
                                     else -> { color = muted.toArgb(); typeface = android.graphics.Typeface.DEFAULT }
                                 }
                             }

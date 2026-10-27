@@ -235,6 +235,7 @@
     <string name="home_spend_this_cycle">This cycle</string>
     <string name="home_spend_last_cycle">Last cycle</string>
     <string name="home_spend_difference">Difference</string>
+    <string name="home_spend_no_data">No data yet</string>
     <string name="home_spend_two_cycles_ago">2 cycles ago</string>
     <string name="home_spend_three_cycles_ago">3 cycles ago</string>
     <string name="home_spend_average">vs average</string>
