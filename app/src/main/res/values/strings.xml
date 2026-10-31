@@ -659,6 +659,9 @@
     <string name="schedule_warn_cancel">Keep it off</string>
     <string name="settings_status_on_title">Capturing payments</string>
     <string name="settings_status_on_body">The app is listening to bank notifications.</string>
+    <string name="settings_status_stopped_title">Listening has stopped</string>
+    <string name="settings_status_stopped_body">Android stopped the part of FinTrack that reads notifications. Bank payments are missed until it runs again.</string>
+    <string name="settings_reconnect">Reconnect</string>
     <string name="settings_status_off_title">Not capturing payments</string>
     <string name="settings_status_off_body">Android has not given this app access to notifications, so bank payments are missed.</string>
     <string name="settings_group_setup">MONEY SETUP</string>

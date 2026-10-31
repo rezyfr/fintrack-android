@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class SettingsState(
-    val isListenerActive: Boolean = false,
+    val listener: ListenerStatus = ListenerStatus.NO_ACCESS,
     val isSyncing: Boolean = false,
     val isClearing: Boolean = false
 )
@@ -46,8 +46,8 @@ class SettingsViewModel @Inject constructor(
         saveCurrencySettingsUseCase(settings)
     }
 
-    fun setListenerActive(active: Boolean) {
-        _state.value = _state.value.copy(isListenerActive = active)
+    fun setListener(status: ListenerStatus) {
+        _state.value = _state.value.copy(listener = status)
     }
 
     fun retryPendingSyncs() = viewModelScope.launch {

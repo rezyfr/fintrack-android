@@ -1,8 +1,6 @@
 package com.fidriyanto.banktracker.service
 
-import android.content.ComponentName
 import android.content.Context
-import android.service.notification.NotificationListenerService
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import androidx.hilt.work.HiltWorker
@@ -37,10 +35,9 @@ class ListenerHealthWorker @AssistedInject constructor(
         // A process the system killed starts again with the flag false, which is the case to repair.
         if (!needsRebind(granted, BankNotificationService.isConnected)) return Result.success()
 
-        Log.w(TAG, "listener is not connected, requesting rebind")
-        NotificationListenerService.requestRebind(
-            ComponentName(context, BankNotificationService::class.java),
-        )
+        Log.w(TAG, "listener is not connected, repairing it")
+        // ac: listener-repair - a rebind request alone did not bring the listener back on some phones
+        ListenerRepair.reconnect(context)
         return Result.success()
     }
 

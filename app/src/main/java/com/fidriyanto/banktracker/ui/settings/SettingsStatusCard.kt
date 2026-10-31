@@ -20,19 +20,30 @@ import com.fidriyanto.banktracker.R
 import com.fidriyanto.banktracker.ui.theme.LocalAppColors
 import com.fidriyanto.banktracker.ui.theme.Space
 
-// The top of Settings: whether the app can read bank notifications. When it cannot, the card says so and has the fix.
+// The top of Settings: whether the app is reading bank notifications. It says so when the access is off, and when the
+// access is on but Android has stopped the listener. Each of those has its own button.
 @Composable
-fun SettingsStatusCard(active: Boolean, onEnable: () -> Unit) {
-    val container = if (active) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer
-    val content = if (active) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer
+fun SettingsStatusCard(status: ListenerStatus, onEnable: () -> Unit, onReconnect: () -> Unit) {
+    val ok = status == ListenerStatus.RUNNING
+    val container = if (ok) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer
+    val content = if (ok) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer
+    val (title, body) = when (status) {
+        ListenerStatus.RUNNING -> R.string.settings_status_on_title to R.string.settings_status_on_body
+        ListenerStatus.STOPPED -> R.string.settings_status_stopped_title to R.string.settings_status_stopped_body
+        ListenerStatus.NO_ACCESS -> R.string.settings_status_off_title to R.string.settings_status_off_body
+    }
     Card(Modifier.fillMaxWidth().testTag("settings_status"), colors = CardDefaults.cardColors(containerColor = container, contentColor = content)) {
         Column(Modifier.padding(Space.lg), verticalArrangement = Arrangement.spacedBy(Space.sm)) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(Space.sm)) {
-                StatusDot(if (active) LocalAppColors.current.green else MaterialTheme.colorScheme.error)
-                Text(stringResource(if (active) R.string.settings_status_on_title else R.string.settings_status_off_title), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                StatusDot(if (ok) LocalAppColors.current.green else MaterialTheme.colorScheme.error)
+                Text(stringResource(title), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
             }
-            Text(stringResource(if (active) R.string.settings_status_on_body else R.string.settings_status_off_body), style = MaterialTheme.typography.bodyMedium)
-            if (!active) OutlinedButton(onClick = onEnable, Modifier.testTag("settings_enable_access")) { Text(stringResource(R.string.settings_enable_access)) }
+            Text(stringResource(body), style = MaterialTheme.typography.bodyMedium)
+            when (status) {
+                ListenerStatus.NO_ACCESS -> OutlinedButton(onClick = onEnable, Modifier.testTag("settings_enable_access")) { Text(stringResource(R.string.settings_enable_access)) }
+                ListenerStatus.STOPPED -> OutlinedButton(onClick = onReconnect, Modifier.testTag("settings_reconnect")) { Text(stringResource(R.string.settings_reconnect)) }
+                ListenerStatus.RUNNING -> Unit
+            }
         }
     }
 }

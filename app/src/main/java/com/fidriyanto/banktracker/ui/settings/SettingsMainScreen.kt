@@ -31,12 +31,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
+import com.fidriyanto.banktracker.service.ListenerRepair
+import com.fidriyanto.banktracker.service.BankNotificationService
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -46,6 +50,11 @@ import com.fidriyanto.banktracker.ui.theme.LocalIsDarkTheme
 import com.fidriyanto.banktracker.ui.theme.LocalIsDynamicColorEnabled
 import com.fidriyanto.banktracker.ui.theme.LocalThemeToggle
 import com.fidriyanto.banktracker.ui.theme.Space
+
+private const val RECONNECT_WAIT_MS = 2_500L
+
+private fun listenerStatus(context: android.content.Context) =
+    ListenerStatus.of(ListenerRepair.hasAccess(context), BankNotificationService.isConnected)
 
 // Where each row of the Settings list leads
 data class SettingsActions(
@@ -67,6 +76,7 @@ fun SettingsMainScreen(viewModel: SettingsViewModel, actions: SettingsActions) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val pending by viewModel.pendingCount.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val isDark = LocalIsDarkTheme.current
     val toggleTheme = LocalThemeToggle.current
     val isDynamic = LocalIsDynamicColorEnabled.current
@@ -74,7 +84,7 @@ fun SettingsMainScreen(viewModel: SettingsViewModel, actions: SettingsActions) {
 
     // The system decides whether the listener is on, so read it again each time the screen resumes.
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-        viewModel.setListenerActive(NotificationManagerCompat.getEnabledListenerPackages(context).contains(context.packageName))
+        viewModel.setListener(listenerStatus(context))
     }
 
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(Space.lg), verticalArrangement = Arrangement.spacedBy(Space.lg)) {
@@ -83,7 +93,15 @@ fun SettingsMainScreen(viewModel: SettingsViewModel, actions: SettingsActions) {
             Text(stringResource(R.string.settings_title), style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.onBackground)
         }
 
-        SettingsStatusCard(active = state.isListenerActive) { context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)) }
+        SettingsStatusCard(
+            status = state.listener,
+            onEnable = { context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)) },
+            onReconnect = {
+                ListenerRepair.reconnect(context)
+                // Android needs a moment to bind the listener, then the card reads the state again
+                scope.launch { delay(RECONNECT_WAIT_MS); viewModel.setListener(listenerStatus(context)) }
+            },
+        )
 
         SettingsGroup(stringResource(R.string.settings_group_setup)) {
             SettingsRow(Icons.Outlined.AccountBalance, stringResource(R.string.settings_manage_accounts), "settings_accounts", actions.onAccounts, subtitle = stringResource(R.string.settings_accounts_hint))
